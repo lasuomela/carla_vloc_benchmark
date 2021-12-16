@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<OpenSCENARIO>
+  <FileHeader revMajor="1" revMinor="0" date="2020-03-20T00:00:00" description="CARLA:ControllerCatalog" author="" />
+  <Catalog name="ControllerCatalog">
+  
+    <Controller name="VisualNavigatingAgent">
+      <ParameterDeclarations>
+        <ParameterDeclaration name="module" parameterType="string" value="carla_ros_scenario_runner.ros_vehicle_control"/>
+        <ParameterDeclaration name="launch" parameterType="string" value="carla_visual_navigator_agent.launch"/>
+        <ParameterDeclaration name="launch-package" parameterType="string" value="carla_visual_navigation"/>
+        <ParameterDeclaration name="avoid_risk" parameterType="string" value="false"/>
+        <ParameterDeclaration name="global_extractor_name" parameterType="string" value=""/>
+        <ParameterDeclaration name="local_extractor_name" parameterType="string" value=""/>
+        <ParameterDeclaration name="local_matcher_name" parameterType="string" value=""/>
+        <ParameterDeclaration name="gallery_global_descriptor_path" parameterType="string" value=""/>
+        <ParameterDeclaration name="gallery_local_descriptor_path" parameterType="string" value=""/>
+        <ParameterDeclaration name="image_gallery_path" parameterType="string" value=""/>
+        <ParameterDeclaration name="gallery_sfm_path" parameterType="string" value=""/>
+        <ParameterDeclaration name="localization_frequence" parameterType="string" value=""/>
+        <ParameterDeclaration name="top_k_matches" parameterType="string" value=""/>
+      </ParameterDeclarations>
+      <Properties>
+          <Property name="module" value="$module" />
+          <Property name="launch" value="$launch"/>
+          <Property name="launch-package" value="$launch-package"/>
+          <Property name="avoid_risk" value="$avoid_risk"/>
+          <Property name="global_extractor_name" value="$global_extractor_name"/>
+          <Property name="local_extractor_name" value="$local_extractor_name"/>
+          <Property name="local_matcher_name" value="$local_matcher_name"/>
+          <Property name="gallery_global_descriptor_path" value="$gallery_global_descriptor_path"/>
+          <Property name="gallery_local_descriptor_path" value="$gallery_local_descriptor_path"/>
+          <Property name="image_gallery_path" value="$image_gallery_path"/>
+          <Property name="gallery_sfm_path" value="$gallery_sfm_path"/>
+          <Property name="localization_frequence" value="$localization_frequence"/>
+          <Property name="top_k_matches" value="$top_k_matches"/>
+      </Properties>
+  </Controller>
+
+  <Controller name="CarlaAutopilotAgent">
+    <Properties>
+        <Property name="module" value="carla_ros_scenario_runner.ros_vehicle_control" />
+        <Property name="launch" value="carla_ad_agent.launch"/>
+        <Property name="launch-package" value="carla_ad_agent"/>
+        <Property name="avoid_risk" value="false"/>
+        <Property name="target_speed" value="30.0"/>
+    </Properties>
+  </Controller>
+
+    <Controller name="GalleryCaptureAgent">
+    <ParameterDeclarations>
+      <ParameterDeclaration name="module" parameterType="string" value="carla_ros_scenario_runner.ros_vehicle_control"/>
+      <ParameterDeclaration name="launch" parameterType="string" value="carla_gallery_capture.launch"/>
+      <ParameterDeclaration name="launch-package" parameterType="string" value="carla_visual_navigation"/>
+      <ParameterDeclaration name="avoid_risk" parameterType="string" value="false"/>
+      <ParameterDeclaration name="image_save_path" parameterType="string" value="/image-gallery"/>
+      <ParameterDeclaration name="camera_topic" parameterType="string" value="/carla/ego_vehicle/rgb_front/image"/>
+      <ParameterDeclaration name="odometry_topic" parameterType="string" value="/carla/ego_vehicle/odometry"/>
+      <ParameterDeclaration name="image_density" parameterType="string" value="2.0"/>
+      <ParameterDeclaration name="base_frame" parameterType="string" value="ego_vehicle"/>
+      <ParameterDeclaration name="sensor_frame" parameterType="string" value="ego_vehicle/rgb_front"/>
+      <ParameterDeclaration name="synchrony_diff" parameterType="string" value="0.01"/>
+    </ParameterDeclarations>
+    <Properties>
+        <Property name="module" value="$module" />
+        <Property name="launch" value="$launch"/>
+        <Property name="launch-package" value="$launch-package"/>
+        <Property name="avoid_risk" value="$avoid_risk"/>
+        <Property name="image_save_path" value="$image_save_path"/>
+        <Property name="camera_topic" value="$camera_topic"/>
+        <Property name="odometry_topic" value="$odometry_topic"/>
+        <Property name="image_density" value="$image_density"/>
+        <Property name="base_frame" value="$base_frame"/>
+        <Property name="sensor_frame" value="$sensor_frame"/>
+        <Property name="synchrony_diff" value="$synchrony_diff"/>
+    </Properties>
+  </Controller>
+
+  <Controller name="VisualLocalizationAgent">
+      <ParameterDeclarations>
+        <ParameterDeclaration name="module" parameterType="string" value="carla_ros_scenario_runner.ros_vehicle_control"/>
+        <ParameterDeclaration name="launch" parameterType="string" value="carla_visual_localizer_test.launch"/>
+        <ParameterDeclaration name="launch-package" parameterType="string" value="carla_visual_navigation"/>
+        <ParameterDeclaration name="avoid_risk" parameterType="string" value="false"/>
+        <ParameterDeclaration name="global_extractor_name" parameterType="string" value=""/>
+        <ParameterDeclaration name="local_extractor_name" parameterType="string" value=""/>
+        <ParameterDeclaration name="local_matcher_name" parameterType="string" value=""/>
+        <ParameterDeclaration name="gallery_global_descriptor_path" parameterType="string" value=""/>
+        <ParameterDeclaration name="gallery_local_descriptor_path" parameterType="string" value=""/>
+        <ParameterDeclaration name="image_gallery_path" parameterType="string" value=""/>
+        <ParameterDeclaration name="gallery_sfm_path" parameterType="string" value=""/>
+        <ParameterDeclaration name="localization_frequence" parameterType="string" value=""/>
+        <ParameterDeclaration name="top_k_matches" parameterType="string" value=""/>
+      </ParameterDeclarations>
+      <Properties>
+          <Property name="module" value="$module" />
+          <Property name="launch" value="$launch"/>
+          <Property name="launch-package" value="$launch-package"/>
+          <Property name="avoid_risk" value="$avoid_risk"/>
+          <Property name="global_extractor_name" value="$global_extractor_name"/>
+          <Property name="local_extractor_name" value="$local_extractor_name"/>
+          <Property name="local_matcher_name" value="$local_matcher_name"/>
+          <Property name="gallery_global_descriptor_path" value="$gallery_global_descriptor_path"/>
+          <Property name="gallery_local_descriptor_path" value="$gallery_local_descriptor_path"/>
+          <Property name="image_gallery_path" value="$image_gallery_path"/>
+          <Property name="gallery_sfm_path" value="$gallery_sfm_path"/>
+          <Property name="localization_frequence" value="$localization_frequence"/>
+          <Property name="top_k_matches" value="$top_k_matches"/>
+      </Properties>
+  </Controller>
+
+  <Controller name="PlaceRecognitionAgent">
+      <ParameterDeclarations>
+        <ParameterDeclaration name="module" parameterType="string" value="carla_ros_scenario_runner.ros_vehicle_control"/>
+        <ParameterDeclaration name="launch" parameterType="string" value="carla_place_recognition_test.launch"/>
+        <ParameterDeclaration name="launch-package" parameterType="string" value="carla_visual_navigation"/>
+        <ParameterDeclaration name="avoid_risk" parameterType="string" value="false"/>
+        <ParameterDeclaration name="global_extractor_name" parameterType="string" value=""/>
+        <ParameterDeclaration name="local_extractor_name" parameterType="string" value=""/>
+        <ParameterDeclaration name="local_matcher_name" parameterType="string" value=""/>
+        <ParameterDeclaration name="gallery_global_descriptor_path" parameterType="string" value=""/>
+        <ParameterDeclaration name="gallery_local_descriptor_path" parameterType="string" value=""/>
+        <ParameterDeclaration name="image_gallery_path" parameterType="string" value=""/>
+        <ParameterDeclaration name="gallery_sfm_path" parameterType="string" value=""/>
+        <ParameterDeclaration name="localization_frequence" parameterType="string" value=""/>
+        <ParameterDeclaration name="top_k_matches" parameterType="string" value=""/>
+      </ParameterDeclarations>
+      <Properties>
+          <Property name="module" value="$module" />
+          <Property name="launch" value="$launch"/>
+          <Property name="launch-package" value="$launch-package"/>
+          <Property name="avoid_risk" value="$avoid_risk"/>
+          <Property name="global_extractor_name" value="$global_extractor_name"/>
+          <Property name="local_extractor_name" value="$local_extractor_name"/>
+          <Property name="local_matcher_name" value="$local_matcher_name"/>
+          <Property name="gallery_global_descriptor_path" value="$gallery_global_descriptor_path"/>
+          <Property name="gallery_local_descriptor_path" value="$gallery_local_descriptor_path"/>
+          <Property name="image_gallery_path" value="$image_gallery_path"/>
+          <Property name="gallery_sfm_path" value="$gallery_sfm_path"/>
+          <Property name="localization_frequence" value="$localization_frequence"/>
+          <Property name="top_k_matches" value="$top_k_matches"/>
+      </Properties>
+  </Controller>
+
+  </Catalog>
+</OpenSCENARIO>

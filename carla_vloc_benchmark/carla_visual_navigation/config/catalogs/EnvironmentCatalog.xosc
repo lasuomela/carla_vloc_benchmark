@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<OpenSCENARIO>
+  <FileHeader revMajor="1" revMinor="0" date="2020-03-20T00:00:00" description="CARLA:ControllerCatalog" author="" />
+  <Catalog name="EnvironmentCatalog">
+    <Environment name="Weather">
+      <ParameterDeclarations>
+        <ParameterDeclaration name="sun_intensity" parameterType="string" value="1.0"/>
+        <ParameterDeclaration name="sun_elevation" parameterType="string" value="0.131"/>
+        <ParameterDeclaration name="cloud_state" parameterType="string" value="free"/>
+        <ParameterDeclaration name="precipitation_type" parameterType="string" value="dry"/>
+        <ParameterDeclaration name="precipitation_intensity" parameterType="string" value="0.0"/>
+        <ParameterDeclaration name="visual_range" parameterType="string" value="100000.0"/>
+      </ParameterDeclarations>
+      <TimeOfDay animation="false" dateTime="2019-06-25T12:00:00"/>
+      <Weather cloudState="$cloud_state">
+        <Sun intensity="$sun_intensity" azimuth="0.0" elevation="$sun_elevation"/>
+        <Fog visualRange="$visual_range"/>
+        <Precipitation precipitationType="$precipitation_type" intensity="$precipitation_intensity"/>
+      </Weather>
+      <RoadCondition frictionScaleFactor="1.0"/>
+    </Environment>
+
+    <Environment name="Weather_orig">
+      <ParameterDeclarations>
+        <ParameterDeclaration name="sun_intensity" parameterType="string" value="1.0"/>
+        <ParameterDeclaration name="sun_elevation" parameterType="string" value="0.131"/>
+        <ParameterDeclaration name="cloud_state" parameterType="string" value="free"/>
+        <ParameterDeclaration name="precipitation_type" parameterType="string" value="dry"/>
+        <ParameterDeclaration name="precipitation_intensity" parameterType="string" value="0.0"/>
+      </ParameterDeclarations>
+      <TimeOfDay animation="false" dateTime="2019-06-25T12:00:00"/>
+      <Weather cloudState="$cloud_state">
+        <Sun intensity="$sun_intensity" azimuth="0.0" elevation="$sun_elevation"/>
+        <Fog visualRange="100000.0"/>
+        <Precipitation precipitationType="$precipitation_type" intensity="$precipitation_intensity"/>
+      </Weather>
+      <RoadCondition frictionScaleFactor="1.0"/>
+    </Environment>
+  </Catalog>
+</OpenSCENARIO>

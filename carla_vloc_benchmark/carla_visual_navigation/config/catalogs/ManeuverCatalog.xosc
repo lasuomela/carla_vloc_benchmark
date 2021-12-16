@@ -1,0 +1,309 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<OpenSCENARIO>
+  <FileHeader revMajor="1" revMinor="0" date="2020-03-20T00:00:00" description="CARLA:ManeuverCatalog" author="" />
+  <Catalog name="ManeuverCatalog">
+
+    <Maneuver name="Map01_route01_maneuver">
+      <Event maximumExecutionCount="1" name="start_teleport_event" priority="overwrite">
+        <Action name="teleport_action">
+          <PrivateAction>
+            <TeleportAction>
+              <Position>
+                <WorldPosition x="150" y="133"/>
+              </Position>
+            </TeleportAction>
+          </PrivateAction>
+        </Action>
+        <StartTrigger>
+          <ConditionGroup>
+            <Condition name="tele_StartCondition" delay="0" conditionEdge="none">
+              <ByValueCondition>
+                <SimulationTimeCondition value="0" rule = "greaterThan"/>
+              </ByValueCondition>
+            </Condition>
+          </ConditionGroup>
+        </StartTrigger>
+      </Event>
+      <Event name="pr_FollowsRouteEvent" priority="overwrite">
+        <Action name="pr_FollowsRouteAction">
+          <PrivateAction>
+            <RoutingAction>
+              <AssignRouteAction>
+                <Route name="pr_ClosedRoute" closed="false">
+                  <Waypoint routeStrategy="fastest">
+                    <Position>
+                      <WorldPosition x="200.0" y="133.0" z="0.0" h="0.0" />
+                    </Position>
+                  </Waypoint>
+                  <Waypoint routeStrategy="fastest">
+                    <Position>
+                      <WorldPosition x="335.0" y="152.0" z="0.0" h="0.0" />
+                    </Position>
+                  </Waypoint>
+                  <Waypoint routeStrategy="fastest">
+                    <Position>
+                      <WorldPosition x="335.0" y="307.0" z="0.0" h="0.0" />
+                    </Position>
+                  </Waypoint>
+                  <Waypoint routeStrategy="fastest">
+                    <Position>
+                      <WorldPosition x="95.0" y="326.0" z="0.0" h="0.0" />
+                    </Position>
+                  </Waypoint>
+                  <Waypoint routeStrategy="fastest">
+                    <Position>
+                      <WorldPosition x="17.0" y="326.0" z="0.0" h="0.0" />
+                    </Position>
+                  </Waypoint>
+                  <Waypoint routeStrategy="fastest">
+                    <Position>
+                      <WorldPosition x="2.0" y="21.0" z="0.0" h="0.0" />
+                    </Position>
+                  </Waypoint>
+                  <Waypoint routeStrategy="fastest">
+                    <Position>
+                      <WorldPosition x="71.0" y="2.0" z="0.0" h="0.0" />
+                    </Position>
+                  </Waypoint>
+                  <Waypoint routeStrategy="fastest">
+                    <Position>
+                      <WorldPosition x="88.5" y="112.0" z="0.0" h="0.0" />
+                    </Position>
+                  </Waypoint>
+                </Route>
+              </AssignRouteAction>
+            </RoutingAction>
+          </PrivateAction>
+        </Action>
+        <StartTrigger>
+          <ConditionGroup>
+            <Condition name="pr_StartCondition" delay="2" conditionEdge="rising">
+              <ByEntityCondition>
+                <TriggeringEntities triggeringEntitiesRule="any">
+                  <EntityRef entityRef="ego_vehicle"/>
+                </TriggeringEntities>
+                <EntityCondition>
+                  <ReachPositionCondition tolerance="1">
+                    <Position>
+                      <WorldPosition x="150.0" y="133.0" z="0.0" h="0.0" />
+                    </Position>
+                  </ReachPositionCondition>
+                </EntityCondition>
+              </ByEntityCondition>
+            </Condition>
+          </ConditionGroup>
+        </StartTrigger>
+      </Event>
+    </Maneuver>
+
+    <Maneuver name="Map01_testroute_maneuver">
+      <Event maximumExecutionCount="1" name="start_teleport_event" priority="overwrite">
+        <Action name="teleport_action">
+          <PrivateAction>
+            <TeleportAction>
+              <Position>
+                <WorldPosition x="150" y="133"/>
+              </Position>
+            </TeleportAction>
+          </PrivateAction>
+        </Action>
+        <StartTrigger>
+          <ConditionGroup>
+            <Condition name="tele_StartCondition" delay="0" conditionEdge="none">
+              <ByValueCondition>
+                <SimulationTimeCondition value="0" rule = "greaterThan"/>
+              </ByValueCondition>
+            </Condition>
+          </ConditionGroup>
+        </StartTrigger>
+      </Event>
+      <Event name="pr_FollowsRouteEvent" priority="overwrite">
+        <Action name="pr_FollowsRouteAction">
+          <PrivateAction>
+            <RoutingAction>
+              <AssignRouteAction>
+                <Route name="testRoute" closed="false">
+                  <Waypoint routeStrategy="fastest">
+                    <Position>
+                      <WorldPosition x="160.0" y="133.0"/>
+                    </Position>
+                  </Waypoint>
+                  <Waypoint routeStrategy="fastest">
+                    <Position>
+                      <WorldPosition x="179.0" y="133.0"/>
+                    </Position>
+                  </Waypoint>
+                  <Waypoint routeStrategy="shortest">
+                    <Position>
+                      <WorldPosition x="180.0" y="133.0"/>
+                    </Position>
+                  </Waypoint>
+                </Route>
+              </AssignRouteAction>
+            </RoutingAction>
+          </PrivateAction>
+        </Action>
+        <StartTrigger>
+          <ConditionGroup>
+            <Condition name="pr_StartCondition" delay="1" conditionEdge="rising">
+              <ByEntityCondition>
+                <TriggeringEntities triggeringEntitiesRule="any">
+                  <EntityRef entityRef="ego_vehicle"/>
+                </TriggeringEntities>
+                <EntityCondition>
+                  <ReachPositionCondition tolerance="1">
+                    <Position>
+                      <WorldPosition x="150.0" y="133.0" z="0.0" h="0.0" />
+                    </Position>
+                  </ReachPositionCondition>
+                </EntityCondition>
+              </ByEntityCondition>
+            </Condition>
+          </ConditionGroup>
+        </StartTrigger>
+      </Event>
+    </Maneuver>
+
+    <Maneuver name="Map01_testroute_long_maneuver">
+      <Event maximumExecutionCount="1" name="start_teleport_event" priority="overwrite">
+        <Action name="teleport_action">
+          <PrivateAction>
+            <TeleportAction>
+              <Position>
+                <WorldPosition x="150" y="133"/>
+              </Position>
+            </TeleportAction>
+          </PrivateAction>
+        </Action>
+        <StartTrigger>
+          <ConditionGroup>
+            <Condition name="tele_StartCondition" delay="0" conditionEdge="none">
+              <ByValueCondition>
+                <SimulationTimeCondition value="0" rule = "greaterThan"/>
+              </ByValueCondition>
+            </Condition>
+          </ConditionGroup>
+        </StartTrigger>
+      </Event>
+      <Event name="pr_FollowsRouteEvent" priority="overwrite">
+        <Action name="pr_FollowsRouteAction">
+          <PrivateAction>
+            <RoutingAction>
+              <AssignRouteAction>
+                <Route name="testRoute" closed="false">
+                  <Waypoint routeStrategy="fastest">
+                    <Position>
+                      <WorldPosition x="160.0" y="133.0"/>
+                    </Position>
+                  </Waypoint>
+                  <Waypoint routeStrategy="fastest">
+                    <Position>
+                      <WorldPosition x="180.0" y="133.0"/>
+                    </Position>
+                  </Waypoint>
+                  <Waypoint routeStrategy="fastest">
+                    <Position>
+                      <WorldPosition x="310.0" y="133.0"/>
+                    </Position>
+                  </Waypoint>
+                </Route>
+              </AssignRouteAction>
+            </RoutingAction>
+          </PrivateAction>
+        </Action>
+        <StartTrigger>
+          <ConditionGroup>
+            <Condition name="pr_StartCondition" delay="1" conditionEdge="rising">
+              <ByEntityCondition>
+                <TriggeringEntities triggeringEntitiesRule="any">
+                  <EntityRef entityRef="ego_vehicle"/>
+                </TriggeringEntities>
+                <EntityCondition>
+                  <ReachPositionCondition tolerance="1">
+                    <Position>
+                      <WorldPosition x="150.0" y="133.0" z="0.0" h="0.0" />
+                    </Position>
+                  </ReachPositionCondition>
+                </EntityCondition>
+              </ByEntityCondition>
+            </Condition>
+          </ConditionGroup>
+        </StartTrigger>
+      </Event>
+    </Maneuver>
+
+    <Maneuver name="Map10HD_route01_maneuver">
+      <Event maximumExecutionCount="1" name="start_teleport_event" priority="overwrite">
+        <Action name="teleport_action">
+          <PrivateAction>
+            <TeleportAction>
+              <Position>
+                <WorldPosition x="-47.5" y="133.0" h="3.14"/>
+              </Position>
+            </TeleportAction>
+          </PrivateAction>
+        </Action>
+        <StartTrigger>
+          <ConditionGroup>
+            <Condition name="tele_StartCondition" delay="0" conditionEdge="none">
+              <ByValueCondition>
+                <SimulationTimeCondition value="0" rule = "greaterThan"/>
+              </ByValueCondition>
+            </Condition>
+          </ConditionGroup>
+        </StartTrigger>
+      </Event>
+      <Event name="pr_FollowsRouteEvent" priority="overwrite">
+        <Action name="pr_FollowsRouteAction">
+          <PrivateAction>
+            <RoutingAction>
+              <AssignRouteAction>
+                <Route name="pr_ClosedRoute" closed="false">
+                  <Waypoint routeStrategy="fastest">
+                    <Position>
+                      <WorldPosition x="-96.7" y="113.5" />
+                    </Position>
+                  </Waypoint>
+                  <Waypoint routeStrategy="fastest">
+                    <Position>
+                      <WorldPosition x="-103.5" y="50.6" />
+                    </Position>
+                  </Waypoint>
+                  <Waypoint routeStrategy="fastest">
+                    <Position>
+                      <WorldPosition x="-49.0" y="-20.5" />
+                    </Position>
+                  </Waypoint>
+                  <Waypoint routeStrategy="fastest">
+                    <Position>
+                      <WorldPosition x="79.6" y="69.45" />
+                    </Position>
+                  </Waypoint>
+                </Route>
+              </AssignRouteAction>
+            </RoutingAction>
+          </PrivateAction>
+        </Action>
+        <StartTrigger>
+          <ConditionGroup>
+            <Condition name="pr_StartCondition" delay="2" conditionEdge="rising">
+              <ByEntityCondition>
+                <TriggeringEntities triggeringEntitiesRule="any">
+                  <EntityRef entityRef="ego_vehicle"/>
+                </TriggeringEntities>
+                <EntityCondition>
+                  <ReachPositionCondition tolerance="1">
+                    <Position>
+                      <WorldPosition x="-47.5" y="133.0"/>
+                    </Position>
+                  </ReachPositionCondition>
+                </EntityCondition>
+              </ByEntityCondition>
+            </Condition>
+          </ConditionGroup>
+        </StartTrigger>
+      </Event>
+    </Maneuver>
+
+  </Catalog>
+</OpenSCENARIO>

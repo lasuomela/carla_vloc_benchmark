@@ -1,0 +1,148 @@
+<?xml version="1.0"?>
+<OpenSCENARIO>
+  <FileHeader revMajor="1" revMinor="0" date="2021-05-04T00:00:00" description="CARLA:VisualNavigatorTemplate" author="lauri.a.suomela"/>
+  <ParameterDeclarations>
+    <ParameterDeclaration name="town_name" parameterType="string" value="town_name_template"/>
+    <ParameterDeclaration name="image_save_path" parameterType="string" value="image_save_path_template"/>
+    <ParameterDeclaration name="image_density" parameterType="string" value="image_density_template"/>
+    <ParameterDeclaration name="sun_intensity" parameterType="string" value="sun_intensity_template"/>
+    <ParameterDeclaration name="sun_elevation" parameterType="string" value="sun_elevation_template"/>
+    <ParameterDeclaration name="precipitation_type" parameterType="string" value="precipitation_type_template"/>
+    <ParameterDeclaration name="precipitation_intensity" parameterType="string" value="precipitation_intensity_template"/>
+    <ParameterDeclaration name="visual_range" parameterType="string" value="visual_range_template"/> 
+    <ParameterDeclaration name="cloud_state" parameterType="string" value="cloud_state_template"/> 
+    <ParameterDeclaration name="route_entry_name" parameterType="string" value="route_entry_name_template"/>
+    <ParameterDeclaration name="target_speed" parameterType="string" value="target_speed_template"/>
+    <ParameterDeclaration name="controller_entry_name" parameterType="string" value="controller_entry_name_template"/>
+    <ParameterDeclaration name="goal_location_x" parameterType="string" value="goal_location_x_template"/> 
+    <ParameterDeclaration name="goal_location_y" parameterType="string" value="goal_location_y_template"/>
+    <ParameterDeclaration name="goal_location_tolerance" parameterType="string" value="goal_location_tolerance_template"/>
+    <ParameterDeclaration name="scenario_filepath" parameterType="string" value="scenario_filepath_template"/>
+  </ParameterDeclarations>
+  <CatalogLocations>
+    <ControllerCatalog>
+      <Directory path="catalog_path_template"/>
+    </ControllerCatalog>
+    <VehicleCatalog>
+      <Directory path="catalog_path_template"/>
+    </VehicleCatalog>
+    <EnvironmentCatalog>
+      <Directory path="catalog_path_template"/>
+    </EnvironmentCatalog>
+    <ManeuverCatalog>
+      <Directory path="catalog_path_template"/>
+    </ManeuverCatalog>
+  </CatalogLocations>
+  <RoadNetwork>
+    <LogicFile filepath="$town_name"/>
+    <SceneGraphFile filepath=""/>
+  </RoadNetwork>
+  <Entities>
+    <ScenarioObject name="ego_vehicle">
+      <CatalogReference catalogName="VehicleCatalog" entryName="vehicle.tesla.model3"/>
+    </ScenarioObject>
+  </Entities>
+  <Storyboard>
+    <Init>
+      <Actions>
+        <GlobalAction>
+          <EnvironmentAction>
+            <CatalogReference catalogName="EnvironmentCatalog" entryName="Weather">
+              <ParameterAssignments>
+                <ParameterAssignment parameterRef="sun_intensity" value="$sun_intensity"/>
+                <ParameterAssignment parameterRef="sun_elevation" value="$sun_elevation"/>
+                <ParameterAssignment parameterRef="precipitation_type" value="$precipitation_type"/>
+                <ParameterAssignment parameterRef="precipitation_intensity" value="$precipitation_intensity"/>
+                <ParameterAssignment parameterRef="visual_range" value="$visual_range"/> 
+                <ParameterAssignment parameterRef="cloud_state" value="$cloud_state"/> 
+              </ParameterAssignments>
+            </CatalogReference>
+          </EnvironmentAction>
+        </GlobalAction>
+        <Private entityRef="ego_vehicle">       
+          <PrivateAction>
+            <ControllerAction>
+                <AssignControllerAction>
+                  <CatalogReference catalogName="ControllerCatalog" entryName="$controller_entry_name">
+                    <ParameterAssignments>
+                      <ParameterAssignment parameterRef="image_save_path" value="$image_save_path"/>
+                      <ParameterAssignment parameterRef="image_density" value="$image_density"/>
+                    </ParameterAssignments>
+                  </CatalogReference>
+                </AssignControllerAction>
+                <OverrideControllerValueAction>
+                    <Throttle value="0" active="false" />
+                    <Brake value="0" active="false" />
+                    <Clutch value="0" active="false" />
+                    <ParkingBrake value="0" active="false" />
+                    <SteeringWheel value="0" active="false" />
+                    <Gear number="0" active="false" />
+                </OverrideControllerValueAction>
+            </ControllerAction>
+          </PrivateAction>
+          <PrivateAction>
+              <LongitudinalAction>
+                  <SpeedAction>
+                      <SpeedActionDynamics dynamicsShape="step" value="10" dynamicsDimension="distance"/>
+                      <SpeedActionTarget>
+                          <AbsoluteTargetSpeed value="$target_speed"/>
+                      </SpeedActionTarget>
+                  </SpeedAction>
+              </LongitudinalAction>
+          </PrivateAction>
+        </Private>
+      </Actions>
+    </Init>
+    <Story name="MyStory">
+      <Act name="Behavior">
+
+        <ManeuverGroup maximumExecutionCount="1" name="ManeuverSequence">
+          <Actors selectTriggeringEntities="false">
+            <EntityRef entityRef="ego_vehicle"/>
+          </Actors>
+          <CatalogReference catalogName="ManeuverCatalog" entryName="$route_entry_name"/>
+        </ManeuverGroup>
+
+        <StartTrigger>
+          <ConditionGroup>
+            <Condition name="overall_StartCondition" delay="0" conditionEdge="none">
+              <ByValueCondition>
+                <SimulationTimeCondition value="0" rule = "greaterThan"/>
+              </ByValueCondition>
+            </Condition>
+          </ConditionGroup>
+        </StartTrigger>
+
+        <StopTrigger>
+          <ConditionGroup>
+            <Condition name="route_end_condition" delay="0" conditionEdge="rising">
+              <ByEntityCondition>
+                <TriggeringEntities triggeringEntitiesRule="any">
+                  <EntityRef entityRef="ego_vehicle"/>
+                </TriggeringEntities>
+                <EntityCondition>
+                  <ReachPositionCondition tolerance="$goal_location_tolerance">
+                    <Position>
+                      <WorldPosition x="$goal_location_x" y="$goal_location_y" />
+                    </Position>
+                  </ReachPositionCondition>
+                </EntityCondition>
+              </ByEntityCondition>
+            </Condition>
+          </ConditionGroup>
+        </StopTrigger>
+
+      </Act>
+
+    </Story>
+    <StopTrigger>
+      <ConditionGroup>
+        <Condition name="scenario_endcondition" delay="0" conditionEdge="rising">
+          <ByValueCondition>
+            <StoryboardElementStateCondition storyboardElementType="act" storyboardElementRef="Behavior" state="completeState"/>
+          </ByValueCondition>
+        </Condition>
+      </ConditionGroup>
+    </StopTrigger>
+  </Storyboard>
+</OpenSCENARIO>
