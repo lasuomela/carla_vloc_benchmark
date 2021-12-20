@@ -1,0 +1,6 @@
+/*
+!.gitignore
+!example_dir/
+example_dir/*
+!example_dir/*.png
+!example_dir/*.json
