@@ -85,9 +85,9 @@ def test_experiment_parameters(logger_script_path, catalog_path):
     cloud_state = ['free']
 
     if controller_entry_name[0] == "VisualNavigatingAgent":
-        planner_stop_script_path = ["../../opt/ad-runner/src/carla_visual_navigation/utils/run-planner-stop.sh"]
+        planner_stop_script_path = ["../../opt/carla_vloc_benchmark/src/carla_visual_navigation/utils/run-planner-stop.sh"]
     else:
-        planner_stop_script_path = ["../../opt/ad-runner/src/carla_visual_navigation/utils/dummy-script.sh"]
+        planner_stop_script_path = ["../../opt/carla_vloc_benchmark/src/carla_visual_navigation/utils/dummy-script.sh"]
 
     scenario_parameters = {
     "town_name_template": town_names,
@@ -148,9 +148,9 @@ def test_experiment_parameters_carla_autopilot(logger_script_path, catalog_path)
     cloud_state = ['free']
 
     if controller_entry_name[0] == "VisualNavigatingAgent":
-        planner_stop_script_path = ["../../opt/ad-runner/src/carla_visual_navigation/utils/run-planner-stop.sh"]
+        planner_stop_script_path = ["../../opt/carla_vloc_benchmark/src/carla_visual_navigation/utils/run-planner-stop.sh"]
     else:
-        planner_stop_script_path = ["../../opt/ad-runner/src/carla_visual_navigation/utils/dummy-script.sh"]
+        planner_stop_script_path = ["../../opt/carla_vloc_benchmark/src/carla_visual_navigation/utils/dummy-script.sh"]
 
     scenario_parameters = {
     "town_name_template": town_names,
@@ -217,9 +217,9 @@ def illumination_experiment_parameters(logger_script_path, catalog_path):
     cloud_state = ['free']
 
     if controller_entry_name[0] == "VisualNavigatingAgent":
-        planner_stop_script_path = ["../../opt/ad-runner/src/carla_visual_navigation/utils/run-planner-stop.sh"]
+        planner_stop_script_path = ["../../opt/carla_vloc_benchmark/src/carla_visual_navigation/utils/run-planner-stop.sh"]
     else:
-        planner_stop_script_path = ["../../opt/ad-runner/src/carla_visual_navigation/utils/dummy-script.sh"]
+        planner_stop_script_path = ["../../opt/carla_vloc_benchmark/src/carla_visual_navigation/utils/dummy-script.sh"]
 
     scenario_parameters = {
     "town_name_template": town_names,
@@ -283,9 +283,9 @@ def weather_experiment_parameters(logger_script_path, catalog_path):
     cloud_state = ['rainy']
 
     if controller_entry_name[0] == "VisualNavigatingAgent":
-        planner_stop_script_path = ["../../opt/ad-runner/src/carla_visual_navigation/utils/run-planner-stop.sh"]
+        planner_stop_script_path = ["../../opt/carla_vloc_benchmark/src/carla_visual_navigation/utils/run-planner-stop.sh"]
     else:
-        planner_stop_script_path = ["../../opt/ad-runner/src/carla_visual_navigation/utils/dummy-script.sh"]
+        planner_stop_script_path = ["../../opt/carla_vloc_benchmark/src/carla_visual_navigation/utils/dummy-script.sh"]
 
     scenario_parameters = {
     "town_name_template": town_names,
@@ -348,9 +348,9 @@ def streetlight_experiment_parameters(logger_script_path, catalog_path):
     cloud_state = ['free']
 
     if controller_entry_name[0] == "VisualNavigatingAgent":
-        planner_stop_script_path = ["../../opt/ad-runner/src/carla_visual_navigation/utils/run-planner-stop.sh"]
+        planner_stop_script_path = ["../../opt/carla_vloc_benchmark/src/carla_visual_navigation/utils/run-planner-stop.sh"]
     else:
-        planner_stop_script_path = ["../../opt/ad-runner/src/carla_visual_navigation/utils/dummy-script.sh"]
+        planner_stop_script_path = ["../../opt/carla_vloc_benchmark/src/carla_visual_navigation/utils/dummy-script.sh"]
 
     scenario_parameters = {
     "town_name_template": town_names,

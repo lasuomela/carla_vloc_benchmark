@@ -3,8 +3,8 @@
 usage() { echo "Usage: $0 [-t <tag>] [-i <image>]" 1>&2; exit 1; }
 
 # Defaults
-DOCKER_IMAGE_NAME="carla-ros-bridge-scenario"
-TAG="foxy"
+DOCKER_IMAGE_NAME="carla-vloc-benchmark"
+TAG="0.0.1"
 
 while getopts ":ht:i:" opt; do
   case $opt in

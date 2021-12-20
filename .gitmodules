@@ -1,5 +1,5 @@
 [submodule "carla_vloc_benchmark/visual_robot_localization"]
-	path = carla_vloc_benchmark/visual_robot_localization
+	path = visual_robot_localization
 	url = git@github.com:lasuomela/visual_robot_localization.git
 [submodule "third_party/ros-bridge"]
 	path = third_party/ros-bridge

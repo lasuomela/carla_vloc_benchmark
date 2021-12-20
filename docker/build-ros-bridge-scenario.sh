@@ -4,7 +4,8 @@ SCRIPT=$(readlink -f "$0")
 SCRIPT_DIR=$(dirname "${SCRIPT}")
 
 ROS_DISTRO="foxy"
-TEMP_IMAGE_NAME="carla_ros_bridge_vloc:0.0.1"
+IMAGE_NAME="carla-vloc-benchmark:0.0.1"
+
 
 cd ${SCRIPT_DIR}/../third_party/ros-bridge/docker
 # https://discourse.ros.org/t/ros-gpg-key-expiration-incident/20669
@@ -16,12 +17,13 @@ sed -i '15 a RUN /bin/bash -c "curl -s https://raw.githubusercontent.com/ros/ros
 ./build.sh
 sed -i '13,16d' Dockerfile
 
-cd ${SCRIPT_DIR}/../carla_vloc_benchmark/visual_robot_localization/docker
+TEMP_IMAGE_NAME="carla_ros_bridge_vloc:0.0.1"
+cd ${SCRIPT_DIR}/../visual_robot_localization/docker
 ./build.sh -b "carla-ros-bridge:$ROS_DISTRO" -t $TEMP_IMAGE_NAME
 
 cd ${SCRIPT_DIR}
 docker build \
     --build-arg ROS_DISTRO=$ROS_DISTRO \
     --build-arg BASE_IMAGE=$TEMP_IMAGE_NAME \
-    -t carla-ros-bridge-scenario:$ROS_DISTRO \
+    -t $IMAGE_NAME \
     -f Dockerfile ${SCRIPT_DIR}/..

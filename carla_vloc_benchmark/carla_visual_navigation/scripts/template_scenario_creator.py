@@ -12,15 +12,15 @@ def main(args=None):
 
     scenario_save_dir = '/scenarios/template_generated_test'
 
-    template_path = '/opt/ad-runner/src/carla_visual_navigation/config/VisualNavigatorTemplate.xosc'
-    #template_path = '/opt/ad-runner/src/place_reg_ad/config/GalleryCaptureTemplate.xosc'
+    template_path = '/opt/carla_vloc_benchmark/src/carla_visual_navigation/config/VisualNavigatorTemplate.xosc'
+    #template_path = '/opt/carla_vloc_benchmark/src/place_reg_ad/config/GalleryCaptureTemplate.xosc'
 
 
     # Paths relative to location of the generated scenario file
-    logger_script_path = ["../../opt/ad-runner/src/carla_visual_navigation/utils/run-scenario-log.sh"]          
-    catalog_path = ["../../opt/ad-runner/src/carla_visual_navigation/config/catalogs"]
+    logger_script_path = ["../../opt/carla_vloc_benchmark/src/carla_visual_navigation/utils/run-scenario-log.sh"]          
+    catalog_path = ["../../opt/carla_vloc_benchmark/src/carla_visual_navigation/config/catalogs"]
 
-    scenario_parameters = weather_experiment_parameters(logger_script_path, catalog_path)
+    scenario_parameters = test_experiment_parameters(logger_script_path, catalog_path)
 
     #scenario_parameters =  gallery_capture_parameters(catalog_path)
 
