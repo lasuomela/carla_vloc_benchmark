@@ -13,7 +13,7 @@ def main(args=None):
     scenario_save_dir = '/scenarios/template_generated_test'
 
     template_path = '/opt/carla_vloc_benchmark/src/carla_visual_navigation/config/VisualNavigatorTemplate.xosc'
-    #template_path = '/opt/carla_vloc_benchmark/src/place_reg_ad/config/GalleryCaptureTemplate.xosc'
+    #template_path = '/opt/carla_vloc_benchmark/src/carla_visual_navigation/config/GalleryCaptureTemplate.xosc'
 
 
     # Paths relative to location of the generated scenario file
@@ -95,19 +95,6 @@ def _get_gallery_paths(image_gallery_path,
     '''
 
     extractor_confs = hloc.extract_features.confs.copy()
-    # Manually add r2d2 extractor configuration since the hloc pr hasn't been merged yet
-    # https://github.com/cvg/Hierarchical-Localization/pull/85/commits
-    extractor_confs['r2d2'] = {
-        'output': 'feats-r2d2-n5000-r1024',
-        'model':{
-            'name': 'r2d2',
-            'max_keypoints': 5000,
-        },
-        'preprocessing': {
-            'grayscale': False,
-            'resize_max': 1024,
-        },
-    }
 
     combination_identifier = global_extractor_name + '+' + local_extractor_name + '+' + local_matcher_name
     base_path = Path(image_gallery_path) / "outputs" / combination_identifier

@@ -17,10 +17,23 @@ def get_scenarios(package_name):
         ros_topic_msg_string = ros_topic_msg_string + "{ " + "'name': '{}', 'scenario_file': '{}'".format(s_name, s_path) + "}"
     ros_topic_msg_string = ros_topic_msg_string + "] }"
     return ros_topic_msg_string
+    
+def get_scenarios_from_path(scenario_dir):
+    scenario_paths = glob.glob(scenario_dir+'/*.xosc')
+    scenario_names = [os.path.basename(path).replace('.xosc', '') for path in scenario_paths]
+    ros_topic_msg_string = "{ 'scenarios': ["
+    for i, (s_path, s_name) in enumerate(zip(scenario_paths, scenario_names)):
+        if i != 0:
+            ros_topic_msg_string = ros_topic_msg_string + ","
+        ros_topic_msg_string = ros_topic_msg_string + "{ " + "'name': '{}', 'scenario_file': '{}'".format(s_name, s_path) + "}"
+    ros_topic_msg_string = ros_topic_msg_string + "] }"
+    return ros_topic_msg_string
 
 package_name = "carla_visual_navigation"
+gui_scenarios_path = '/scenarios/param_fix_tests'
 rviz2_config_path = "config/visual_navigation_ros2.rviz"
-objects_config_path = os.path.join(get_package_share_directory(package_name), "config/objects.json")
+#objects_config_path = os.path.join(get_package_share_directory(package_name), "config/objects.json")
+objects_config_path = "/scenarios/param_fix_tests/objects.json"
 
 
 def generate_launch_description():
@@ -82,7 +95,7 @@ def generate_launch_description():
         ),
         launch.actions.ExecuteProcess(
             cmd=["ros2", "topic", "pub", "/carla/available_scenarios",
-                 "carla_ros_scenario_runner_types/CarlaScenarioList", get_scenarios(package_name)],
+                 "carla_ros_scenario_runner_types/CarlaScenarioList", get_scenarios_from_path(gui_scenarios_path)],
             name='topic_pub_vailable_scenarios',
         ),
         launch.actions.IncludeLaunchDescription(
