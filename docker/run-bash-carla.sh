@@ -8,6 +8,7 @@ if [[ "$CARLA_VERSION" == "0.9.12" ]]; then
 docker run \
  -u carla \
  -p 2000-2002:2000-2002 \
+ --net=host \
  -i \
  -t \
  --gpus all \

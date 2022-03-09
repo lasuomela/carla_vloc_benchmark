@@ -48,29 +48,55 @@ def generate_launch_description():
             name='control_time_step',
             default_value= '0.05'
         ),
+        # launch_ros.actions.Node(
+        #     package='carla_visual_navigation_agent',
+        #     executable='ad_agent',
+        #     name=['carla_ad_agent_', launch.substitutions.LaunchConfiguration('role_name')],
+        #     output='screen',
+        #     parameters=[
+        #         {
+        #             'role_name': launch.substitutions.LaunchConfiguration('role_name')
+        #         },
+        #         {
+        #             'avoid_risk': launch.substitutions.LaunchConfiguration('avoid_risk')
+        #         }
+        #     ]
+        # ),
+#        launch_ros.actions.Node(
+#            package='carla_visual_navigation_agent',
+#            executable='local_planner',
+#            name=['local_planner_', launch.substitutions.LaunchConfiguration('role_name')],
+#            output='screen',
+#            parameters=[
+#    		{
+#			'visual_pose_topic': launch.substitutions.LaunchConfiguration('visual_pose_topic')
+#    		},
+#                {
+#                    'use_sim_time': True
+#                },
+#                {
+#                    'role_name': launch.substitutions.LaunchConfiguration('role_name')
+#                },
+#                {
+#                    'Kp_longitudinal': launch.substitutions.LaunchConfiguration('Kp_longitudinal')
+#                },
+#                {
+#                    'Ki_longitudinal': launch.substitutions.LaunchConfiguration('Ki_longitudinal')
+#                },
+#                {
+#                    'Kd_longitudinal': launch.substitutions.LaunchConfiguration('Kd_longitudinal')
+#                },
+#                {
+#                    'control_time_step': launch.substitutions.LaunchConfiguration('control_time_step')
+#                }
+#            ]
+#        ),
         launch_ros.actions.Node(
             package='carla_visual_navigation_agent',
-            executable='ad_agent',
-            name=['carla_ad_agent_', launch.substitutions.LaunchConfiguration('role_name')],
-            output='screen',
-            parameters=[
-                {
-                    'role_name': launch.substitutions.LaunchConfiguration('role_name')
-                },
-                {
-                    'avoid_risk': launch.substitutions.LaunchConfiguration('avoid_risk')
-                }
-            ]
-        ),
-        launch_ros.actions.Node(
-            package='carla_visual_navigation_agent',
-            executable='local_planner',
+            executable='local_planner_pid',
             name=['local_planner_', launch.substitutions.LaunchConfiguration('role_name')],
             output='screen',
             parameters=[
-    		{
-    			'visual_pose_topic': launch.substitutions.LaunchConfiguration('visual_pose_topic')
-    		},
                 {
                     'use_sim_time': True
                 },
@@ -90,7 +116,14 @@ def generate_launch_description():
                     'control_time_step': launch.substitutions.LaunchConfiguration('control_time_step')
                 }
             ]
-        )
+        ),
+        launch_ros.actions.Node(
+	    package='carla_visual_navigation_agent',
+	    executable='odometry_noise_simulator',
+	    name='odometry_noise_simulator',
+	    output='screen',
+	    parameters=[{'use_sim_time': True}],
+	   ),
     ])
     return ld
 

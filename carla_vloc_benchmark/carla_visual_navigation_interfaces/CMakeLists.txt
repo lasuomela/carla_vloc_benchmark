@@ -26,8 +26,11 @@ find_package(std_msgs REQUIRED)
 
 rosidl_generate_interfaces(${PROJECT_NAME}
     "msg/ScenarioInfo.msg"
+    "msg/CrashInfo.msg"
     "srv/LogScenarioResults.srv"
-    "srv/StopLocalPlanner.srv"
+    "srv/ToggleLocalPlanner.srv"
+    "srv/ReinitializeFilter.srv"
+    "srv/ReinitializeVehicle.srv"
     DEPENDENCIES geometry_msgs std_msgs
     )
 

@@ -25,6 +25,8 @@ setup(
         'console_scripts': [
             'ad_agent = carla_visual_navigation_agent.ad_agent:main',
             'local_planner = carla_visual_navigation_agent.local_planner:main',
+	    'local_planner_pid = carla_visual_navigation_agent.local_planner_pid:main',
+	    'odometry_noise_simulator = carla_visual_navigation_agent.odometry_noise_node:main',
             'testing_waypoints = carla_visual_navigation_agent.testing_waypoints:main'
         ],
     },

@@ -1,0 +1,26 @@
+// generated from rosidl_adapter/resource/srv.idl.em
+// with input from robot_localization/srv/GetState.srv
+// generated code does not contain a copyright notice
+
+#include "builtin_interfaces/msg/Time.idl"
+
+module robot_localization {
+  module srv {
+    struct GetState_Request {
+      builtin_interfaces::msg::Time time_stamp;
+
+      string frame_id;
+    };
+    typedef double double__15[15];
+    typedef double double__225[225];
+    @verbatim (language="comment", text=
+      " State vector: x, y, z, roll, pitch, yaw, vx, vy, vz, vroll, vpitch, vyaw, ax, ay, az")
+    struct GetState_Response {
+      double__15 state;
+
+      @verbatim (language="comment", text=
+        " Covariance matrix in row-major order")
+      double__225 covariance;
+    };
+  };
+};

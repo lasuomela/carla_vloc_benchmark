@@ -64,7 +64,8 @@ class VisualLocalizerEvaluator(Node):
         self.place_recognition_publisher = self.create_publisher(Marker, place_recognition_publish_topic, 10)
         self.pnp_estimate_publisher = self.create_publisher(PoseArray, visual_pose_publish_topic, 10)
 
-        self.accuracy_categories_meters = [{'lim_t': 5, 'lim_r': 10, 'true_count':0, 'false_count':0},
+        self.accuracy_categories_meters = [{'lim_t': 20, 'lim_r': 180, 'true_count':0, 'false_count':0},
+                                            {'lim_t': 5, 'lim_r': 10, 'true_count':0, 'false_count':0},
                                            {'lim_t': 0.5, 'lim_r': 5, 'true_count':0, 'false_count':0},
                                            {'lim_t': 0.25, 'lim_r': 2, 'true_count':0, 'false_count':0}]
 
@@ -91,13 +92,15 @@ class VisualLocalizerEvaluator(Node):
         print('Route {}'.format( 'success' if (scenario_info_dict['scenario_success']) else 'failed' ))
         print('Localized within threshold:')
 
-        for accuracy_category in self.accuracy_categories_meters:
-            prct = accuracy_category['true_count']/(accuracy_category['true_count']+accuracy_category['false_count'])
-            category_string = '@ {}m, {}°: {:.3f}'.format(accuracy_category['lim_t'], accuracy_category['lim_r'], prct)
-            print(category_string)
+        # for accuracy_category in self.accuracy_categories_meters:
+        #     prct = accuracy_category['true_count']/(accuracy_category['true_count']+accuracy_category['false_count'])
+        #     category_string = '@ {}m, {}°: {:.3f}'.format(accuracy_category['lim_t'], accuracy_category['lim_r'], prct)
+        #     print(category_string)
 
-            category_name = 'accuracy_{}m_{}deg'.format(accuracy_category['lim_t'], accuracy_category['lim_r'])
-            scenario_info_dict[category_name] = prct 
+        #     category_name = 'accuracy_{}m_{}deg'.format(accuracy_category['lim_t'], accuracy_category['lim_r'])
+        #     scenario_info_dict[category_name] = prct 
+        scenario_info_dict['accuracy_categories_vloc'] = self.accuracy_categories_meters 
+        scenario_info_dict['pycolmap_failure_count'] = self.pycolmap_failure_count
 
         if scenario_info_dict['log_results']:
             result_list = []
@@ -120,10 +123,9 @@ class VisualLocalizerEvaluator(Node):
         if best_pose_idx is None:
             self.get_logger().warn('Pycolmap absolute_pose_estimation failed...')
             self.pycolmap_failure_count += 1
-        else:
-            self.pycolmap_failure_count = 0
 
-        if (self.pycolmap_failure_count > self.pycolmap_failure_tolerance) | (best_pose_idx is not None):
+
+        if (best_pose_idx is not None):
 
             vloc_walltime = time.time()
             timestamp = visual_pose_msg.header.stamp

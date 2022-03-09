@@ -1,6 +1,7 @@
 
 import hloc.extract_features
-from scenario_parameters import weather_experiment_parameters, test_experiment_parameters, test_experiment_parameters_carla_autopilot, gallery_capture_parameters
+#from scenario_parameters import weather_experiment_parameters, test_experiment_parameters, test_experiment_parameters_carla_autopilot, gallery_capture_parameters
+from scenario_parameters_new import test_experiment_parameters, illumination_experiment_parameters, illumination_experiment_parameters_autopilot
 
 from pathlib import Path 
 from copy import deepcopy
@@ -11,8 +12,15 @@ import os
 def main(args=None):
 
     scenario_save_dir = '/scenarios/template_generated_test'
+   # scenario_save_dir = '/scenarios/illumination_town01_navigation'
+    #scenario_save_dir = '/scenarios/illumination_town10HD_navigation'
+    # scenario_save_dir = '/scenarios/illumination_town10HD_autopilot'
+    #scenario_save_dir = '/scenarios/odometry_only_town10HD_navigation'
+   # scenario_save_dir = '/scenarios/illumination_town01_autopilot'
+    #scenario_save_dir = '/scenarios/odometry_only_town01_navigation'
 
-    template_path = '/opt/carla_vloc_benchmark/src/carla_visual_navigation/config/VisualNavigatorTemplate.xosc'
+
+    template_path = '/opt/carla_vloc_benchmark/src/carla_visual_navigation/config/VisualNavigatorTemplate_new.xosc'
     #template_path = '/opt/carla_vloc_benchmark/src/carla_visual_navigation/config/GalleryCaptureTemplate.xosc'
 
 
@@ -20,6 +28,8 @@ def main(args=None):
     logger_script_path = ["../../opt/carla_vloc_benchmark/src/carla_visual_navigation/utils/run-scenario-log.sh"]          
     catalog_path = ["../../opt/carla_vloc_benchmark/src/carla_visual_navigation/config/catalogs"]
 
+    #scenario_parameters = illumination_experiment_parameters(logger_script_path, catalog_path) 
+    # scenario_parameters = illumination_experiment_parameters_autopilot(logger_script_path, catalog_path) 
     scenario_parameters = test_experiment_parameters(logger_script_path, catalog_path)
 
     #scenario_parameters =  gallery_capture_parameters(catalog_path)

@@ -32,7 +32,13 @@ setup(
             'image_capture_node = carla_visual_navigation.image_capture_node:main',
             'scenario_batch_executor_node = carla_visual_navigation.scenario_batch_executor_node:main',
             'place_recognition_evaluator_node = carla_visual_navigation.place_recognition_evaluator_node:main',
-            'visual_localizer_evaluator_node = carla_visual_navigation.visual_localizer_evaluator_node:main'
+            'visual_localizer_evaluator_node = carla_visual_navigation.visual_localizer_evaluator_node:main',
+            'vehicle_reinit_node = carla_visual_navigation.vehicle_reinit_node:main',
+            'crash_monitor_node = carla_visual_navigation.crash_monitor_node:main',
+            'filtered_visual_localizer_evaluator_node = carla_visual_navigation.filtered_visual_localizer_evaluator_node:main',
+            'travelled_distance_sensor = carla_visual_navigation.travelled_distance_sensor:main',
+            'path_tracking_sensor = carla_visual_navigation.path_tracking_sensor:main',
+            'crash_marker_publisher = carla_visual_navigation.crash_marker_pub_node:main'
         ],
     },
 )

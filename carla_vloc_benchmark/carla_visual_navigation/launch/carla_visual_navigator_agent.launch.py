@@ -113,7 +113,7 @@ def generate_launch_description():
 	),
 	launch_ros.actions.Node(
             package=package_name,
-            executable='visual_localizer_evaluator_node',
+            executable='filtered_visual_localizer_evaluator_node',
             output='screen',
             emulate_tty=True,
             parameters=[
@@ -124,9 +124,50 @@ def generate_launch_description():
                     'true_pose_publish_topic': launch.substitutions.LaunchConfiguration('true_pose_publish_topic')
                 },
                 {
-                    'visual_pose_topic': launch.substitutions.LaunchConfiguration('pose_publish_topic')
+                    'visual_pose_topic': '/carla/ego_vehicle/best_vloc_estimate'
                 }
-            ])
+            ]),
+    	launch_ros.actions.Node(
+            package=package_name,
+            executable='travelled_distance_sensor',
+            output='screen',
+            emulate_tty=True,
+            parameters=[
+                {
+                    'use_sim_time': True
+                }
+            ]),
+        launch_ros.actions.Node(
+            package=package_name,
+            executable='path_tracking_sensor',
+            output='screen',
+            emulate_tty=True,
+            parameters=[
+                {
+                    'use_sim_time': True
+                }
+            ]),
+        launch_ros.actions.Node(
+            package='robot_localization',
+            executable='ekf_node',
+            name='ekf_filter_node',
+            output='screen',
+            parameters=[{'use_sim_time': True}, '/opt/carla_vloc_benchmark/src/carla_visual_navigation_agent/config/ekf.yaml'],
+           ),
+        launch_ros.actions.Node(
+            package='carla_visual_navigation',
+            executable='vehicle_reinit_node',
+            name='vehicle_reinit_node',
+            output='screen',
+            parameters=[{'use_sim_time': True}],
+        ),
+        launch_ros.actions.Node(
+            package='carla_visual_navigation',
+            executable='crash_monitor_node',
+            name='crash_monitor_node',
+            output='screen',
+            parameters=[{'use_sim_time': True}],
+        ),
     ])
     return ld
 

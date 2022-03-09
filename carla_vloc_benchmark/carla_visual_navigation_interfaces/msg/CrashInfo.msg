@@ -1,0 +1,2 @@
+geometry_msgs/PointStamped crash_location
+std_msgs/Int32 closest_waypoint_idx

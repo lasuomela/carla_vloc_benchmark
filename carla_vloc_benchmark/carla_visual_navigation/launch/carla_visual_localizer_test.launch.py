@@ -82,7 +82,7 @@ def generate_launch_description():
         launch.actions.IncludeLaunchDescription(
     		launch.launch_description_sources.PythonLaunchDescriptionSource(
         	os.path.join(get_package_share_directory(
-   	 	'carla_ad_agent'), 'carla_ad_agent.launch.py')
+   	 	'carla_visual_navigation_agent'), 'carla_autopilot_agent.launch.py')
 	    ),
 	    launch_arguments={
 		'avoid_risk': launch.substitutions.LaunchConfiguration('avoid_risk'),

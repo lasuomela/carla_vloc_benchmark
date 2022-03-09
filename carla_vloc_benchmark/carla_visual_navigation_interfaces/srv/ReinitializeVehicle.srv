@@ -1,0 +1,3 @@
+bool reinitialize_request
+---
+geometry_msgs/Pose reinitialize_result

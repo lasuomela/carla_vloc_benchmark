@@ -6,7 +6,7 @@ from ament_index_python.packages import get_package_share_directory
 
 
 package_name = "carla_visual_navigation"
-objects_config_path = os.path.join(get_package_share_directory(package_name), "config/objects.json")
+objects_config_path = os.path.join(get_package_share_directory(package_name), "config/objects_noview.json")
 
 
 def generate_launch_description():
@@ -47,24 +47,6 @@ def generate_launch_description():
             name='objects_config',
             default_value=objects_config_path
         ),
-        launch_ros.actions.Node(
-            package='carla_twist_to_control',
-            executable='carla_twist_to_control',
-            name='carla_twist_to_control',
-            remappings=[
-                (
-                    ["/carla/",
-                        launch.substitutions.LaunchConfiguration('role_name'), "/vehicle_control_cmd"],
-                    ["/carla/",
-                        launch.substitutions.LaunchConfiguration('role_name'), "/vehicle_control_cmd_manual"]
-                )
-            ],
-            parameters=[
-                {
-                    'role_name': launch.substitutions.LaunchConfiguration('role_name')
-                }
-            ]
-        ),
         launch.actions.IncludeLaunchDescription(
             launch.launch_description_sources.PythonLaunchDescriptionSource(
                 os.path.join(get_package_share_directory(
@@ -87,18 +69,6 @@ def generate_launch_description():
             ),
             launch_arguments={
                 'objects_definition_file': launch.substitutions.LaunchConfiguration('objects_config'),
-                'role_name': launch.substitutions.LaunchConfiguration('role_name')
-            }.items()
-        ),
-        launch.actions.IncludeLaunchDescription(
-            launch.launch_description_sources.PythonLaunchDescriptionSource(
-                os.path.join(get_package_share_directory(
-                    'carla_waypoint_publisher'), 'carla_waypoint_publisher.launch.py')
-            ),
-            launch_arguments={
-                'host': launch.substitutions.LaunchConfiguration('host'),
-                'port': launch.substitutions.LaunchConfiguration('port'),
-                'timeout': launch.substitutions.LaunchConfiguration('timeout'),
                 'role_name': launch.substitutions.LaunchConfiguration('role_name')
             }.items()
         ),

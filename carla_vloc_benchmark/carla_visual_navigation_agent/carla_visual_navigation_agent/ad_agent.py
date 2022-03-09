@@ -97,6 +97,7 @@ class CarlaAdAgent(Agent):
 
     def target_speed_cb(self, target_speed_msg):
         with self.data_lock:
+            self.loginfo("AD_AGENT: GOT TARGET SPEED")
             self._target_speed = target_speed_msg.data * 3.6 # target speed from scenario is in m/s
 
     def objects_cb(self, objects_msg):
@@ -132,6 +133,7 @@ class CarlaAdAgent(Agent):
         """
         Executes one step of navigation.
         """
+        self.loginfo("AD_AGENT: GOING TO STEP")
 
         # is there an obstacle in front of us?
         hazard_detected = False
