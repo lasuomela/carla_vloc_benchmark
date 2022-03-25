@@ -10,9 +10,8 @@ import json
 
 from std_msgs.msg import ColorRGBA, Header
 from nav_msgs.msg import Odometry
-from geometry_msgs.msg import Pose, Vector3, Point
+from geometry_msgs.msg import Vector3, Point
 from visualization_msgs.msg import Marker
-from carla_visual_navigation_interfaces.msg import ScenarioInfo
 from carla_visual_navigation_interfaces.srv import LogScenarioResults
 from visual_localization_interfaces.msg import KBestPRMatches
 

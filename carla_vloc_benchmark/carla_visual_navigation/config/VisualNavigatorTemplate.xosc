@@ -179,27 +179,18 @@
               </StartTrigger>
             </Event>
 
-            <Event name="failure_log_event" priority="overwrite">
-              <Action name="failure_log_command">
-                <GlobalAction>
-                  <ParameterAction parameterRef="scenario_success">
-                      <SetAction value="false" />
-                  </ParameterAction>
-                </GlobalAction>
+            <Event name="send_local_planner_stop_event" priority="overwrite">
+              <Action name="local_planner_stop_command">
+                <UserDefinedAction>
+                  <CustomCommandAction type="bash $planner_stop_script_path"/>
+                </UserDefinedAction>
               </Action>
               <StartTrigger>
                 <ConditionGroup>
-                  <Condition name="failure_log_startCondition" delay="0" conditionEdge="rising">
-                    <ByEntityCondition>
-                      <TriggeringEntities triggeringEntitiesRule="any">
-                        <EntityRef entityRef="ego_vehicle"/>
-                      </TriggeringEntities>
-                      <EntityCondition>
-                        <CollisionCondition>
-                          <ByType type="miscellaneous"/>
-                        </CollisionCondition>
-                      </EntityCondition>
-                    </ByEntityCondition>
+                  <Condition name="local_planner_success_stopcondition" delay="0" conditionEdge="rising">
+                    <ByValueCondition>
+                      <StoryboardElementStateCondition storyboardElementType="event" storyboardElementRef="success_log_event" state="completeState"/>
+                    </ByValueCondition>
                   </Condition>
                 </ConditionGroup>
               </StartTrigger>
@@ -242,31 +233,6 @@
                 </ConditionGroup>
               </StartTrigger>
             </Event>
-
-            <Event name="send_local_planner_stop_event" priority="overwrite">
-              <Action name="local_planner_stop_command">
-                <UserDefinedAction>
-                  <CustomCommandAction type="bash $planner_stop_script_path"/>
-                </UserDefinedAction>
-              </Action>
-              <StartTrigger>
-                <ConditionGroup>
-                  <Condition name="local_planner_failure_stopcondition" delay="0" conditionEdge="rising">
-                    <ByValueCondition>
-                      <StoryboardElementStateCondition storyboardElementType="event" storyboardElementRef="failure_log_event" state="completeState"/>
-                    </ByValueCondition>
-                  </Condition>
-                </ConditionGroup>
-                <ConditionGroup>
-                  <Condition name="local_planner_success_stopcondition" delay="0" conditionEdge="rising">
-                    <ByValueCondition>
-                      <StoryboardElementStateCondition storyboardElementType="event" storyboardElementRef="success_log_event" state="completeState"/>
-                    </ByValueCondition>
-                  </Condition>
-                </ConditionGroup>
-              </StartTrigger>
-            </Event>
-
           </Maneuver>
 
         </ManeuverGroup>

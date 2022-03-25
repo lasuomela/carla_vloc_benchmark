@@ -1,12 +1,8 @@
 
-from decimal import DivisionByZero
-from urllib.parse import parse_qs
-from xml.dom.expatbuilder import parseString
 import json
 from pathlib import Path
 import numpy as np
 import math
-import pprint
 from copy import deepcopy
 import os
 
@@ -15,10 +11,9 @@ import seaborn
 
 
 
-
-
 def main():
 
+    # Town01
     log_file_path = '/results/odometry_only_town01.json'
     town01_odometry_aggregate = aggregate_results(log_file_path)
     with open(log_file_path.replace('.json', '_grouped_by_scenario.json'), 'w') as f:
@@ -38,7 +33,7 @@ def main():
 
     log_file_path = '/results/town01_illumination_run_autopilot.json'
     town01_illumination_aggregate_autopilot, town01_illumination_by_method_autopilot = process_log_file(log_file_path,
-                                                                                    autopilot = True,
+                                                                                    autopilot = False,
                                                                                     plot_kvalues=False,
                                                                                     odometry_failure_rate=0,
                                                                                     create_latex=True,
@@ -48,16 +43,15 @@ def main():
     plot_savedir = '/results/plots_town01'
     create_failurerate_recall_plots(town01_illumination_by_method_autopilot, town01_illumination_by_method, town01_odometry_failure_rate, town01_odometry_fragmentation, plot_savedir, 'Town01', exclude_legend=True)
 
-    #plot_crash_locations(town01_illumination_aggregate)
 
     ## Town10
 
     log_file_path = '/results/odometry_only_town10HD.json'
-    town01_odometry_aggregate = aggregate_results(log_file_path)
+    town10_odometry_aggregate = aggregate_results(log_file_path)
     with open(log_file_path.replace('.json', '_grouped_by_scenario.json'), 'w') as f:
-        json.dump( town01_odometry_aggregate, f,indent=4)
-    town10_odometry_failure_rate = town01_odometry_aggregate["combination_000.xosc"]["scenario_results"]["crashes_per_km"] 
-    town10_odometry_fragmentation = town01_odometry_aggregate["combination_000.xosc"]["scenario_results"]["crash_fragmentation"] 
+        json.dump( town10_odometry_aggregate, f,indent=4)
+    town10_odometry_failure_rate = town10_odometry_aggregate["combination_000.xosc"]["scenario_results"]["crashes_per_km"] 
+    town10_odometry_fragmentation = town10_odometry_aggregate["combination_000.xosc"]["scenario_results"]["crash_fragmentation"] 
 
     log_file_path = '/results/town10HD_illumination_run_navigation.json'
     town10_illumination_aggregate, town10_illumination_by_method = process_log_file(log_file_path,
@@ -70,7 +64,7 @@ def main():
 
     log_file_path = '/results/town10HD_illumination_run_autopilot.json'
     town10_illumination_aggregate_autopilot, town10_illumination_by_method_autopilot = process_log_file(log_file_path,
-                                                                                    autopilot = True,
+                                                                                    autopilot = False,
                                                                                     plot_kvalues=False,
                                                                                     odometry_failure_rate=0,
                                                                                     create_latex=True,
@@ -82,7 +76,7 @@ def main():
     create_failurerate_recall_plots(town10_illumination_by_method_autopilot, town10_illumination_by_method, town10_odometry_failure_rate, town10_odometry_fragmentation, plot_savedir,'Town10', exclude_ylabel)
 
 
-    #create_computation_delay_plots(town10_illumination_by_method)
+    create_computation_delay_plots(town10_illumination_by_method_autopilot)
 
 def plot_crash_locations(scenario_runs):
 
@@ -92,8 +86,8 @@ def plot_crash_locations(scenario_runs):
 
     for scenario_name, scenario in scenario_runs.items():
 
-        crash_locations_x =  [150]
-        crash_locations_y = [-133]
+        crash_locations_x =  []
+        crash_locations_y = []
 
 
         for crash_location in scenario['scenario_results']['crash_locations']:
@@ -146,9 +140,6 @@ def process_log_file(log_file_path, autopilot, plot_kvalues, odometry_failure_ra
     with open(log_file_path.replace('.json', '_grouped_by_method.json'), 'w') as f:
         json.dump( scenarios_grouped_by_method_save, f,indent=4)
 
-    # if plot_kvalues:
-    #     create_kvalue_plots(scenario_results_by_method, odometry_failure_rate, log_file_path)
-
     if create_latex:
         create_latex_string(scenarios_grouped_by_method_save, log_file_path,  latex_accuracies, latex_failurerates)
 
@@ -156,7 +147,7 @@ def process_log_file(log_file_path, autopilot, plot_kvalues, odometry_failure_ra
 
 def create_computation_delay_plots(recallrates_by_method):
 
-    savepath = '/results/plots_town10/delay_plot.png'
+    savepath = '/results/plots_town10/delay_plot_sp.png'
     colors = []
     markers = []
     markersize =50
@@ -344,7 +335,6 @@ def create_failurerate_recall_plots(recallrates_by_method, failurerates_by_metho
 
     ## failure vs kvalue
 
-
     plt.figure(figsize=[7,5], layout='tight')
 
     fig = seaborn.scatterplot(x=kvaluelist, y=failurerates, style=markers, hue=colors, s=80, palette='colorblind', legend=not(exclude_legend))
@@ -370,89 +360,7 @@ def create_failurerate_recall_plots(recallrates_by_method, failurerates_by_metho
     plt.savefig(savedir+'/failurerate_kvalue_correlation_{}.png'.format(town))
     plt.close()
 
-
-
-
-        
-        # seaborn.set_style("whitegrid")
-        # fig = seaborn.scatterplot(x=failurerates, y=recall, style=markers, hue=colors, s=markersize, palette='colorblind', legend=not(exclude_legend))
-        # ax = plt.gca()
-        # line = fig.axvline(odometry_failurerate, label='Wheel odometry')
-        # if not exclude_legend:
-        #     fig.legend(ncol=2, fontsize=12)
-        # plt.ylim([-5,105])
-        # plt.xlim([-1,35])
-        # plt.title(town,fontsize=17)
-        # if not exclude_ylabel:
-        #     plt.ylabel('Recall @'+recallstring, fontsize=17)
-        # else:
-        #     ax.yaxis.set_ticklabels([])
-        # plt.xlabel('Failures/1000m', fontsize=17)
-        # plt.xticks(fontsize=15)
-        # plt.yticks(fontsize=15)
-
-
     return
-
-
-def create_kvalue_plots(scenarios_grouped_by_method_sorted, odometry_failure_rate, log_file_path):
-
-    method_results_by_metric = {}
-    for method_id, method_results in scenarios_grouped_by_method_sorted.items():
-        metrics = list(method_results.items())[0][1].keys()
-
-        results_by_metric = {}
-        for metric in metrics:
-            metric_results = {}
-            for kvalue, results in method_results.items():
-                metric_results[kvalue] = results[metric]
-            results_by_metric[metric] = metric_results
-        method_results_by_metric[method_id] = results_by_metric
-
-
-    # for method, results in method_results_by_metric.items():
-    #     plt.figure(figsize=[18,10])
-    #     for metric, metric_results in results.items():
-    #         seaborn.lineplot(data=metric_results)
-    #         ax = seaborn.scatterplot(data=metric_results)
-
-    #     plt.title(method.replace('dir', 'Ap-GeM'))
-    #     plt.ylabel('%')
-    #     plt.xlabel('Illumination decrease multiplier, (gallery illumination)*(1/2)^k')
-    #     plt.legend(list(results.keys()))
-
-    #     #plt.savefig('/results/plots_town10/' + method +'.png')
-
-    plt.figure(figsize=[18,10])
-    for method, results in method_results_by_metric.items():
-        metric_results = results['crashes_per_km']
-        lines = seaborn.lineplot(data=metric_results)
-
-    if odometry_failure_rate != 0:
-        lines.axhline(odometry_failure_rate)
-
-    methods = list(method_results_by_metric.keys())
-    methods_names = []
-    for method in methods:
-        methods_names.append( method.replace('dir', 'Ap-GeM'))
-    methods_names.append('Wheel odometry')
-    plt.legend(methods_names)
-
-    for method, results in method_results_by_metric.items():
-        metric_results = results['crashes_per_km']
-        #seaborn.lineplot(data=metric_results)
-        if 'dir' in method:
-            marker 
-        else:
-            marker = ''
-        ax = seaborn.scatterplot(data=metric_results)
-
-    plt.title('Failures/1000m')
-    plt.ylabel('n')
-    plt.xlabel('Illumination decrease multiplier, (gallery illumination)*(1/2)^k')
-
-    plt.savefig(log_file_path.replace('.json', '_failure_rates.png'))
-    plt.close()
 
 def create_latex_string(scenarios_grouped_by_method_sorted_save, log_file_path, accuracies, failures):
 
@@ -462,7 +370,7 @@ def create_latex_string(scenarios_grouped_by_method_sorted_save, log_file_path, 
             latex_string += method + ' '
             for kvalue, v_ in v.items():
                 if kvalue < 13:
-                    for cat in ["accuracy_0.25m_2deg", "accuracy_0.5m_5deg", "accuracy_5m_10deg"]: #, "accuracy_20m_180deg"]:
+                    for cat in ["accuracy_0.25m_2deg", "accuracy_0.5m_5deg", "accuracy_5m_10deg"]:
 
                         most_accurate = True
                         for method_, accuracies in scenarios_grouped_by_method_sorted_save.items():
@@ -475,7 +383,7 @@ def create_latex_string(scenarios_grouped_by_method_sorted_save, log_file_path, 
                         else:
                             latex_string +=  '{:.1f}'.format(v_['accuracies_vloc'][cat]*100)
 
-                        if cat != "accuracy_20m_180deg": #"accuracy_5m_10deg":
+                        if cat != "accuracy_5m_10deg":
                             latex_string += ' / '
                     latex_string += ' & '
             latex_string += '\n'
@@ -489,7 +397,7 @@ def create_latex_string(scenarios_grouped_by_method_sorted_save, log_file_path, 
                 if kvalue < 13:
                     if kvalue % 2 == 0:
                         kstring += str(kvalue) + ', '
-                        for cat in ["accuracy_0.25m_2deg", "accuracy_0.5m_5deg", "accuracy_5m_10deg"]: # "accuracy_20m_180deg"]:
+                        for cat in ["accuracy_0.25m_2deg", "accuracy_0.5m_5deg", "accuracy_5m_10deg"]:
 
                             most_accurate = True
                             for method_, accuracies in scenarios_grouped_by_method_sorted_save.items():
@@ -600,13 +508,12 @@ def aggregate_results(log_file_path):
         segment_end_drifts_angular = []
 
         crash_locations = []
-        
-        #plot_crash_locations(scenario_runs)
-        
+                
         vloc_computation_times = []
         for run in scenario_runs:
             if 'avg_tracking_error' in run:
-                tracking_errors.append(run['avg_tracking_error'])
+                if run['avg_tracking_error'] is not None:
+                    tracking_errors.append(run['avg_tracking_error'])
 
             if 'avg_vloc_computation_time' in run:
                 vloc_computation_times.append( run['avg_vloc_computation_time'])
@@ -619,18 +526,21 @@ def aggregate_results(log_file_path):
                     crash_locations.append(crash_location)
 
                 # Filter segments caused by 'double reinitialization' if present
-                if segment['segment_length'] > 0.3:
-                    segment_lengths.append(segment['segment_length'])
+                if segment['segment_length'] is not None:
+                    if segment['segment_length'] > 0.3:
+                        segment_lengths.append(segment['segment_length'])
 
-                    segment_end_drifts_distance.append(segment['pose_final_error']['metric'])
-                    segment_end_drifts_angular.append(segment['pose_final_error']['angular'])
+                        segment_end_drifts_distance.append(segment['pose_final_error']['metric'])
+                        segment_end_drifts_angular.append(segment['pose_final_error']['angular'])
 
             for accuracy_category in accuracies_vloc.keys():
                 if accuracy_category in run['accuracies_vloc']:
                     accuracies_vloc[accuracy_category].append( run['accuracies_vloc'][accuracy_category] )
                 else:
                     accuracies_vloc[accuracy_category].append( 0.0 )
-                accuracies_filtered[accuracy_category].append( run['accuracies_filtered'][accuracy_category] )
+                
+                if accuracy_category in run['accuracies_filtered']:
+                    accuracies_filtered[accuracy_category].append( run['accuracies_filtered'][accuracy_category] )
 
 
 
@@ -673,13 +583,13 @@ def aggregate_results(log_file_path):
         scenario_aggregate_results[scenario_name]['scenario_results']['avg_vloc_computation_time'] = np.mean(np.array(vloc_computation_times))
 
 
-    #plot_crash_locations(scenario_runs)
-
-
     return scenario_aggregate_results
 
 
 def aggregate_results_autopilot_accuracy_test(log_file_path):
+    '''
+    Legacy to reproduce paper experiments
+    '''
 
     with open(log_file_path, 'r+') as f:
         logs = json.load(f)
@@ -728,11 +638,13 @@ def aggregate_results_autopilot_accuracy_test(log_file_path):
         scenario_aggregate_results[scenario_name]['scenario_params']['number_of_runs'] = len(scenario_runs) 
 
         scenario_aggregate_results[scenario_name]['scenario_results']['accuracies_vloc'] = accuracies_vloc
-        #scenario_aggregate_results[scenario_name]['scenario_results']['vloc_computation_times'] = vloc_computation_times
 
     return scenario_aggregate_results
 
 def fragmentation_multirun(scenario_runs):
+    '''
+    Mean fragmentation over multiple repetitions of different scenarios
+    '''
 
     avg_fragmentation = 0
     frag_count = 0
@@ -753,17 +665,14 @@ def fragmentation_multirun(scenario_runs):
     avg_failures = num_failures/len(scenario_runs)
     avg_failures_per_meter = avg_failures/(run['path_waypoint_count']*2)*1000
 
-    # if avg_fragmentation is not None:
-    #     print('Failures/km: {:.1f}, avg_fragmentation: {:.3f}'.format(avg_failures_per_meter, avg_fragmentation))        
-    # else:
-    #     print('Failures/km: {:.1f}, avg_fragmentation: {}'.format(avg_failures_per_meter, avg_fragmentation))
-
     return avg_failures_per_meter, avg_fragmentation
         
 
 def fragmentation(run_segments, total_wp_number):
+    '''
+    Fragmentation for a single scenario run
+    '''
 
-    num_failures = len(run_segments) -1
     wp_idxs = []
     for segment in run_segments:
         wp_idx = segment['segment_reached_waypoint_idx']
@@ -799,8 +708,4 @@ def fragmentation(run_segments, total_wp_number):
 
 
 if __name__ == '__main__':
-    #log_file_path = '/results/test_run.json'
-    #log_file_path = '/results/town01_streetlight_run.json'
-    #log_file_path = '/results/odometry_only_town01.json'
-    #log_file_path = '/results/town01_illumination_run_navigation.json'
     main()

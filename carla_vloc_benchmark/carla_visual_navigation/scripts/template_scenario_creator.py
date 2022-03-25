@@ -1,53 +1,38 @@
 
 import hloc.extract_features
-#from scenario_parameters import weather_experiment_parameters, test_experiment_parameters, test_experiment_parameters_carla_autopilot, gallery_capture_parameters
-from scenario_parameters_new import test_experiment_parameters, illumination_experiment_parameters, illumination_experiment_parameters_autopilot
+from scenario_parameters import test_experiment_parameters, illumination_experiment_parameters, illumination_experiment_parameters_autopilot
 
 from pathlib import Path 
-from copy import deepcopy
 import itertools
 import json
 import os
 
 def main(args=None):
 
-    scenario_save_dir = '/scenarios/template_generated_test'
-   # scenario_save_dir = '/scenarios/illumination_town01_navigation'
-    #scenario_save_dir = '/scenarios/illumination_town10HD_navigation'
-    # scenario_save_dir = '/scenarios/illumination_town10HD_autopilot'
-    #scenario_save_dir = '/scenarios/odometry_only_town10HD_navigation'
-   # scenario_save_dir = '/scenarios/illumination_town01_autopilot'
-    #scenario_save_dir = '/scenarios/odometry_only_town01_navigation'
-
-
-    template_path = '/opt/carla_vloc_benchmark/src/carla_visual_navigation/config/VisualNavigatorTemplate_new.xosc'
-    #template_path = '/opt/carla_vloc_benchmark/src/carla_visual_navigation/config/GalleryCaptureTemplate.xosc'
-
-
     # Paths relative to location of the generated scenario file
     logger_script_path = ["../../opt/carla_vloc_benchmark/src/carla_visual_navigation/utils/run-scenario-log.sh"]          
     catalog_path = ["../../opt/carla_vloc_benchmark/src/carla_visual_navigation/config/catalogs"]
 
     #scenario_parameters = illumination_experiment_parameters(logger_script_path, catalog_path) 
-    # scenario_parameters = illumination_experiment_parameters_autopilot(logger_script_path, catalog_path) 
+    #scenario_parameters = illumination_experiment_parameters_autopilot(logger_script_path, catalog_path) 
+    #scenario_parameters =  gallery_capture_parameters(catalog_path)
     scenario_parameters = test_experiment_parameters(logger_script_path, catalog_path)
 
-    #scenario_parameters =  gallery_capture_parameters(catalog_path)
 
     clear_existing = True 
-    create_scenarios_from_template(template_path, scenario_save_dir, scenario_parameters, clear_existing)
+    create_scenarios_from_template( scenario_parameters, clear_existing)
 
-def create_scenarios_from_template(template_path, scenario_save_dir, scenario_parameters, clear_existing):
+def create_scenarios_from_template( scenario_parameters, clear_existing):
 
     if clear_existing:
-        for f in Path(scenario_save_dir).glob('*'):
+        for f in Path(scenario_parameters['scenario_save_dir'][0]).glob('*'):
             f.unlink()
 
-    if not Path(scenario_save_dir).is_dir():
-        os.mkdir(scenario_save_dir)
+    if not Path(scenario_parameters['scenario_save_dir'][0]).is_dir():
+        os.mkdir(scenario_parameters['scenario_save_dir'][0])
 
     param_combinations = _get_parameter_permutations(scenario_parameters)
-    template_file = Path(template_path).read_text()
+    template_file = Path(scenario_parameters['template_path'][0]).read_text()
 
     for i, combination in enumerate(param_combinations):
         filled_template = template_file
@@ -55,14 +40,14 @@ def create_scenarios_from_template(template_path, scenario_save_dir, scenario_pa
             filled_template = filled_template.replace(param_name, str(param_value))
 
         scenario_filename = "combination_{:03d}.xosc".format( i )
-        scenario_save_path = Path(scenario_save_dir) / scenario_filename
+        scenario_save_path = Path(scenario_parameters['scenario_save_dir'][0]) / scenario_filename
 
         filled_template = filled_template.replace("scenario_filepath_template", str(scenario_save_path))
         scenario_save_path.write_text(filled_template)
 
     print('Created {} scenario files!'.format(i+1))
 
-    parameter_file_save_path = (Path(scenario_save_dir) / 'parameters.json')
+    parameter_file_save_path = (Path(scenario_parameters['scenario_save_dir'][0]) / 'parameters.json')
     with open(parameter_file_save_path, 'w') as f:
         json.dump(scenario_parameters, f, indent=2)
         

@@ -4,21 +4,13 @@ import launch_ros.actions
 
 def generate_launch_description():
     ld = launch.LaunchDescription([
-    	launch.actions.DeclareLaunchArgument(
-            name='visual_pose_topic',
-            default_value='/carla/ego_vehicle/visual_pose_estimate'
-        ),
-    	launch.actions.DeclareLaunchArgument(
-            name='speedometer_topic',
-            default_value='/carla/ego_vehicle/speedometer'
-        ),
         launch.actions.DeclareLaunchArgument(
             name='role_name',
             default_value='ego_vehicle'
         ),
         launch.actions.DeclareLaunchArgument(
-            name='avoid_risk',
-            default_value='True'
+            name='planner_odometry_topic',
+            default_value='/carla/ego_vehicle/odometry_vlocsynced'
         ),
         launch.actions.DeclareLaunchArgument(
             name='Kp_lateral',
@@ -48,49 +40,6 @@ def generate_launch_description():
             name='control_time_step',
             default_value= '0.05'
         ),
-        # launch_ros.actions.Node(
-        #     package='carla_visual_navigation_agent',
-        #     executable='ad_agent',
-        #     name=['carla_ad_agent_', launch.substitutions.LaunchConfiguration('role_name')],
-        #     output='screen',
-        #     parameters=[
-        #         {
-        #             'role_name': launch.substitutions.LaunchConfiguration('role_name')
-        #         },
-        #         {
-        #             'avoid_risk': launch.substitutions.LaunchConfiguration('avoid_risk')
-        #         }
-        #     ]
-        # ),
-#        launch_ros.actions.Node(
-#            package='carla_visual_navigation_agent',
-#            executable='local_planner',
-#            name=['local_planner_', launch.substitutions.LaunchConfiguration('role_name')],
-#            output='screen',
-#            parameters=[
-#    		{
-#			'visual_pose_topic': launch.substitutions.LaunchConfiguration('visual_pose_topic')
-#    		},
-#                {
-#                    'use_sim_time': True
-#                },
-#                {
-#                    'role_name': launch.substitutions.LaunchConfiguration('role_name')
-#                },
-#                {
-#                    'Kp_longitudinal': launch.substitutions.LaunchConfiguration('Kp_longitudinal')
-#                },
-#                {
-#                    'Ki_longitudinal': launch.substitutions.LaunchConfiguration('Ki_longitudinal')
-#                },
-#                {
-#                    'Kd_longitudinal': launch.substitutions.LaunchConfiguration('Kd_longitudinal')
-#                },
-#                {
-#                    'control_time_step': launch.substitutions.LaunchConfiguration('control_time_step')
-#                }
-#            ]
-#        ),
         launch_ros.actions.Node(
             package='carla_visual_navigation_agent',
             executable='local_planner_pid',
@@ -104,7 +53,7 @@ def generate_launch_description():
                     'role_name': launch.substitutions.LaunchConfiguration('role_name')
                 },
                 {
-                    'odometry_topic': '/carla/ego_vehicle/odometry_controlled'
+                    'odometry_topic': launch.substitutions.LaunchConfiguration('planner_odometry_topic')
                 },
                 {
                     'Kp_longitudinal': launch.substitutions.LaunchConfiguration('Kp_longitudinal')
@@ -122,10 +71,22 @@ def generate_launch_description():
         ),
         launch_ros.actions.Node(
 	    package='carla_visual_navigation_agent',
-	    executable='odometry_noise_simulator',
-	    name='odometry_noise_simulator',
+	    executable='localization_sensor_synchronizer',
+	    name='localization_sensor_synchronizer',
 	    output='screen',
-	    parameters=[{'use_sim_time': True}, {'add_noise': False}, {'reinit_filter': False}],
+	    parameters=[
+            {
+                'use_sim_time': True
+            },
+            {
+                'role_name': launch.substitutions.LaunchConfiguration('role_name')
+            },
+            {
+                'add_noise': False
+            },
+            {
+                'reinit_filter': False
+            }],
 	   ),
     ])
     return ld

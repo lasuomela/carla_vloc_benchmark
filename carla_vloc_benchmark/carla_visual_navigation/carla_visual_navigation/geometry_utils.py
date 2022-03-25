@@ -1,7 +1,6 @@
 import geometry_msgs
 import numpy as np
 import transforms3d as t3d
-from copy import deepcopy
 
 from rosidl_runtime_py.convert import message_to_ordereddict
 

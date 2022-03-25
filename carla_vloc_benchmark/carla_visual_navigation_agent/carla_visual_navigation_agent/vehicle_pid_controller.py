@@ -157,17 +157,6 @@ class PIDLateralController(object):  # pylint: disable=too-few-public-methods
         else:
             _dot = 0.0
 
-        if np.isnan(_dot):
-            print(current_pose.position)
-            print(waypoint.position)
-            print(yaw)
-            print('w_vec:')
-            print(w_vec)
-            print('v_vec:')
-            print(v_vec)
-            raise Exception('NAN VALU ENCOUNTRED')
-
-
         previous_error = self.error
         self.error = _dot
         # restrict integral term to avoid integral windup
@@ -175,19 +164,5 @@ class PIDLateralController(object):  # pylint: disable=too-few-public-methods
         self.error_derivative = self.error - previous_error
         output = self._K_P * self.error + self._K_I * self.error_integral + self._K_D * self.error_derivative
         out = np.clip(output, -1.0, 1.0)
-
-        if np.isnan(out):
-            print(current_pose.position)
-            print(waypoint.position)
-            print(yaw)
-            print('w_vec:')
-            print(w_vec)
-            print('v_vec:')
-            print(v_vec)
-            print('error_integral:')
-            print(self.error_integral)
-            print('error_derivative:')
-            print(self.derivative)
-            raise Exception('NAN VALU ENCOUNTRED in OUT')
 
         return out

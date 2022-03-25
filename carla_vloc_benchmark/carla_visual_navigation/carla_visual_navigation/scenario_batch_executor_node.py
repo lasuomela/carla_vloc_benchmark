@@ -1,7 +1,6 @@
 
 import rclpy
 from rclpy.node import Node
-from rclpy.executors import SingleThreadedExecutor
 
 from pathlib import Path
 import json
@@ -11,13 +10,17 @@ import time
 from carla_ros_scenario_runner_types.msg import CarlaScenario, CarlaScenarioRunnerStatus
 from carla_ros_scenario_runner_types.srv import ExecuteScenario
 
-from carla_visual_navigation_interfaces.srv import ToggleLocalPlanner, ReinitializeVehicle
+from carla_visual_navigation_interfaces.srv import ToggleLocalPlanner
 from rclpy.callback_groups import ReentrantCallbackGroup
 import carla
 import numpy as np
 import carla_common.transforms as trans
 
 class ScenarioBatchExecutor(Node):
+
+    '''
+    Execute scenarios specified in the files created with scripts/template_scenario_generator.py
+    '''
 
     def __init__(self):
         super().__init__('scenario_batch_executor')
@@ -26,35 +29,18 @@ class ScenarioBatchExecutor(Node):
         self.declare_parameter("scenario_dir")
         scenario_dir = self.get_parameter('scenario_dir').get_parameter_value().string_value
 
+        # How many repetitions of each scenario file should be executed
         self.declare_parameter("repetitions")
         repetitions = self.get_parameter('repetitions').get_parameter_value().integer_value
 
-        self.declare_parameter("scenario_timeout")
+        self.declare_parameter("scenario_timeout", 0.0)
         self.scenario_timeout = self.get_parameter('scenario_timeout').get_parameter_value().double_value
-
-        if self.scenario_timeout != 0.0:
-            self.client = carla.Client('localhost', 2000)
-            self.client.set_timeout(10.0)
-            self.world=self.client.get_world()
-            self.world.wait_for_tick()
-
-            self.ego_vehicle = None
-            actors = self.world.get_actors()
-            for actor in actors:
-                if 'role_name' in actor.attributes:
-                    if actor.attributes['role_name'] == 'ego_vehicle':
-                        self.ego_vehicle = actor
 
         self.subscription = self.create_subscription(
             CarlaScenarioRunnerStatus,
             "/scenario_runner/status",
             self.scenario_finished_callback,
             10)
-
-        self.toggle_planner_client = self.create_client(ToggleLocalPlanner, 'toggle_local_planner', callback_group=ReentrantCallbackGroup())
-        self.reposition_vehicle_client = self.create_client(ReinitializeVehicle, 'reposition_vehicle', callback_group=ReentrantCallbackGroup())
-        # while not self.toggle_planner_client.wait_for_service(timeout_sec=1.0):
-        #     self.get_logger().info("'Toggle planner' service not available, waiting again...")
 
         self.current_scenario = None
         self.last_execution_request_time = None 
@@ -75,25 +61,43 @@ class ScenarioBatchExecutor(Node):
         self.scenario_repetitions = repetitions
 
         self.scenario_client = self.create_client(ExecuteScenario, '/scenario_runner/execute_scenario')
+        while not self.scenario_client.wait_for_service(timeout_sec=1.0):
+            self.get_logger().info("'Execute scenario' service not available, waiting again...")
         self.scenario_futures = []
 
+
         self.keep_running = True
+
+        # If scenario execution timeout is specified
+        if self.scenario_timeout != 0.0:
+            self.client = carla.Client('localhost', 2000)
+            self.client.set_timeout(10.0)
+            self.world=self.client.get_world()
+            self.world.wait_for_tick()
+
+            self.ego_vehicle = None
+            actors = self.world.get_actors()
+            for actor in actors:
+                if 'role_name' in actor.attributes:
+                    if actor.attributes['role_name'] == 'ego_vehicle':
+                        self.ego_vehicle = actor
+            
+            self.toggle_planner_client = self.create_client(ToggleLocalPlanner, 'toggle_local_planner', callback_group=ReentrantCallbackGroup())
+            self.planner_future = None
+
         print('Finished init')
 
-        # Start scenario execution loop by simulating a "scenario finished" message
-        # Sleep for 2s to give service client time to initialize
-        time.sleep(2)
         self.scenario_finished_callback( CarlaScenarioRunnerStatus(status=0) )
 
-        self.planner_future = None
 
     def scenario_finished_callback(self, scenario_status_msg):
         '''
-        uint8 STOPPED = 0
-        uint8 STARTING = 1
-        uint8 RUNNING = 2
-        uint8 SHUTTINGDOWN = 3
-        uint8 ERROR = 4
+        scenario_status:
+            uint8 STOPPED = 0
+            uint8 STARTING = 1
+            uint8 RUNNING = 2
+            uint8 SHUTTINGDOWN = 3
+            uint8 ERROR = 4
         '''
         scenario_status = scenario_status_msg.status
         if scenario_status == 0:
@@ -109,12 +113,16 @@ class ScenarioBatchExecutor(Node):
                     print("Scenario execution finished, took {:.2f} minutes!".format( (time_now - self.last_execution_request_time).total_seconds() / 60.0 ))
                 self.last_execution_request_time = time_now
                 self.request_scenario_execution()
+
         elif scenario_status == 3:
             print('Scenario runner shutting down..')
-            self.keep_running = True
+            if self.scenario_timeout == 0.0:
+                self.keep_running = False
+
         elif scenario_status == 4:
             print('Scenario runner error..')
-            self.keep_running = True
+            if self.scenario_timeout == 0.0:
+                self.keep_running = False
 
     def request_scenario_execution(self):
 
@@ -165,15 +173,11 @@ class ScenarioBatchExecutor(Node):
                     incomplete_futures.append(f)
             self.scenario_futures = incomplete_futures
 
+
+            # Logic to restart scenario if scenario_timeout is specified
             if self.scenario_timeout != 0.0:
                 if self.last_execution_request_time is not None:
                     if ( (datetime.now() - self.last_execution_request_time).total_seconds() / 60.0 ) > self.scenario_timeout:
-
-                        print('Diff is')
-                        print( (datetime.now() - self.last_execution_request_time).total_seconds() / 60.0 )
-
-                        print('timeout is')
-                        print(self.scenario_timeout)
 
                         if self.planner_future is None:
                             print('Scenario exceeded maximum runtime, triggering again...')

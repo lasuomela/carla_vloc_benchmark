@@ -17,37 +17,44 @@ class PathTrackingSensor(Node):
     def __init__(self):
         super().__init__('path_tracking_sensor')
 
-        self.role_name = 'ego_vehicle'
+        self.declare_parameter("role_name", "ego_vehicle")
+        role_name = self.get_parameter('role_name').get_parameter_value().string_value
+
+        self.declare_parameter("visualize_closest_wp", False)
+        self.visualize = self.get_parameter('visualize_closest_wp').get_parameter_value().string_value
 
         self.odometry_subscription =  self.create_subscription(
             Odometry,
-            '/carla/ego_vehicle/odometry',
+            '/carla/{}/odometry'.format(role_name),
             self.odometry_cb,
             10)
 
-        self.route_waypoints = None
-        self.route_waypoint_locations_array = None
         self.path_subscriber =  self.create_subscription(
             Path,
-            "/carla/{}/waypoints".format(self.role_name),
+            "/carla/{}/waypoints".format(role_name),
             self.path_cb,
             qos_profile=rclpy.qos.QoSProfile(durability=rclpy.qos.DurabilityPolicy.TRANSIENT_LOCAL, depth=10))
 
         self.tracking_error_publisher = self.create_publisher(
             Float64,
-            '/carla/{}/path_tracking_error'.format(self.role_name),
+            '/carla/{}/path_tracking_error'.format(role_name),
             10)
 
         self.closest_wp_idx_publisher = self.create_publisher(
             Int32,
-            '/carla/{}/closest_wp'.format(self.role_name),
+            '/carla/{}/closest_wp'.format(role_name),
             10)
 
-        self.timer = self.create_timer(0.5, self.distance_to_path)
+        self.wp_publisher = self.create_publisher(Marker, '/carla/{}/closest_wps'.format(role_name), 10)
+
+        self.route_waypoints = None
+        self.route_waypoint_locations_array = None
         self.latest_odometry = None
+
+        self.timer = self.create_timer(0.5, self.distance_to_path)
+
         self.lock = threading.Lock()
 
-        self.wp_publisher = self.create_publisher(Marker, '/carla/ego_vehicle/closest_wps', 10)
 
     def path_cb(self, path_msg):
         with self.lock:
@@ -84,19 +91,21 @@ class PathTrackingSensor(Node):
                 if dist < 4.0:
                     self.closest_wp_idx_publisher.publish(Int32(data=int(idx_ksmallest[0])))
 
-                marker = Marker(header=self.latest_odometry.header, scale=Vector3(x=1.0,y=1.0,z=1.0), type=8, action=0, color=ColorRGBA(r=0.0, g=1.0, b=0.0, a=1.0))
-                marker.points.append(self.route_waypoints[idx_ksmallest[0]].position)
-                marker.colors.append( ColorRGBA(r=0.0, g=1.0, b=0.0, a=1.0))
-                marker.points.append(self.route_waypoints[idx_ksmallest[1]].position)
-                marker.colors.append( ColorRGBA(r=0.0, g=1.0, b=0.0, a=1.0))
+                if self.visualize:
 
-                marker.points.append(current_pose.pose.pose.position)
-                marker.colors.append( ColorRGBA(r=1.0, g=0.0, b=0.0, a=1.0))
+                    marker = Marker(header=self.latest_odometry.header, scale=Vector3(x=1.0,y=1.0,z=1.0), type=8, action=0, color=ColorRGBA(r=0.0, g=1.0, b=0.0, a=1.0))
+                    marker.points.append(self.route_waypoints[idx_ksmallest[0]].position)
+                    marker.colors.append( ColorRGBA(r=0.0, g=1.0, b=0.0, a=1.0))
+                    marker.points.append(self.route_waypoints[idx_ksmallest[1]].position)
+                    marker.colors.append( ColorRGBA(r=0.0, g=1.0, b=0.0, a=1.0))
 
-                marker.points.append(Point(x=projection[0], y=projection[1], z=projection[2]))
-                marker.colors.append( ColorRGBA(r=0.0, g=0.0, b=1.0, a=1.0))
+                    marker.points.append(current_pose.pose.pose.position)
+                    marker.colors.append( ColorRGBA(r=1.0, g=0.0, b=0.0, a=1.0))
 
-                self.wp_publisher.publish(marker)
+                    marker.points.append(Point(x=projection[0], y=projection[1], z=projection[2]))
+                    marker.colors.append( ColorRGBA(r=0.0, g=0.0, b=1.0, a=1.0))
+
+                    self.wp_publisher.publish(marker)
 
 
 def main(args=None):

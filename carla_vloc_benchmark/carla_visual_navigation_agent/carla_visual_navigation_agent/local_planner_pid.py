@@ -32,12 +32,10 @@ import numpy as np
 
 class LocalPlanner(CompatibleNode):
     """
-    LocalPlanner implements the basic behavior of following a trajectory of waypoints that is
-    generated on-the-fly. The low-level motion of the vehicle is computed by using two PID
+    LocalPlanner implements the basic behavior of following a trajectory of waypoints. 
+    The low-level motion of the vehicle is computed by using two PID
     controllers, one is used for the lateral control and the other for the longitudinal
     control (cruise speed).
-
-    When multiple paths are available (intersections) this local planner makes a random choice.
     """
 
     # minimum distance to target waypoint as a percentage (e.g. within 90% of
@@ -49,7 +47,6 @@ class LocalPlanner(CompatibleNode):
         super(LocalPlanner, self).__init__("local_planner")
 
         role_name = self.get_param("role_name", "ego_vehicle")
-        #odometry_topic_name = self.get_parameter('odometry_topic').get_parameter_value("/odometry/filtered").string_value
         odometry_topic_name = self.get_param('odometry_topic', "/odometry/filtered")
 
         self.control_time_step = self.get_param("control_time_step", 0.05)
@@ -82,12 +79,6 @@ class LocalPlanner(CompatibleNode):
 
         self.stop = False
 
-        # subscribers
-        # self._odometry_subscriber = self.new_subscription(
-        #     Odometry,
-        #     "/carla/{}/odometry".format(role_name),
-        #     self.odometry_cb,
-        #     qos_profile=10)
         self._odometry_subscriber = self.new_subscription(
             Odometry,
             odometry_topic_name,
@@ -100,7 +91,7 @@ class LocalPlanner(CompatibleNode):
             self.path_cb,
             QoSProfile(depth=10, durability=DurabilityPolicy.TRANSIENT_LOCAL))
 
-        # Originally subscribes to /speed_command which comes from ad_agent.
+        # Originally (in Carla Python API) subscribes to /speed_command which comes from ad_agent.
         # ad_agent only takes cares of hazards (stops in case of blocking traffic lights/vehicles)
         # since we don't need that at the moment, we subscribe directly to /target_speed
         # This enables us to run without launching ros bridge waypoint_publisher which
@@ -164,9 +155,6 @@ class LocalPlanner(CompatibleNode):
 
     def path_cb(self, path_msg):
         with self.data_lock:
-            # self._waypoint_buffer.clear()
-            # self._waypoints_queue.clear()
-            # self._waypoints_queue.extend([pose.pose for pose in path_msg.poses])
 
             self._target_pose = None
             self._target_pose_idx = None
@@ -194,7 +182,6 @@ class LocalPlanner(CompatibleNode):
         with self.data_lock:
 
             if self.stop:
-                #self.loginfo("Stopped by scenario...")
                 self.emergency_stop()
                 return
 
@@ -205,32 +192,16 @@ class LocalPlanner(CompatibleNode):
 
             # when target speed is 0, brake.
             if self._target_speed == 0.0:
-                #self.loginfo("Target speed is 0")
                 self.emergency_stop()
                 return
 
             if self._current_speed is None:
-                #self.loginfo("Haven't received current speed")
                 self.emergency_stop()
                 return
 
             if self._current_pose is None:
-                #self.loginfo("Haven't received current speed")
                 self.emergency_stop()
                 return
-
-            # # #self.loginfo("Buffering waypoints")
-            # # #   Buffering the waypoints
-            # # if not self._waypoint_buffer:
-            # #     for i in range(self._buffer_size):
-            # #         if self._waypoints_queue:
-            # #             self._waypoint_buffer.append(self._waypoints_queue.popleft())
-            # #         else:
-            # #             break
-
-            # # target waypoint
-            # target_pose = self._waypoint_buffer[0]
-            #self.loginfo("Target is {}".format(target_pose))
 
             if self._target_pose is None:
                 self._target_pose = self._compute_target_waypoint(self._current_pose)
@@ -243,35 +214,11 @@ class LocalPlanner(CompatibleNode):
                 self._target_pose = self._compute_target_waypoint(self._current_pose)
 
 
-            # if self._target_pose is not None:
-            #     # self.loginfo('types:')
-            #     # self.loginfo('{}'.format(type(self._target_pose)))
-            #     # self.loginfo('{}'.format(type(self._current_pose)))
-            #     dist = distance_vehicle(self._target_pose, self._current_pose.position)
-
-            #     if  (dist < min_distance) | (dist > max_distance): 
-            #         self._target_pose = self._compute_target_waypoint(self._current_pose)
-            # else:
-            #     self._target_pose = self._compute_target_waypoint(self._current_pose)
-
             self._target_pose_publisher.publish(self.pose_to_marker_msg(self._target_pose))
 
             # move using PID controllers
             control_msg = self._vehicle_controller.run_step(
                 self._target_speed, self._current_speed, self._current_pose, self._target_pose)
-
-            # # purge the queue of obsolete waypoints
-            # max_index = -1
-
-            # sampling_radius = self._target_speed * 1 / 3.6  # search radius for next waypoints in seconds
-            # min_distance = sampling_radius * self.MIN_DISTANCE_PERCENTAGE
-
-            # for i, route_point in enumerate(self._waypoint_buffer):
-            #     if distance_vehicle(route_point, self._current_pose.position) < min_distance:
-            #         max_index = i
-            # if max_index >= 0:
-            #     for i in range(max_index + 1):
-            #         self._waypoint_buffer.popleft()
 
             self._control_cmd_publisher.publish(control_msg)
 
@@ -296,21 +243,6 @@ class LocalPlanner(CompatibleNode):
 
         if distance_to_goal > min_distance:
             target_waypoint_idx = np.argmin(distances)
-            # # Set the distances smaller than min_distance to an insanely high value
-            # distances[ distances < min_distance ] = np.finfo(np.float).max
-
-            # # Indices of the two smallest distances that are larger than min_dist
-            # idx_part = np.argpartition(distances, 2)[:(2)]
-            # idx_partsort = np.argsort(distances[idx_part])
-            # idx_ksmallest = idx_part[idx_partsort]
-
-            # # Out of the two closest waypoints select the one that is further in the route
-            # # (to avoid backtracking)
-            # # TODO: Causes a problem if there is a gap in the waypoints....
-            # if idx_ksmallest[1] > idx_ksmallest[0]:
-            #     target_waypoint_idx = idx_ksmallest[1]
-            # else:
-            #     target_waypoint_idx = idx_ksmallest[0]
         else:
             target_waypoint_idx = -1
 
