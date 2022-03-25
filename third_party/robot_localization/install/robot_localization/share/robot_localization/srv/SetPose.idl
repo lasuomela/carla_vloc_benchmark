@@ -1,0 +1,16 @@
+// generated from rosidl_adapter/resource/srv.idl.em
+// with input from robot_localization/srv/SetPose.srv
+// generated code does not contain a copyright notice
+
+#include "geometry_msgs/msg/PoseWithCovarianceStamped.idl"
+
+module robot_localization {
+  module srv {
+    struct SetPose_Request {
+      geometry_msgs::msg::PoseWithCovarianceStamped pose;
+    };
+    struct SetPose_Response {
+      uint8 structure_needs_at_least_one_member;
+    };
+  };
+};

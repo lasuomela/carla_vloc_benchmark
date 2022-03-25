@@ -1,0 +1,1 @@
+geographic_msgs/GeoPose geo_pose

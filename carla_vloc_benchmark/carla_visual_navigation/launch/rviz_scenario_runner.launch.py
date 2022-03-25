@@ -32,8 +32,8 @@ def get_scenarios_from_path(scenario_dir):
 package_name = "carla_visual_navigation"
 gui_scenarios_path = '/scenarios/param_fix_tests'
 rviz2_config_path = "config/visual_navigation_ros2.rviz"
-#objects_config_path = os.path.join(get_package_share_directory(package_name), "config/objects.json")
-objects_config_path = "/scenarios/param_fix_tests/objects.json"
+objects_config_path = os.path.join(get_package_share_directory(package_name), "config/objects.json")
+#objects_config_path = "/scenarios/param_fix_tests/objects.json"
 
 
 def generate_launch_description():
@@ -123,18 +123,18 @@ def generate_launch_description():
                 'role_name': launch.substitutions.LaunchConfiguration('role_name')
             }.items()
         ),
-        launch.actions.IncludeLaunchDescription(
-            launch.launch_description_sources.PythonLaunchDescriptionSource(
-                os.path.join(get_package_share_directory(
-                    'carla_waypoint_publisher'), 'carla_waypoint_publisher.launch.py')
-            ),
-            launch_arguments={
-                'host': launch.substitutions.LaunchConfiguration('host'),
-                'port': launch.substitutions.LaunchConfiguration('port'),
-                'timeout': launch.substitutions.LaunchConfiguration('timeout'),
-                'role_name': launch.substitutions.LaunchConfiguration('role_name')
-            }.items()
-        ),
+        # launch.actions.IncludeLaunchDescription(
+        #     launch.launch_description_sources.PythonLaunchDescriptionSource(
+        #         os.path.join(get_package_share_directory(
+        #             'carla_waypoint_publisher'), 'carla_waypoint_publisher.launch.py')
+        #     ),
+        #     launch_arguments={
+        #         'host': launch.substitutions.LaunchConfiguration('host'),
+        #         'port': launch.substitutions.LaunchConfiguration('port'),
+        #         'timeout': launch.substitutions.LaunchConfiguration('timeout'),
+        #         'role_name': launch.substitutions.LaunchConfiguration('role_name')
+        #     }.items()
+        # ),
         launch.actions.IncludeLaunchDescription(
             launch.launch_description_sources.PythonLaunchDescriptionSource(
                 os.path.join(get_package_share_directory(
@@ -162,7 +162,7 @@ def generate_launch_description():
             arguments=[
                 '-d', os.path.join(get_package_share_directory(package_name), rviz2_config_path)],
             on_exit=launch.actions.Shutdown()
-        )
+        ),
     ])
     return ld
 

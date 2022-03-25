@@ -7,5 +7,6 @@ source "/opt/carla/setup.bash"
 source "/opt/carla-ros-bridge/install/setup.bash"
 source "/opt/carla_vloc_benchmark/install/setup.bash"
 source "/opt/visual_robot_localization/install/setup.bash"
+source "/opt/third_party/robot_localization/install/setup.bash"
 exec "$@"
 

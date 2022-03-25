@@ -10,11 +10,9 @@ from sensor_msgs.msg import Image
 from nav_msgs.msg import Odometry
 
 import os
-from datetime import datetime, timezone
-import numpy as np
+from datetime import datetime
 import cv2
 import json
-import transforms3d as t3d
 import copy
 
 from carla_visual_navigation.geometry_utils import distance_from_odometry

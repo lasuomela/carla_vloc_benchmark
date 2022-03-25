@@ -23,9 +23,12 @@ setup(
     tests_require=['pytest'],
     entry_points={
         'console_scripts': [
-            'ad_agent = carla_visual_navigation_agent.ad_agent:main',
-            'local_planner = carla_visual_navigation_agent.local_planner:main',
-            'testing_waypoints = carla_visual_navigation_agent.testing_waypoints:main'
+	        'local_planner_pid = carla_visual_navigation_agent.local_planner_pid:main',
+	        'wheel_odometry_sensor = carla_visual_navigation_agent.wheel_odometry_sensor:main',
+	        'localization_sensor_synchronizer = carla_visual_navigation_agent.localization_sensor_synchronizer:main',
+            'travelled_distance_sensor = carla_visual_navigation_agent.travelled_distance_sensor:main',
+            'path_tracking_sensor = carla_visual_navigation_agent.path_tracking_sensor:main',
+            'crash_monitor_node = carla_visual_navigation_agent.crash_monitor_node:main',
         ],
     },
 )
