@@ -9,6 +9,7 @@
         <ParameterDeclaration name="launch" parameterType="string" value="carla_visual_navigator_agent.launch"/>
         <ParameterDeclaration name="launch-package" parameterType="string" value="carla_visual_navigation"/>
         <ParameterDeclaration name="avoid_risk" parameterType="string" value="false"/>
+        <ParameterDeclaration name="ekf_config_path" parameterType="string" value=""/>
         <ParameterDeclaration name="global_extractor_name" parameterType="string" value=""/>
         <ParameterDeclaration name="local_extractor_name" parameterType="string" value=""/>
         <ParameterDeclaration name="local_matcher_name" parameterType="string" value=""/>
@@ -24,6 +25,7 @@
           <Property name="launch" value="$launch"/>
           <Property name="launch-package" value="$launch-package"/>
           <Property name="avoid_risk" value="$avoid_risk"/>
+          <Property name="ekf_config_path" value="$ekf_config_path"/>
           <Property name="global_extractor_name" value="$global_extractor_name"/>
           <Property name="local_extractor_name" value="$local_extractor_name"/>
           <Property name="local_matcher_name" value="$local_matcher_name"/>

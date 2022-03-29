@@ -4,6 +4,7 @@ from rclpy.node import Node
 
 from pathlib import Path
 import json
+import yaml
 from datetime import datetime
 import time
 
@@ -45,8 +46,8 @@ class ScenarioBatchExecutor(Node):
         self.current_scenario = None
         self.last_execution_request_time = None 
 
-        with open((Path(scenario_dir) / 'parameters.json'), 'r+') as f:
-            experiment_params = json.load(f)
+        with open((Path(scenario_dir) / 'parameters.yml'), 'r+') as f:
+            experiment_params = yaml.safe_load(f)
 
         scenario_list = list(Path(scenario_dir).glob('*.xosc'))
         if not scenario_list:

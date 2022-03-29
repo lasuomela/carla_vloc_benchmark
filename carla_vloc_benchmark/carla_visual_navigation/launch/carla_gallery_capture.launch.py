@@ -7,6 +7,18 @@ package_name='carla_visual_navigation'
 
 def generate_launch_description():
     ld = launch.LaunchDescription([
+    	launch.actions.DeclareLaunchArgument(
+            name='host',
+            default_value='localhost'
+        ),
+        launch.actions.DeclareLaunchArgument(
+            name='port',
+            default_value='2000'
+        ),
+        launch.actions.DeclareLaunchArgument(
+            name='timeout',
+            default_value='5'
+        ),
         launch.actions.DeclareLaunchArgument(
 	name='avoid_risk',
     	default_value='False'
@@ -48,6 +60,18 @@ def generate_launch_description():
 		'avoid_risk': launch.substitutions.LaunchConfiguration('avoid_risk'),
 	    }.items()
 	),
+        launch.actions.IncludeLaunchDescription(
+            launch.launch_description_sources.PythonLaunchDescriptionSource(
+                os.path.join(get_package_share_directory(
+                    'carla_waypoint_publisher'), 'carla_waypoint_publisher.launch.py')
+            ),
+            launch_arguments={
+                'host': launch.substitutions.LaunchConfiguration('host'),
+                'port': launch.substitutions.LaunchConfiguration('port'),
+                'timeout': launch.substitutions.LaunchConfiguration('timeout'),
+                'role_name': 'ego_vehicle'
+            }.items()
+        ),
         launch_ros.actions.Node(
             package=package_name,
             executable='image_capture_node',
