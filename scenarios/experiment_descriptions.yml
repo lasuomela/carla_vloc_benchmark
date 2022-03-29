@@ -1,0 +1,566 @@
+---
+
+# Contains parameters for different experiments/scenarios.
+
+# Use carla_visual_navigation/scripts/template_scenario_creator.py
+# to fill an OpenScenario template with the parameters described here.
+
+# Experiment description structure is following:
+
+# -----
+# experiment_1_name:
+#   parameter_1_name: parameter_1_value
+#   parameter_2_name: parameter_2_value
+#   parameter_3_name: [parameter_3_value_a, parameter_3_value_b, parameter_3_value_c]
+
+#   parameter_4_group:
+#     - group_param_1_a_name: group_param_1_a_value
+#       group_param_1_b_name: group_param_1_b_value
+
+#     - group_param_2_a_name: group_param_2_a_value
+#       group_param_2_b_name: group_param_2_b_value
+
+# experiment_2_name:
+#   etc.
+# -----
+
+# The idea is to create scenario files that contain all the possible permutations of the parameters specified for an experiment.
+
+# For an experiment with paramerers parameter_1, parameter_2, and parameter_3, the resulting scenarios would be:
+
+# ----
+# scenario_1:
+#   parameter_1_name: parameter_1_value
+#   parameter_2_name: parameter_2_value
+#   parameter_3_name: parameter_3_value_a
+
+# scenario_2:
+#   parameter_1_name: parameter_1_value
+#   parameter_2_name: parameter_2_value
+#   parameter_3_name: parameter_3_value_b
+
+# scenario_3:
+#   parameter_1_name: parameter_1_value
+#   parameter_2_name: parameter_2_value
+#   parameter_3_name: parameter_3_value_c
+# ----
+
+# So we we get all the possible permutations. However, sometimes we need some parameters to appear together.
+# For example, the SuperPoint extractor should always be combined with SuperGlue matcher, and the other extractors should not be combined with superpoint.
+# For this, we can use parameter groups, as is the case of parameter_4 in the example. The nested key-value pairs are interpreted as parameters that should
+# appear in tandem.
+
+# For an experiment with parameters parameter_1, parameter_2, and parameter_4_group, the resulting scenarios would be
+
+# ----
+# scenario_1:
+#   parameter_1_name: parameter_1_value
+#   parameter_2_name: parameter_2_value
+#   group_param_1_a_name: group_param_1_a_value
+#   group_param_1_b_name: group_param_1_b_value
+
+# scenario_2:
+#   parameter_1_name: parameter_1_value
+#   parameter_2_name: parameter_2_value
+#   group_param_2_a_name: group_param_2_a_value
+#   group_param_2_b_name: group_param_2_b_value
+# ----
+
+# See the parameter specific explanations from the example_experiment_below.
+
+
+example_experiment:
+  # The path of the OpenScenario template to populate with the parameters
+  template_path: '/opt/carla_vloc_benchmark/src/carla_visual_navigation/config/VisualNavigatorTemplate.xosc'
+
+  # Where template_scenario_creator.py should save created scenarios
+  scenario_save_dir: '/scenarios/template_generated_test'
+
+  # Path to the file into which the scenario results are saved
+  log_file_path: "/results/template_generated_test.json"
+  log_results: True
+
+  # Paths relative to location of the generated scenario file
+  # Path to the bash script that carla scenario runner should use to communicate to the visual_navigation_evaluator_node
+  # that the scenario has ended and results should be saved to disk
+  logger_script_path: "../../opt/carla_vloc_benchmark/src/carla_visual_navigation/utils/run-scenario-log.sh"
+
+  # Path to the catalogs that contain the vehicle, controller, environment and route specifications
+  catalog_path: "../../opt/carla_vloc_benchmark/src/carla_visual_navigation/config/catalogs"
+
+  # Path to an utility scripts which the carla scenario runner should use to communicate to the local planner node
+  # that the goal has been reached and the local planner should stop the vehicle
+  planner_stop_script_path: "../../opt/carla_vloc_benchmark/src/carla_visual_navigation/utils/run-planner-stop.sh"
+
+  # The idx of the controller specification in catalogs/ControllerCatalog.xosc
+  controller_entry_name: 'VisualNavigatingAgent'
+
+  # Name of the Carla town to use
+  town_name: Town10HD
+  route_group:
+      # Check the route entries and their correct goal locations from
+      # carla_visual_navigation/config/catalogs/maneuver_catalog
+      route_entry_name: "Map10HD_route01_maneuver"
+      goal_location_x: 79.6
+      goal_location_y: 69.45
+
+  # How close (in meters) to goal the vehicle has to be in order to have reached the goal
+  goal_location_tolerance: 10
+
+  # The target speed (m/s) that the vehicle controller should aim for
+  target_speed: 4.0
+
+  # The directory containing the images and 3D reconstruction that the visual localization should use as reference
+  image_gallery_path: "/image-gallery/2021-11-15_15:11:29/"
+
+  # How often the visual localization should run (Hz, wrt. simulation time)
+  # Note that if you specify this too high you hardware might not be capable
+  localization_frequence: 2.0
+
+  # The number of the top place recognition / prioir retrieval images that should be used for
+  # local feature matching
+  top_k_matches: 5
+
+  # See the available extractor and matcher names from hloc extract_features.py and match_features.py
+  global_extractor_name:
+    - "netvlad"
+    - "dir"
+
+  local_extractor_group:
+    - local_extractor_name: "d2net-ss"
+      local_matcher_name: "NN-ratio"
+
+    - local_extractor_name: "superpoint_aachen"
+      local_matcher_name: "superglue"
+
+    - local_extractor_name: "d2net-ss"
+      local_matcher_name: "NN-ratio"
+
+    - local_extractor_name: "sift"
+      local_matcher_name: "NN-ratio"
+
+  # Controls the amount of illumination. template_scenario_creator.py has a special function for parsing
+  # the illumination levels from k-values.
+  # Essentially, the _startvalues are multiplied by _multiplier k times.
+  # Also, see OpenScenario UML for description
+  sun_group:
+    sun_intensity_startvalue: 1.0
+    sun_elevation_startvalue: 1.31
+    intensity_decrease_multiplier: 0.5
+    elevation_decrease_multiplier: 0.5
+    k_values: [0, 1, 2, 3]
+
+  # The amount of rain
+  precipitation_group:
+    # See OpenScenario UML for description
+    precipitation_type: "dry"
+    precipitation_intensity: 0.0
+
+  # Amount of fog (See OpenScenario UML)
+  visual_range: 100000.0
+
+  # Cloudiness. See OpenScenario UML
+  cloud_state: 'free'
+
+####
+
+gallery_capture_town01:
+  template_path: '/opt/carla_vloc_benchmark/src/carla_visual_navigation/config/GalleryCaptureTemplate.xosc'
+  scenario_save_dir: '/scenarios/gallery_capture_town01_route1'
+
+  # Paths relative to location of the generated scenario file
+  catalog_path: "../../opt/carla_vloc_benchmark/src/carla_visual_navigation/config/catalogs"
+  controller_entry_name: 'GalleryCaptureAgent'
+
+  town_name: Town01
+  route_group:
+      route_entry_name: "Map01_route01_maneuver"
+      goal_location_x: 88.5
+      goal_location_y: 112.0
+  goal_location_tolerance: 1
+  target_speed: 8.0
+
+  # Gallery capture parameters
+  image_save_path: "/image-gallery/town01_route1/"
+  # Distance between gallery images in meters
+  image_density: 2.0 
+
+  sun_group:
+    sun_intensity_startvalue: 1.0
+    sun_elevation_startvalue: 1.31
+    intensity_decrease_multiplier: 0.5
+    elevation_decrease_multiplier: 0.5
+    k_values: [0]
+
+  precipitation_group:
+    precipitation_type: "dry"
+    precipitation_intensity: 0.0
+
+  visual_range: 100000.0
+  cloud_state: 'free'
+
+###
+
+gallery_capture_town10:
+  template_path: '/opt/carla_vloc_benchmark/src/carla_visual_navigation/config/GalleryCaptureTemplate.xosc'
+  scenario_save_dir: '/scenarios/town10_route1'
+
+  # Paths relative to location of the generated scenario file
+  catalog_path: "../../opt/carla_vloc_benchmark/src/carla_visual_navigation/config/catalogs"
+  controller_entry_name: 'GalleryCaptureAgent'
+
+  town_name: Town10HD
+  route_group:
+      route_entry_name: "Map10HD_route01_maneuver"
+      goal_location_x: 79.6
+      goal_location_y: 69.45
+  goal_location_tolerance: 1
+  target_speed: 8.0
+
+  # Gallery capture parameters
+  image_save_path: "/image-gallery/gallery_capture_town10_route1/"
+  # Distance between gallery images in meters
+  image_density: 2.0 
+
+  sun_group:
+    sun_intensity_startvalue: 1.0
+    sun_elevation_startvalue: 1.31
+    intensity_decrease_multiplier: 0.5
+    elevation_decrease_multiplier: 0.5
+    k_values: [0]
+
+  precipitation_group:
+    precipitation_type: "dry"
+    precipitation_intensity: 0.0
+
+  visual_range: 100000.0
+  cloud_state: 'free'
+
+###
+
+illumination_experiment_town01:
+  template_path: '/opt/carla_vloc_benchmark/src/carla_visual_navigation/config/VisualNavigatorTemplate.xosc'
+  scenario_save_dir: '/scenarios/illumination_experiment_town01'
+  log_file_path: "/results/illumination_experiment_town01.json"
+  log_results: True
+
+  # Paths relative to location of the generated scenario file
+  logger_script_path: "../../opt/carla_vloc_benchmark/src/carla_visual_navigation/utils/run-scenario-log.sh"
+  catalog_path: "../../opt/carla_vloc_benchmark/src/carla_visual_navigation/config/catalogs"
+  planner_stop_script_path: "../../opt/carla_vloc_benchmark/src/carla_visual_navigation/utils/run-planner-stop.sh"
+
+  controller_entry_name: 'VisualNavigatingAgent'
+  ekf_config_path: "/opt/carla_vloc_benchmark/src/carla_visual_navigation_agent/config/ekf.yaml"
+
+  town_name: Town01
+  route_group:
+      route_entry_name: "Map01_route01_maneuver"
+      goal_location_x: 88.5
+      goal_location_y: 112.0
+  goal_location_tolerance: 10
+  target_speed: 4.0
+  image_gallery_path: "/image-gallery/town01_route1/"
+  localization_frequence: 2.0
+
+  top_k_matches: 5
+  global_extractor_name:
+    - "netvlad"
+    - "dir"
+
+  local_extractor_group:
+    - local_extractor_name: "d2net-ss"
+      local_matcher_name: "NN-ratio"
+
+    - local_extractor_name: "superpoint_aachen"
+      local_matcher_name: "superglue"
+
+    - local_extractor_name: "d2net-ss"
+      local_matcher_name: "NN-ratio"
+
+    - local_extractor_name: "sift"
+      local_matcher_name: "NN-ratio"
+
+  sun_group:
+    sun_intensity_startvalue: 1.0
+    sun_elevation_startvalue: 1.31
+    intensity_decrease_multiplier: 0.5
+    elevation_decrease_multiplier: 0.5
+    k_values: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+
+  precipitation_group:
+    precipitation_type: "dry"
+    precipitation_intensity: 0.0
+
+  visual_range: 100000.0
+  cloud_state: 'free'
+
+###
+
+illumination_experiment_town01_odometry_only:
+  template_path: '/opt/carla_vloc_benchmark/src/carla_visual_navigation/config/VisualNavigatorTemplate.xosc'
+  scenario_save_dir: '/scenarios/illumination_experiment_town01_odometry_only'
+  log_file_path: "/results/illumination_experiment_town01_odometry_only.json"
+  log_results: True
+
+  # Paths relative to location of the generated scenario file
+  logger_script_path: "../../opt/carla_vloc_benchmark/src/carla_visual_navigation/utils/run-scenario-log.sh"
+  catalog_path: "../../opt/carla_vloc_benchmark/src/carla_visual_navigation/config/catalogs"
+  planner_stop_script_path: "../../opt/carla_vloc_benchmark/src/carla_visual_navigation/utils/run-planner-stop.sh"
+
+  controller_entry_name: 'VisualNavigatingAgent'
+  ekf_config_path: "/opt/carla_vloc_benchmark/src/carla_visual_navigation_agent/config/ekf_no_vloc.yaml"
+
+  town_name: Town01
+  route_group:
+      route_entry_name: "Map01_route01_maneuver"
+      goal_location_x: 88.5
+      goal_location_y: 112.0
+  goal_location_tolerance: 10
+  target_speed: 4.0
+  image_gallery_path: "/image-gallery/town01_route1/"
+  localization_frequence: 2.0
+
+  # The vloc result isn't actually used but it's left defined
+  # for sake on consistency
+  top_k_matches: 5
+  global_extractor_name:
+    - "netvlad"
+  local_extractor_group:
+    - local_extractor_name: "sift"
+      local_matcher_name: "NN-ratio"
+
+  sun_group:
+    sun_intensity_startvalue: 1.0
+    sun_elevation_startvalue: 1.31
+    intensity_decrease_multiplier: 0.5
+    elevation_decrease_multiplier: 0.5
+    k_values: [0]
+
+  precipitation_group:
+    precipitation_type: "dry"
+    precipitation_intensity: 0.0
+
+  visual_range: 100000.0
+  cloud_state: 'free'
+
+###
+
+illumination_experiment_town01_autopilot:
+  template_path: '/opt/carla_vloc_benchmark/src/carla_visual_navigation/config/VisualNavigatorTemplate.xosc'
+  scenario_save_dir: '/scenarios/illumination_experiment_town01_autopilot'
+  log_file_path: "/results/illumination_experiment_town01_autopilot.json"
+  log_results: True
+
+  # Paths relative to location of the generated scenario file
+  logger_script_path: "../../opt/carla_vloc_benchmark/src/carla_visual_navigation/utils/run-scenario-log.sh"
+  catalog_path: "../../opt/carla_vloc_benchmark/src/carla_visual_navigation/config/catalogs"
+  planner_stop_script_path: "../../opt/carla_vloc_benchmark/src/carla_visual_navigation/utils/run-planner-stop.sh"
+
+  controller_entry_name: 'VisualLocalizationAgent'
+
+  town_name: Town01
+  route_group:
+      route_entry_name: "Map01_route01_maneuver"
+      goal_location_x: 88.5
+      goal_location_y: 112.0
+  goal_location_tolerance: 10
+  target_speed: 4.0
+  image_gallery_path: "/image-gallery/town01_route1/"
+  localization_frequence: 2.0
+
+  top_k_matches: 5
+  global_extractor_name:
+    - "netvlad"
+    - "dir"
+
+  local_extractor_group:
+    - local_extractor_name: "d2net-ss"
+      local_matcher_name: "NN-ratio"
+
+    - local_extractor_name: "superpoint_aachen"
+      local_matcher_name: "superglue"
+
+    - local_extractor_name: "d2net-ss"
+      local_matcher_name: "NN-ratio"
+
+    - local_extractor_name: "sift"
+      local_matcher_name: "NN-ratio"
+
+  sun_group:
+    sun_intensity_startvalue: 1.0
+    sun_elevation_startvalue: 1.31
+    intensity_decrease_multiplier: 0.5
+    elevation_decrease_multiplier: 0.5
+    k_values: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+
+  precipitation_group:
+    precipitation_type: "dry"
+    precipitation_intensity: 0.0
+
+  visual_range: 100000.0
+  cloud_state: 'free'
+
+###
+
+illumination_experiment_town10:
+  template_path: '/opt/carla_vloc_benchmark/src/carla_visual_navigation/config/VisualNavigatorTemplate.xosc'
+  scenario_save_dir: '/scenarios/illumination_experiment_town10'
+  log_file_path: "/results/illumination_experiment_town10.json"
+  log_results: True
+
+  # Paths relative to location of the generated scenario file
+  logger_script_path: "../../opt/carla_vloc_benchmark/src/carla_visual_navigation/utils/run-scenario-log.sh"
+  catalog_path: "../../opt/carla_vloc_benchmark/src/carla_visual_navigation/config/catalogs"
+  planner_stop_script_path: "../../opt/carla_vloc_benchmark/src/carla_visual_navigation/utils/run-planner-stop.sh"
+
+  controller_entry_name: 'VisualNavigatingAgent'
+  ekf_config_path: "/opt/carla_vloc_benchmark/src/carla_visual_navigation_agent/config/ekf.yaml"
+
+  town_name: Town10HD
+  route_group:
+      route_entry_name: "Map10HD_route01_maneuver"
+      goal_location_x: 79.6
+      goal_location_y: 69.45
+  goal_location_tolerance: 10
+  target_speed: 4.0
+  image_gallery_path: "/image-gallery/town10_route1/"
+  localization_frequence: 2.0
+
+  top_k_matches: 5
+  global_extractor_name:
+    - "netvlad"
+    - "dir"
+
+  local_extractor_group:
+    - local_extractor_name: "d2net-ss"
+      local_matcher_name: "NN-ratio"
+
+    - local_extractor_name: "superpoint_aachen"
+      local_matcher_name: "superglue"
+
+    - local_extractor_name: "d2net-ss"
+      local_matcher_name: "NN-ratio"
+
+    - local_extractor_name: "sift"
+      local_matcher_name: "NN-ratio"
+
+  sun_group:
+    sun_intensity_startvalue: 1.0
+    sun_elevation_startvalue: 1.31
+    intensity_decrease_multiplier: 0.5
+    elevation_decrease_multiplier: 0.5
+    k_values: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+
+  precipitation_group:
+    precipitation_type: "dry"
+    precipitation_intensity: 0.0
+
+  visual_range: 100000.0
+  cloud_state: 'free'
+
+###
+
+illumination_experiment_town10_odometry_only:
+  template_path: '/opt/carla_vloc_benchmark/src/carla_visual_navigation/config/VisualNavigatorTemplate.xosc'
+  scenario_save_dir: '/scenarios/illumination_experiment_town10_odometry_only'
+  log_file_path: "/results/illumination_experiment_town10_odometry_only.json"
+  log_results: True
+
+  # Paths relative to location of the generated scenario file
+  logger_script_path: "../../opt/carla_vloc_benchmark/src/carla_visual_navigation/utils/run-scenario-log.sh"
+  catalog_path: "../../opt/carla_vloc_benchmark/src/carla_visual_navigation/config/catalogs"
+  planner_stop_script_path: "../../opt/carla_vloc_benchmark/src/carla_visual_navigation/utils/run-planner-stop.sh"
+
+  controller_entry_name: 'VisualNavigatingAgent'
+  ekf_config_path: "/opt/carla_vloc_benchmark/src/carla_visual_navigation_agent/config/ekf_no_vloc.yaml"
+
+  town_name: Town10HD
+  route_group:
+      route_entry_name: "Map10HD_route01_maneuver"
+      goal_location_x: 79.6
+      goal_location_y: 69.45
+  goal_location_tolerance: 10
+  target_speed: 4.0
+  image_gallery_path: "/image-gallery/town10_route1/"
+  localization_frequence: 2.0
+
+  # The vloc result isn't actually used but it's left defined
+  # for sake on consistency
+  top_k_matches: 5
+  global_extractor_name:
+    - "netvlad"
+  local_extractor_group:
+    - local_extractor_name: "sift"
+      local_matcher_name: "NN-ratio"
+
+  sun_group:
+    sun_intensity_startvalue: 1.0
+    sun_elevation_startvalue: 1.31
+    intensity_decrease_multiplier: 0.5
+    elevation_decrease_multiplier: 0.5
+    k_values: [0]
+
+  precipitation_group:
+    precipitation_type: "dry"
+    precipitation_intensity: 0.0
+
+  visual_range: 100000.0
+  cloud_state: 'free'
+
+
+###
+
+illumination_experiment_town10_autopilot:
+  template_path: '/opt/carla_vloc_benchmark/src/carla_visual_navigation/config/VisualNavigatorTemplate.xosc'
+  scenario_save_dir: '/scenarios/illumination_experiment_town10_autopilot'
+  log_file_path: "/results/illumination_experiment_town10_autopilot.json"
+  log_results: True
+
+  # Paths relative to location of the generated scenario file
+  logger_script_path: "../../opt/carla_vloc_benchmark/src/carla_visual_navigation/utils/run-scenario-log.sh"
+  catalog_path: "../../opt/carla_vloc_benchmark/src/carla_visual_navigation/config/catalogs"
+  planner_stop_script_path: "../../opt/carla_vloc_benchmark/src/carla_visual_navigation/utils/run-planner-stop.sh"
+
+  controller_entry_name: 'VisualLocalizationAgent'
+
+  town_name: Town10HD
+  route_group:
+      route_entry_name: "Map10HD_route01_maneuver"
+      goal_location_x: 79.6
+      goal_location_y: 69.45
+  goal_location_tolerance: 10
+  target_speed: 4.0
+  image_gallery_path: "/image-gallery/town10_route1/"
+  localization_frequence: 2.0
+
+  top_k_matches: 5
+  global_extractor_name:
+    - "netvlad"
+    - "dir"
+
+  local_extractor_group:
+    - local_extractor_name: "d2net-ss"
+      local_matcher_name: "NN-ratio"
+
+    - local_extractor_name: "superpoint_aachen"
+      local_matcher_name: "superglue"
+
+    - local_extractor_name: "d2net-ss"
+      local_matcher_name: "NN-ratio"
+
+    - local_extractor_name: "sift"
+      local_matcher_name: "NN-ratio"
+
+  sun_group:
+    sun_intensity_startvalue: 1.0
+    sun_elevation_startvalue: 1.31
+    intensity_decrease_multiplier: 0.5
+    elevation_decrease_multiplier: 0.5
+    k_values: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+
+  precipitation_group:
+    precipitation_type: "dry"
+    precipitation_intensity: 0.0
+
+  visual_range: 100000.0
+  cloud_state: 'free'

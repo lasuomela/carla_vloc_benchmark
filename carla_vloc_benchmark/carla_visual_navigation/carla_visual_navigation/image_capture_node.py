@@ -10,7 +10,6 @@ from sensor_msgs.msg import Image
 from nav_msgs.msg import Odometry
 
 import os
-from datetime import datetime
 import cv2
 import json
 import copy
@@ -19,15 +18,15 @@ from carla_visual_navigation.geometry_utils import distance_from_odometry
 from visual_robot_localization.coordinate_transforms import SensorOffsetCompensator
 
 def make_save_dir(gallery_path):
-    save_dir = '{}/{}'.format(gallery_path, datetime.now().strftime("%Y-%m-%d_%H:%M:%S"))
-    os.mkdir(save_dir)
-    return save_dir
+    if not os.path.exists(gallery_path):
+        os.mkdir(gallery_path)
+    return gallery_path
 
 class ImageCapture(Node):
     def __init__(self):
         super().__init__('image_capture')
 
-        self.declare_parameter("image_save_path", "/image-gallery")
+        self.declare_parameter("image_save_path")
         image_gallery_path = self.get_parameter('image_save_path').get_parameter_value().string_value
         self.image_save_path = make_save_dir(image_gallery_path)
         self.image_prefix = 'im'
@@ -89,7 +88,7 @@ class ImageCapture(Node):
             odometry_msg_camera_pose.pose.pose = self.sensor_offset_compensator.add_offset(odometry_msg_camera_pose.pose.pose)
 
             if self.publisher is not None:
-                self.publisher.set_data(odometry_msg_camera_pose)
+                self.publisher.publish(odometry_msg_camera_pose)
 
             odometry_camera_ordereddict = message_to_ordereddict(odometry_msg_camera_pose)
             with open(save_name+'_odometry_camera.json','w') as file:

@@ -3,6 +3,7 @@
   <FileHeader revMajor="1" revMinor="0" date="2021-05-04T00:00:00" description="CARLA:VisualNavigatorTemplate" author="lauri.a.suomela"/>
   <ParameterDeclarations>
     <ParameterDeclaration name="town_name" parameterType="string" value="town_name_template"/>
+    <ParameterDeclaration name="ekf_config_path" parameterType="string" value="ekf_config_path_template"/>
     <ParameterDeclaration name="global_extractor_name" parameterType="string" value="global_extractor_name_template"/>
     <ParameterDeclaration name="local_extractor_name" parameterType="string" value="local_extractor_name_template"/>
     <ParameterDeclaration name="local_matcher_name" parameterType="string" value="local_matcher_name_template"/>
@@ -77,6 +78,7 @@
                 <AssignControllerAction>
                   <CatalogReference catalogName="ControllerCatalog" entryName="$controller_entry_name">
                     <ParameterAssignments>
+                      <ParameterAssignment parameterRef="ekf_config_path" value="$ekf_config_path"/>
                       <ParameterAssignment parameterRef="global_extractor_name" value="$global_extractor_name"/>
                       <ParameterAssignment parameterRef="local_extractor_name" value="$local_extractor_name"/>
                       <ParameterAssignment parameterRef="local_matcher_name" value="$local_matcher_name"/>
