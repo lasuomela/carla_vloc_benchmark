@@ -1,1 +1,0 @@
-geographic_msgs/GeoPoint ll_point

@@ -1,2 +1,0 @@
-builtin_interfaces/Time time_stamp
-string frame_id

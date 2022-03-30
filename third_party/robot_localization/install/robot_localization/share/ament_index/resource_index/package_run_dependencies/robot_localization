@@ -1,1 +1,0 @@
-libboost-dev;eigen;geographic_msgs;geometry_msgs;diagnostic_msgs;diagnostic_updater;geographiclib;nav_msgs;sensor_msgs;std_msgs;std_srvs;tf2;tf2_eigen;tf2_geometry_msgs;tf2_ros;yaml_cpp_vendor;rosidl_default_runtime;rclcpp;rmw_implementation;ament_cmake_gtest;builtin_interfaces;ament_lint_auto;ament_lint_common;launch_ros;launch_testing_ament_cmake
