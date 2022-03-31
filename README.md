@@ -25,7 +25,7 @@ git clone https://github.com/lasuomela/carla_vloc_benchmark/
 git submodule update --init --recursive
 ```
 
-We strongly recommend running the benchmark inside the provided docker image. Build the images:
+We strongly recommend running the benchmark inside the provided docker images. Build the images:
 
 ```sh
 cd docker
@@ -36,7 +36,6 @@ cd docker
 Next, validate that the environment is correctly set up. Launch the Carla simulator with GUI:
 
 ```sh
-cd docker
 ./run-carla.sh
 ```
 
@@ -96,8 +95,8 @@ python template_scenario_generator.py
 
 # Launch terminal multiplexer
 tmux
-# Create a second terminal window into the container using shift-ctrl-b + %
 
+# Create a second tmux window into the container using 'shift-ctrl-b' + '%'
 # In the first window, start the scenario runner with rviz GUI
 ros2 launch carla_visual_navigation rviz_scenario_runner.launch.py town:='Town01'
 
@@ -105,8 +104,34 @@ ros2 launch carla_visual_navigation rviz_scenario_runner.launch.py town:='Town01
 ros2 launch carla_visual_navigation scenario_executor.launch.py scenario_dir:='/scenarios/gallery_capture_town01_route01' repetitions:=1
 ```
 
-If everything went okay, you should now have a folder `/image-gallery/town01_route1` with images captured along the route.
+If everything went okay, you should now have a folder `/image-gallery/town01_route1` with images captured along the route. Repeat for Town10:
 
-Now, run do_SfM.sh....
+```sh
+# Tmux window 1
+ros2 launch carla_visual_navigation rviz_scenario_runner.launch.py town:='Town10HD'
 
+# Tmux window 2
+ros2 launch carla_visual_navigation scenario_executor.launch.py scenario_dir:='/scenarios/gallery_capture_town10_route01' repetitions:=1
+```
 
+### 3. Run 3D reconstruction for the gallery images
+
+Next, we triangulate sparse 3D models from the gallery images and their camera poses. The models are saved in the respective image capture folders in `/image-gallery/` 
+
+```sh
+cd /opt/carla_visual_navigation/src/carla_visual_navigation/scripts
+
+# Check the visual localization methods used in the experiments and run 3D reconstruction with each of them
+python create_gallery_reconstructions.py --experiment_path '/scenarios/illumination_experiment_town01'
+
+# Repeat for Town10
+python create_gallery_reconstructions.py --experiment_path '/scenarios/illumination_experiment_town10'
+```
+
+You can visually examine the reconstructions with
+
+```sh
+./visualize_colmap.sh --image_folder '/image-gallery/town01_route1' --localization_combination_name 'netvlad+superpoint_aachen+superglue'
+```
+
+### 4. Run the experiments
