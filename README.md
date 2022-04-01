@@ -83,6 +83,8 @@ cd docker
 ./run-ros-bridge-scenario.sh
 ```
 
+The run command mounts the `/carla_visual_navigation`, `/image-gallery`, `/scenarios` and `/results` folders into the container, so the changes to these folders are reflected both inside the container and on the host system.
+
 ### 2. Capture the gallery datasets
 
 When running for the first time, you need to capture the images from the test route for 3D reconstruction.
