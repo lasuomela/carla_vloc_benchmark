@@ -1,3 +1,9 @@
+
+<p align="center">
+  <img src="doc/overview.png" width="100%"/></a>
+  <br />
+</p>
+
 # Carla Visual localization benchmark
 
 Benchmark visual localization methods for robot navigation.
@@ -9,14 +15,9 @@ Benchmark visual localization methods for robot navigation.
 >Lauri Suomela, Atakan Dag, Harry Edelman, Joni-Kristian Kämäräinen  
 >arXiv
 
-<p align="center">
-  <img src="doc/overview.png" width="100%"/></a>
-  <br />
-</p>
-
-## Requirements
-
 ## Installation
+
+*The code is tested on Ubuntu 20.04 with one Nvidia RTX3090. As everything runs inside docker containers, supporting platforms other than linux should only require modifying the build and run scripts in the docker folder.*
 
 Pull the repository:
 
@@ -135,3 +136,36 @@ You can visually examine the reconstructions with
 ```
 
 ### 4. Run the experiments
+
+To replicate the experiment results:
+
+
+```sh
+# Launch terminal multiplexer
+tmux
+
+# Create a second tmux window into the container using 'shift-ctrl-b' + '%'
+# In the first window, start the scenario runner headless (the rviz GUI slows the simulation down)
+ros2 launch carla_visual_navigation cli_scenario_runner.launch.py town:='Town01'
+
+# In the second window, start scenario execution for Town01, with 5 repetitions of each scenario file
+ros2 launch carla_visual_navigation scenario_executor.launch.py scenario_dir:='/scenarios/illumination_experiment_town01_route01' repetitions:=5
+
+# Once all the scenarios have been finished, run the scenarios with autopilot to measure visual localization recall
+ros2 launch carla_visual_navigation scenario_executor.launch.py scenario_dir:='/scenarios/illumination_experiment_town01_route01_autopilot' repetitions:=1
+
+# Next, measure navigation performance with wheel odometry only
+ros2 launch carla_visual_navigation scenario_executor.launch.py scenario_dir:='/scenarios/illumination_experiment_town01_route01_odometry_only' repetitions:=5
+```
+
+Completing the experiments can take a long time. Once the experiments have been completed, repeat for the Town10 envrionment. The results are saved to `/results/`. To produce aggregated metrics, you can run
+
+```sh
+cd /opt/carla_visual_navigation/src/carla_visual_navigation/scripts
+python analyze_illumination_scenario_results.py
+```
+
+## Defining your own experiments
+
+TBD
+
