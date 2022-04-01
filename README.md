@@ -34,9 +34,10 @@ cd docker
 ./build-ros-bridge-scenario.sh
 ```
 
-Next, validate that the environment is correctly set up. Launch the Carla simulator with GUI:
+Next, validate that the environment is correctly set up. Launch the Carla simulator:
 
 ```sh
+# With GUI
 ./run-carla.sh
 ```
 
@@ -71,6 +72,7 @@ In one terminal window, launch the Carla simulator:
 
 ```sh
 cd docker
+# Headless
 ./run-bash-carla.sh
 ```
 
@@ -98,10 +100,10 @@ python template_scenario_generator.py
 tmux
 
 # Create a second tmux window into the container using 'shift-ctrl-b' + '%'
-# In the first window, start the scenario runner with rviz GUI
+# Tmux window 1: start the scenario runner with rviz GUI
 ros2 launch carla_visual_navigation rviz_scenario_runner.launch.py town:='Town01'
 
-# In the second window, start gallery capture execution
+# Tmux window 2: start gallery capture execution
 ros2 launch carla_visual_navigation scenario_executor.launch.py scenario_dir:='/scenarios/gallery_capture_town01_route01' repetitions:=1
 ```
 
@@ -165,7 +167,12 @@ cd /opt/carla_visual_navigation/src/carla_visual_navigation/scripts
 python analyze_illumination_scenario_results.py
 ```
 
+## Adding new visual localization methods
+
+The visual localization methods are integrated through the awesome [hloc toolbox](https://github.com/cvg/Hierarchical-Localization), for which we provide a ROS2 wrapper in the [visual_robot_localization](https://github.com/lasuomela/visual_robot_localization) package. See hloc documentation on how to contribute new visual localization methods. After a method has been added to hloc, it can be used in the experiments by specifying the method in the experiment parameters (`/scenarios/experiment_descriptions.yml`)
+
+
 ## Defining your own experiments
 
-TBD
+Documentation TBD. See `/scenarios/experiment_descriptions.yml` and the scenario template `carla_vloc_benchmark/carla_visual_navigation/config/VisualNavigatorTemplate.xosc` for some options.
 
