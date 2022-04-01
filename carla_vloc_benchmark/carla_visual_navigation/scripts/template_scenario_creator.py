@@ -128,7 +128,7 @@ def _get_gallery_paths(image_gallery_path,
 def parse_arguments():
     import argparse
     from distutils.util import strtobool
-    parser = argparse.ArgumentParser(description='CLI test for hloc feature extraction and matching')
+    parser = argparse.ArgumentParser(description='Create OpenScenario .xosc descriptions from a yaml parameter file')
 
     parser.add_argument('--scenario_descriptions_path', type=str, help='Path to yaml file containing scenario parameters',
                         default = '/scenarios/experiment_descriptions.yml')

@@ -14,7 +14,7 @@ import seaborn
 def main():
 
     # Town01
-    log_file_path = '/results/odometry_only_town01.json'
+    log_file_path = '/results/illumination_experiment_town01_odometry_only.json'
     town01_odometry_aggregate = aggregate_results(log_file_path)
     with open(log_file_path.replace('.json', '_grouped_by_scenario.json'), 'w') as f:
         json.dump( town01_odometry_aggregate, f,indent=4)
@@ -22,7 +22,7 @@ def main():
     town01_odometry_fragmentation = town01_odometry_aggregate["combination_000.xosc"]["scenario_results"]["crash_fragmentation"] 
 
 
-    log_file_path = '/results/town01_illumination_run_navigation.json'
+    log_file_path = '/results/illumination_experiment_town01.json'
     town01_illumination_aggregate, town01_illumination_by_method = process_log_file(log_file_path,
                                                                                     autopilot = False,
                                                                                     plot_kvalues=True,
@@ -31,7 +31,7 @@ def main():
                                                                                     latex_accuracies=False,
                                                                                     latex_failurerates=True)
 
-    log_file_path = '/results/town01_illumination_run_autopilot.json'
+    log_file_path = '/results/illumination_experiment_town01_autopilot.json'
     town01_illumination_aggregate_autopilot, town01_illumination_by_method_autopilot = process_log_file(log_file_path,
                                                                                     autopilot = False,
                                                                                     plot_kvalues=False,
@@ -41,19 +41,20 @@ def main():
                                                                                     latex_failurerates=False)
 
     plot_savedir = '/results/plots_town01'
+    Path(plot_savedir).mkdir(parents=True, exist_ok=True)
     create_failurerate_recall_plots(town01_illumination_by_method_autopilot, town01_illumination_by_method, town01_odometry_failure_rate, town01_odometry_fragmentation, plot_savedir, 'Town01', exclude_legend=True)
 
 
     ## Town10
 
-    log_file_path = '/results/odometry_only_town10HD.json'
+    log_file_path = '/results/illumination_experiment_town10_odometry_only.json'
     town10_odometry_aggregate = aggregate_results(log_file_path)
     with open(log_file_path.replace('.json', '_grouped_by_scenario.json'), 'w') as f:
         json.dump( town10_odometry_aggregate, f,indent=4)
     town10_odometry_failure_rate = town10_odometry_aggregate["combination_000.xosc"]["scenario_results"]["crashes_per_km"] 
     town10_odometry_fragmentation = town10_odometry_aggregate["combination_000.xosc"]["scenario_results"]["crash_fragmentation"] 
 
-    log_file_path = '/results/town10HD_illumination_run_navigation.json'
+    log_file_path = '/results/illumination_experiment_town10.json'
     town10_illumination_aggregate, town10_illumination_by_method = process_log_file(log_file_path,
                                                                                     autopilot = False,
                                                                                     plot_kvalues=True,
@@ -62,7 +63,7 @@ def main():
                                                                                     latex_accuracies=False,
                                                                                     latex_failurerates=True)
 
-    log_file_path = '/results/town10HD_illumination_run_autopilot.json'
+    log_file_path = '/results/illumination_experiment_town10_autopilot.json'
     town10_illumination_aggregate_autopilot, town10_illumination_by_method_autopilot = process_log_file(log_file_path,
                                                                                     autopilot = False,
                                                                                     plot_kvalues=False,
@@ -72,11 +73,12 @@ def main():
                                                                                     latex_failurerates=False)
 
     plot_savedir = '/results/plots_town10'
+    Path(plot_savedir).mkdir(parents=True, exist_ok=True)
     exclude_ylabel = True
     create_failurerate_recall_plots(town10_illumination_by_method_autopilot, town10_illumination_by_method, town10_odometry_failure_rate, town10_odometry_fragmentation, plot_savedir,'Town10', exclude_ylabel)
 
-
-    create_computation_delay_plots(town10_illumination_by_method_autopilot)
+    savepath = '/results/plots_town10/delay_plot.png'
+    create_computation_delay_plots(town10_illumination_by_method_autopilot, savepath)
 
 def plot_crash_locations(scenario_runs):
 
@@ -145,9 +147,8 @@ def process_log_file(log_file_path, autopilot, plot_kvalues, odometry_failure_ra
 
     return scenario_aggregate_results, scenario_results_by_method
 
-def create_computation_delay_plots(recallrates_by_method):
+def create_computation_delay_plots(recallrates_by_method, savepath):
 
-    savepath = '/results/plots_town10/delay_plot_sp.png'
     colors = []
     markers = []
     markersize =50
