@@ -69,7 +69,8 @@ def generate_launch_description():
             ),
             launch_arguments={
                 'objects_definition_file': launch.substitutions.LaunchConfiguration('objects_config'),
-                'role_name': launch.substitutions.LaunchConfiguration('role_name')
+                'role_name': launch.substitutions.LaunchConfiguration('role_name'),
+                'spawn_point_ego_vehicle': {"x": 2.0, "y": 0.0, "z": 2.0, "roll": 0.0, "pitch": 0.0, "yaw": 270.0} # The d>
             }.items()
         ),
         launch.actions.IncludeLaunchDescription(

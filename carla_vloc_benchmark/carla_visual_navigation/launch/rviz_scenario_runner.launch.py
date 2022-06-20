@@ -30,10 +30,9 @@ def get_scenarios_from_path(scenario_dir):
     return ros_topic_msg_string
 
 package_name = "carla_visual_navigation"
-gui_scenarios_path = '/scenarios/param_fix_tests'
+gui_scenarios_path = get_scenarios(package_name)
 rviz2_config_path = "config/visual_navigation_ros2.rviz"
 objects_config_path = os.path.join(get_package_share_directory(package_name), "config/objects.json")
-#objects_config_path = "/scenarios/param_fix_tests/objects.json"
 
 
 def generate_launch_description():
@@ -49,7 +48,7 @@ def generate_launch_description():
         # Specify the town to load as argument for ros2 launch (town:=$town_name$)
         launch.actions.DeclareLaunchArgument(
             name='town',
-            default_value=None
+            default_value='None'
         ),
         launch.actions.DeclareLaunchArgument(
             name='timeout',
@@ -120,21 +119,10 @@ def generate_launch_description():
             ),
             launch_arguments={
                 'objects_definition_file': launch.substitutions.LaunchConfiguration('objects_config'),
-                'role_name': launch.substitutions.LaunchConfiguration('role_name')
+                'role_name': launch.substitutions.LaunchConfiguration('role_name'),
+                'spawn_point_ego_vehicle': {"x": 2.0, "y": 0.0, "z": 2.0, "roll": 0.0, "pitch": 0.0, "yaw": 270.0} # The default value causes bridge to crash -> inject some value
             }.items()
         ),
-        # launch.actions.IncludeLaunchDescription(
-        #     launch.launch_description_sources.PythonLaunchDescriptionSource(
-        #         os.path.join(get_package_share_directory(
-        #             'carla_waypoint_publisher'), 'carla_waypoint_publisher.launch.py')
-        #     ),
-        #     launch_arguments={
-        #         'host': launch.substitutions.LaunchConfiguration('host'),
-        #         'port': launch.substitutions.LaunchConfiguration('port'),
-        #         'timeout': launch.substitutions.LaunchConfiguration('timeout'),
-        #         'role_name': launch.substitutions.LaunchConfiguration('role_name')
-        #     }.items()
-        # ),
         launch.actions.IncludeLaunchDescription(
             launch.launch_description_sources.PythonLaunchDescriptionSource(
                 os.path.join(get_package_share_directory(
