@@ -92,11 +92,11 @@ When running for the first time, you need to capture the images from the test ro
 Inside the container terminal from last step:
 
 ```sh
-cd /opt/carla_visual_navigation/src/carla_visual_navigation/scripts
+cd /opt/carla_vloc_benchmark/src/carla_visual_navigation/scripts
 
 # Generate the scenario files describing gallery image capture and experiments
 # See /scenarios/experiment_descriptions.yml for list of experiments
-python template_scenario_generator.py
+python template_scenario_creator.py
 
 # Launch terminal multiplexer
 tmux
@@ -106,7 +106,7 @@ tmux
 ros2 launch carla_visual_navigation rviz_scenario_runner.launch.py town:='Town01'
 
 # Tmux window 2: start gallery capture execution
-ros2 launch carla_visual_navigation scenario_executor.launch.py scenario_dir:='/scenarios/gallery_capture_town01_route01' repetitions:=1
+ros2 launch carla_visual_navigation scenario_executor.launch.py scenario_dir:='/scenarios/gallery_capture_town01_route1' repetitions:=1
 ```
 
 If everything went okay, you should now have a folder `/image-gallery/town01_route1` with images captured along the route. Repeat for Town10:
@@ -116,15 +116,15 @@ If everything went okay, you should now have a folder `/image-gallery/town01_rou
 ros2 launch carla_visual_navigation rviz_scenario_runner.launch.py town:='Town10HD'
 
 # Tmux window 2
-ros2 launch carla_visual_navigation scenario_executor.launch.py scenario_dir:='/scenarios/gallery_capture_town10_route01' repetitions:=1
+ros2 launch carla_visual_navigation scenario_executor.launch.py scenario_dir:='/scenarios/town10_route1' repetitions:=1
 ```
 
 ### 3. Run 3D reconstruction for the gallery images
 
-Next, we triangulate sparse 3D models from the gallery images and their camera poses. The models are saved in the respective image capture folders in `/image-gallery/` 
+Next, we triangulate sparse 3D models from the gallery images and their camera poses. The models are saved in the respective image capture folders in `/image-gallery/`
 
 ```sh
-cd /opt/carla_visual_navigation/src/carla_visual_navigation/scripts
+cd /opt/carla_vloc_benchmark/src/carla_visual_navigation/scripts
 
 # Check the visual localization methods used in the experiments and run 3D reconstruction with each of them
 python create_gallery_reconstructions.py --experiment_path '/scenarios/illumination_experiment_town01'
@@ -136,6 +136,8 @@ python create_gallery_reconstructions.py --experiment_path '/scenarios/illuminat
 You can visually examine the reconstructions with
 
 ```sh
+cd /opt/visual_robot_localization/src/visual_robot_localization/utils
+
 ./visualize_colmap.sh --image_folder '/image-gallery/town01_route1' --localization_combination_name 'netvlad+superpoint_aachen+superglue'
 ```
 
@@ -153,20 +155,20 @@ tmux
 ros2 launch carla_visual_navigation cli_scenario_runner.launch.py town:='Town01'
 
 # In the second window, start scenario execution for Town01, with 5 repetitions of each scenario file
-ros2 launch carla_visual_navigation scenario_executor.launch.py scenario_dir:='/scenarios/illumination_experiment_town01_route01' repetitions:=5
+ros2 launch carla_visual_navigation scenario_executor.launch.py scenario_dir:='/scenarios/illumination_experiment_town01' repetitions:=5
 
 # Once all the scenarios have been finished, run the scenarios with autopilot to measure visual localization recall
-ros2 launch carla_visual_navigation scenario_executor.launch.py scenario_dir:='/scenarios/illumination_experiment_town01_route01_autopilot' repetitions:=1
+ros2 launch carla_visual_navigation scenario_executor.launch.py scenario_dir:='/scenarios/illumination_experiment_town01_autopilot' repetitions:=1
 
 # Next, measure navigation performance with wheel odometry only
-ros2 launch carla_visual_navigation scenario_executor.launch.py scenario_dir:='/scenarios/illumination_experiment_town01_route01_odometry_only' repetitions:=5
+ros2 launch carla_visual_navigation scenario_executor.launch.py scenario_dir:='/scenarios/illumination_experiment_town01_odometry_only' repetitions:=5
 ```
 
 Completing the experiments can take a long time. Once the experiments have been completed, repeat for the Town10 envrionment. The results are saved to `/results/`. To produce aggregated metrics, you can run
 
 ```sh
 cd /opt/carla_visual_navigation/src/carla_visual_navigation/scripts
-python analyze_illumination_scenario_results.py
+python analyze_illumination_scenario_logs.py
 ```
 
 ## Adding new visual localization methods
@@ -177,4 +179,3 @@ The visual localization methods are integrated through the awesome [hloc toolbox
 ## Defining your own experiments
 
 Documentation TBD. See `/scenarios/experiment_descriptions.yml` and the scenario template `carla_vloc_benchmark/carla_visual_navigation/config/VisualNavigatorTemplate.xosc` for some options.
-
