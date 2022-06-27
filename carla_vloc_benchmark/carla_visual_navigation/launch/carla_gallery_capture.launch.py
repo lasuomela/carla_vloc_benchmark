@@ -51,26 +51,83 @@ def generate_launch_description():
 	name='synchrony_diff',
     	default_value='0.01'
         ),
-        launch.actions.IncludeLaunchDescription(
-    		launch.launch_description_sources.PythonLaunchDescriptionSource(
-        	os.path.join(get_package_share_directory(
-   	 	'carla_ad_agent'), 'carla_ad_agent.launch.py')
-	    ),
-	    launch_arguments={
-		'avoid_risk': launch.substitutions.LaunchConfiguration('avoid_risk'),
-	    }.items()
-	),
-        launch.actions.IncludeLaunchDescription(
-            launch.launch_description_sources.PythonLaunchDescriptionSource(
-                os.path.join(get_package_share_directory(
-                    'carla_waypoint_publisher'), 'carla_waypoint_publisher.launch.py')
-            ),
-            launch_arguments={
-                'host': launch.substitutions.LaunchConfiguration('host'),
-                'port': launch.substitutions.LaunchConfiguration('port'),
-                'timeout': launch.substitutions.LaunchConfiguration('timeout'),
-                'role_name': 'ego_vehicle'
-            }.items()
+        launch.actions.DeclareLaunchArgument(
+            name='Kp_lateral',
+            default_value='0.9'
+        ),
+        launch.actions.DeclareLaunchArgument(
+            name='Ki_lateral',
+            default_value='0.0'
+        ),
+        launch.actions.DeclareLaunchArgument(
+            name='Kd_lateral',
+            default_value='0.0'
+        ),
+        launch.actions.DeclareLaunchArgument(
+            name='Kp_longitudinal',
+            default_value='0.206'
+        ),
+        launch.actions.DeclareLaunchArgument(
+            name='Ki_longitudinal',
+            default_value='0.0206'
+        ),
+        launch.actions.DeclareLaunchArgument(
+            name='Kd_longitudinal',
+            default_value='0.515'
+        ),
+        launch.actions.DeclareLaunchArgument(
+            name='control_time_step',
+            default_value= '0.05'
+        ),
+#        launch.actions.IncludeLaunchDescription(
+#    		launch.launch_description_sources.PythonLaunchDescriptionSource(
+#        	os.path.join(get_package_share_directory(
+#   	 	'carla_ad_agent'), 'carla_ad_agent.launch.py')
+#	    ),
+#	    launch_arguments={
+#		'avoid_risk': launch.substitutions.LaunchConfiguration('avoid_risk'),
+#	    }.items()
+#	),
+#        launch.actions.IncludeLaunchDescription(
+#            launch.launch_description_sources.PythonLaunchDescriptionSource(
+#                os.path.join(get_package_share_directory(
+#                    'carla_waypoint_publisher'), 'carla_waypoint_publisher.launch.py')
+#            ),
+#            launch_arguments={
+#                'host': launch.substitutions.LaunchConfiguration('host'),
+#                'port': launch.substitutions.LaunchConfiguration('port'),
+#                'timeout': launch.substitutions.LaunchConfiguration('timeout'),
+#                'role_name': 'ego_vehicle'
+#            }.items()
+#        ),
+        launch_ros.actions.Node(
+            package='carla_visual_navigation_agent',
+            executable='local_planner_pid',
+            name=['local_planner_', launch.substitutions.LaunchConfiguration('role_name')],
+            output='screen',
+            parameters=[
+                {
+                    'use_sim_time': True
+                },
+                {
+                    'role_name': launch.substitutions.LaunchConfiguration('role_name')
+                },
+                {
+                    'odometry_topic': '/carla/ego_vehicle/odometry'
+                },
+                {
+                    'Kp_longitudinal': launch.substitutions.LaunchConfiguration('Kp_longitudinal')
+                },
+                {
+                    'Ki_longitudinal': launch.substitutions.LaunchConfiguration('Ki_longitudinal')
+                },
+                {
+                    'Kd_longitudinal': launch.substitutions.LaunchConfiguration('Kd_longitudinal')
+                },
+                {
+                    'control_time_step': launch.substitutions.LaunchConfiguration('control_time_step')
+                }
+            ]
         ),
         launch_ros.actions.Node(
             package=package_name,
