@@ -574,6 +574,759 @@ illumination_experiment_town10_autopilot:
 ############################################
 
 #####################
+# GALLERY CAPTURE DISTANCE CHANGE
+
+# GALLERY CAPTURE DESCRIPTIONS (image_density changed)
+
+# Distance between gallery images in meters = 3
+gallery_capture1_town01:
+  template_path: '/opt/carla_vloc_benchmark/src/carla_visual_navigation/config/GalleryCaptureTemplate.xosc'
+  scenario_save_dir: '/scenarios/gallery_capture1_town01'
+
+  # Paths relative to location of the generated scenario file
+  catalog_path: "../../opt/carla_vloc_benchmark/src/carla_visual_navigation/config/catalogs"
+  controller_entry_name: 'GalleryCaptureAgent'
+
+  town_name: Town01
+  route_group:
+      route_entry_name: "Map01_route01_maneuver"
+      goal_location_x: 88.5
+      goal_location_y: 112.0
+  goal_location_tolerance: 1
+  target_speed: 8.0
+
+  # Gallery capture parameters
+  image_save_path: "/image-gallery/gallery_capture1_town01/"
+  # Distance between gallery images in meters
+  image_density: 3.0
+
+  sun_group:
+    sun_intensity_startvalue: 1.0
+    sun_elevation_startvalue: 1.31
+    intensity_decrease_multiplier: 0.5
+    elevation_decrease_multiplier: 0.5
+    k_values: [0]
+
+  precipitation_group:
+    precipitation_type: "dry"
+    precipitation_intensity: 0.0
+
+  visual_range: 100000.0
+  cloud_state: 'free'
+
+# Distance between gallery images in meters = 4
+gallery_capture2_town01:
+  template_path: '/opt/carla_vloc_benchmark/src/carla_visual_navigation/config/GalleryCaptureTemplate.xosc'
+  scenario_save_dir: '/scenarios/gallery_capture2_town01'
+
+  # Paths relative to location of the generated scenario file
+  catalog_path: "../../opt/carla_vloc_benchmark/src/carla_visual_navigation/config/catalogs"
+  controller_entry_name: 'GalleryCaptureAgent'
+
+  town_name: Town01
+  route_group:
+      route_entry_name: "Map01_route01_maneuver"
+      goal_location_x: 88.5
+      goal_location_y: 112.0
+  goal_location_tolerance: 1
+  target_speed: 8.0
+
+  # Gallery capture parameters
+  image_save_path: "/image-gallery/gallery_capture2_town01/"
+  # Distance between gallery images in meters
+  image_density: 4.0
+
+  sun_group:
+    sun_intensity_startvalue: 1.0
+    sun_elevation_startvalue: 1.31
+    intensity_decrease_multiplier: 0.5
+    elevation_decrease_multiplier: 0.5
+    k_values: [0]
+
+  precipitation_group:
+    precipitation_type: "dry"
+    precipitation_intensity: 0.0
+
+  visual_range: 100000.0
+  cloud_state: 'free'
+
+# Distance between gallery images in meters = 5
+gallery_capture3_town01:
+  template_path: '/opt/carla_vloc_benchmark/src/carla_visual_navigation/config/GalleryCaptureTemplate.xosc'
+  scenario_save_dir: '/scenarios/gallery_capture3_town01'
+
+  # Paths relative to location of the generated scenario file
+  catalog_path: "../../opt/carla_vloc_benchmark/src/carla_visual_navigation/config/catalogs"
+  controller_entry_name: 'GalleryCaptureAgent'
+
+  town_name: Town01
+  route_group:
+      route_entry_name: "Map01_route01_maneuver"
+      goal_location_x: 88.5
+      goal_location_y: 112.0
+  goal_location_tolerance: 1
+  target_speed: 8.0
+
+  # Gallery capture parameters
+  image_save_path: "/image-gallery/gallery_capture3_town01/"
+  # Distance between gallery images in meters
+  image_density: 5.0
+
+  sun_group:
+    sun_intensity_startvalue: 1.0
+    sun_elevation_startvalue: 1.31
+    intensity_decrease_multiplier: 0.5
+    elevation_decrease_multiplier: 0.5
+    k_values: [0]
+
+  precipitation_group:
+    precipitation_type: "dry"
+    precipitation_intensity: 0.0
+
+  visual_range: 100000.0
+  cloud_state: 'free'
+
+# Distance between gallery images in meters = 6
+gallery_capture4_town01:
+  template_path: '/opt/carla_vloc_benchmark/src/carla_visual_navigation/config/GalleryCaptureTemplate.xosc'
+  scenario_save_dir: '/scenarios/gallery_capture4_town01'
+
+  # Paths relative to location of the generated scenario file
+  catalog_path: "../../opt/carla_vloc_benchmark/src/carla_visual_navigation/config/catalogs"
+  controller_entry_name: 'GalleryCaptureAgent'
+
+  town_name: Town01
+  route_group:
+      route_entry_name: "Map01_route01_maneuver"
+      goal_location_x: 88.5
+      goal_location_y: 112.0
+  goal_location_tolerance: 1
+  target_speed: 8.0
+
+  # Gallery capture parameters
+  image_save_path: "/image-gallery/gallery_capture4_town01/"
+  # Distance between gallery images in meters
+  image_density: 6.0
+
+  sun_group:
+    sun_intensity_startvalue: 1.0
+    sun_elevation_startvalue: 1.31
+    intensity_decrease_multiplier: 0.5
+    elevation_decrease_multiplier: 0.5
+    k_values: [0]
+
+  precipitation_group:
+    precipitation_type: "dry"
+    precipitation_intensity: 0.0
+
+  visual_range: 100000.0
+  cloud_state: 'free'
+
+# Distance between gallery images in meters = 7
+gallery_capture5_town01:
+  template_path: '/opt/carla_vloc_benchmark/src/carla_visual_navigation/config/GalleryCaptureTemplate.xosc'
+  scenario_save_dir: '/scenarios/gallery_capture5_town01'
+
+  # Paths relative to location of the generated scenario file
+  catalog_path: "../../opt/carla_vloc_benchmark/src/carla_visual_navigation/config/catalogs"
+  controller_entry_name: 'GalleryCaptureAgent'
+
+  town_name: Town01
+  route_group:
+      route_entry_name: "Map01_route01_maneuver"
+      goal_location_x: 88.5
+      goal_location_y: 112.0
+  goal_location_tolerance: 1
+  target_speed: 8.0
+
+  # Gallery capture parameters
+  image_save_path: "/image-gallery/gallery_capture5_town01/"
+  # Distance between gallery images in meters
+  image_density: 7.0
+
+  sun_group:
+    sun_intensity_startvalue: 1.0
+    sun_elevation_startvalue: 1.31
+    intensity_decrease_multiplier: 0.5
+    elevation_decrease_multiplier: 0.5
+    k_values: [0]
+
+  precipitation_group:
+    precipitation_type: "dry"
+    precipitation_intensity: 0.0
+
+  visual_range: 100000.0
+  cloud_state: 'free'
+
+# Distance between gallery images in meters = 8
+gallery_capture6_town01:
+  template_path: '/opt/carla_vloc_benchmark/src/carla_visual_navigation/config/GalleryCaptureTemplate.xosc'
+  scenario_save_dir: '/scenarios/gallery_capture6_town01'
+
+  # Paths relative to location of the generated scenario file
+  catalog_path: "../../opt/carla_vloc_benchmark/src/carla_visual_navigation/config/catalogs"
+  controller_entry_name: 'GalleryCaptureAgent'
+
+  town_name: Town01
+  route_group:
+      route_entry_name: "Map01_route01_maneuver"
+      goal_location_x: 88.5
+      goal_location_y: 112.0
+  goal_location_tolerance: 1
+  target_speed: 8.0
+
+  # Gallery capture parameters
+  image_save_path: "/image-gallery/gallery_capture6_town01/"
+  # Distance between gallery images in meters
+  image_density: 8.0
+
+  sun_group:
+    sun_intensity_startvalue: 1.0
+    sun_elevation_startvalue: 1.31
+    intensity_decrease_multiplier: 0.5
+    elevation_decrease_multiplier: 0.5
+    k_values: [0]
+
+  precipitation_group:
+    precipitation_type: "dry"
+    precipitation_intensity: 0.0
+
+  visual_range: 100000.0
+  cloud_state: 'free'
+
+# Distance between gallery images in meters = 9
+gallery_capture7_town01:
+  template_path: '/opt/carla_vloc_benchmark/src/carla_visual_navigation/config/GalleryCaptureTemplate.xosc'
+  scenario_save_dir: '/scenarios/gallery_capture7_town01'
+
+  # Paths relative to location of the generated scenario file
+  catalog_path: "../../opt/carla_vloc_benchmark/src/carla_visual_navigation/config/catalogs"
+  controller_entry_name: 'GalleryCaptureAgent'
+
+  town_name: Town01
+  route_group:
+      route_entry_name: "Map01_route01_maneuver"
+      goal_location_x: 88.5
+      goal_location_y: 112.0
+  goal_location_tolerance: 1
+  target_speed: 8.0
+
+  # Gallery capture parameters
+  image_save_path: "/image-gallery/gallery_capture7_town01/"
+  # Distance between gallery images in meters
+  image_density: 9.0
+
+  sun_group:
+    sun_intensity_startvalue: 1.0
+    sun_elevation_startvalue: 1.31
+    intensity_decrease_multiplier: 0.5
+    elevation_decrease_multiplier: 0.5
+    k_values: [0]
+
+  precipitation_group:
+    precipitation_type: "dry"
+    precipitation_intensity: 0.0
+
+  visual_range: 100000.0
+  cloud_state: 'free'
+
+# Distance between gallery images in meters = 10
+gallery_capture8_town01:
+  template_path: '/opt/carla_vloc_benchmark/src/carla_visual_navigation/config/GalleryCaptureTemplate.xosc'
+  scenario_save_dir: '/scenarios/gallery_capture8_town01'
+
+  # Paths relative to location of the generated scenario file
+  catalog_path: "../../opt/carla_vloc_benchmark/src/carla_visual_navigation/config/catalogs"
+  controller_entry_name: 'GalleryCaptureAgent'
+
+  town_name: Town01
+  route_group:
+      route_entry_name: "Map01_route01_maneuver"
+      goal_location_x: 88.5
+      goal_location_y: 112.0
+  goal_location_tolerance: 1
+  target_speed: 8.0
+
+  # Gallery capture parameters
+  image_save_path: "/image-gallery/gallery_capture8_town01/"
+  # Distance between gallery images in meters
+  image_density: 10.0
+
+  sun_group:
+    sun_intensity_startvalue: 1.0
+    sun_elevation_startvalue: 1.31
+    intensity_decrease_multiplier: 0.5
+    elevation_decrease_multiplier: 0.5
+    k_values: [0]
+
+  precipitation_group:
+    precipitation_type: "dry"
+    precipitation_intensity: 0.0
+
+  visual_range: 100000.0
+  cloud_state: 'free'
+
+
+# VIEWPOINT EXPERIMENTS: GALLERY CAPTURE CHANGES
+
+# gallery_capture1_town01 => image_density=3.0m
+viewpoint_experiment_gallery_capture1_town01:
+  template_path: '/opt/carla_vloc_benchmark/src/carla_visual_navigation/config/VisualNavigatorTemplate.xosc'
+  scenario_save_dir: '/scenarios/viewpoint_experiment_gallery_capture1_town01'
+  log_file_path: "/results/viewpoint_experiment_gallery_capture1_town01.json"
+  log_results: True
+
+  # Paths relative to location of the generated scenario file
+  logger_script_path: "../../opt/carla_vloc_benchmark/src/carla_visual_navigation/utils/run-scenario-log.sh"
+  catalog_path: "../../opt/carla_vloc_benchmark/src/carla_visual_navigation/config/catalogs"
+  planner_stop_script_path: "../../opt/carla_vloc_benchmark/src/carla_visual_navigation/utils/run-planner-stop.sh"
+
+  controller_entry_name: 'VisualNavigatingAgent'
+  ekf_config_path: "/opt/carla_vloc_benchmark/src/carla_visual_navigation_agent/config/ekf.yaml"
+
+  town_name: Town01
+  route_group:
+      route_entry_name: "Map01_route01_maneuver"
+      goal_location_x: 88.5
+      goal_location_y: 112.0
+  goal_location_tolerance: 10
+  target_speed: 4.0
+  image_gallery_path: "/image-gallery/gallery_capture1_town01/"
+  localization_frequence: 2.0
+
+  top_k_matches: 5
+  global_extractor_name:
+    - "netvlad"
+    - "dir"
+
+  local_extractor_group:
+    - local_extractor_name: "d2net-ss"
+      local_matcher_name: "NN-ratio"
+
+    - local_extractor_name: "superpoint_aachen"
+      local_matcher_name: "superglue"
+
+    - local_extractor_name: "d2net-ss"
+      local_matcher_name: "NN-ratio"
+
+    - local_extractor_name: "sift"
+      local_matcher_name: "NN-ratio"
+
+  sun_group:
+    sun_intensity_startvalue: 1.0
+    sun_elevation_startvalue: 1.31
+    intensity_decrease_multiplier: 0.5
+    elevation_decrease_multiplier: 0.5
+    k_values: [0, 5]
+
+  precipitation_group:
+    precipitation_type: "dry"
+    precipitation_intensity: 0.0
+
+  visual_range: 100000.0
+  cloud_state: 'free'
+
+# gallery_capture2_town01 => image_density=4.0m
+viewpoint_experiment_gallery_capture2_town01:
+  template_path: '/opt/carla_vloc_benchmark/src/carla_visual_navigation/config/VisualNavigatorTemplate.xosc'
+  scenario_save_dir: '/scenarios/viewpoint_experiment_gallery_capture2_town01'
+  log_file_path: "/results/viewpoint_experiment_gallery_capture2_town01.json"
+  log_results: True
+
+  # Paths relative to location of the generated scenario file
+  logger_script_path: "../../opt/carla_vloc_benchmark/src/carla_visual_navigation/utils/run-scenario-log.sh"
+  catalog_path: "../../opt/carla_vloc_benchmark/src/carla_visual_navigation/config/catalogs"
+  planner_stop_script_path: "../../opt/carla_vloc_benchmark/src/carla_visual_navigation/utils/run-planner-stop.sh"
+
+  controller_entry_name: 'VisualNavigatingAgent'
+  ekf_config_path: "/opt/carla_vloc_benchmark/src/carla_visual_navigation_agent/config/ekf.yaml"
+
+  town_name: Town01
+  route_group:
+      route_entry_name: "Map01_route01_maneuver"
+      goal_location_x: 88.5
+      goal_location_y: 112.0
+  goal_location_tolerance: 10
+  target_speed: 4.0
+  image_gallery_path: "/image-gallery/gallery_capture2_town01/"
+  localization_frequence: 2.0
+
+  top_k_matches: 5
+  global_extractor_name:
+    - "netvlad"
+    - "dir"
+
+  local_extractor_group:
+    - local_extractor_name: "d2net-ss"
+      local_matcher_name: "NN-ratio"
+
+    - local_extractor_name: "superpoint_aachen"
+      local_matcher_name: "superglue"
+
+    - local_extractor_name: "d2net-ss"
+      local_matcher_name: "NN-ratio"
+
+    - local_extractor_name: "sift"
+      local_matcher_name: "NN-ratio"
+
+  sun_group:
+    sun_intensity_startvalue: 1.0
+    sun_elevation_startvalue: 1.31
+    intensity_decrease_multiplier: 0.5
+    elevation_decrease_multiplier: 0.5
+    k_values: [0, 5]
+
+  precipitation_group:
+    precipitation_type: "dry"
+    precipitation_intensity: 0.0
+
+  visual_range: 100000.0
+  cloud_state: 'free'
+
+# gallery_capture3_town01 => image_density=5.0m
+viewpoint_experiment_gallery_capture3_town01:
+  template_path: '/opt/carla_vloc_benchmark/src/carla_visual_navigation/config/VisualNavigatorTemplate.xosc'
+  scenario_save_dir: '/scenarios/viewpoint_experiment_gallery_capture3_town01'
+  log_file_path: "/results/viewpoint_experiment_gallery_capture3_town01.json"
+  log_results: True
+
+  # Paths relative to location of the generated scenario file
+  logger_script_path: "../../opt/carla_vloc_benchmark/src/carla_visual_navigation/utils/run-scenario-log.sh"
+  catalog_path: "../../opt/carla_vloc_benchmark/src/carla_visual_navigation/config/catalogs"
+  planner_stop_script_path: "../../opt/carla_vloc_benchmark/src/carla_visual_navigation/utils/run-planner-stop.sh"
+
+  controller_entry_name: 'VisualNavigatingAgent'
+  ekf_config_path: "/opt/carla_vloc_benchmark/src/carla_visual_navigation_agent/config/ekf.yaml"
+
+  town_name: Town01
+  route_group:
+      route_entry_name: "Map01_route01_maneuver"
+      goal_location_x: 88.5
+      goal_location_y: 112.0
+  goal_location_tolerance: 10
+  target_speed: 4.0
+  image_gallery_path: "/image-gallery/gallery_capture3_town01/"
+  localization_frequence: 2.0
+
+  top_k_matches: 5
+  global_extractor_name:
+    - "netvlad"
+    - "dir"
+
+  local_extractor_group:
+    - local_extractor_name: "d2net-ss"
+      local_matcher_name: "NN-ratio"
+
+    - local_extractor_name: "superpoint_aachen"
+      local_matcher_name: "superglue"
+
+    - local_extractor_name: "d2net-ss"
+      local_matcher_name: "NN-ratio"
+
+    - local_extractor_name: "sift"
+      local_matcher_name: "NN-ratio"
+
+  sun_group:
+    sun_intensity_startvalue: 1.0
+    sun_elevation_startvalue: 1.31
+    intensity_decrease_multiplier: 0.5
+    elevation_decrease_multiplier: 0.5
+    k_values: [0, 5]
+
+  precipitation_group:
+    precipitation_type: "dry"
+    precipitation_intensity: 0.0
+
+  visual_range: 100000.0
+  cloud_state: 'free'
+
+# gallery_capture4_town01 => image_density=6.0m
+viewpoint_experiment_gallery_capture4_town01:
+  template_path: '/opt/carla_vloc_benchmark/src/carla_visual_navigation/config/VisualNavigatorTemplate.xosc'
+  scenario_save_dir: '/scenarios/viewpoint_experiment_gallery_capture4_town01'
+  log_file_path: "/results/viewpoint_experiment_gallery_capture4_town01.json"
+  log_results: True
+
+  # Paths relative to location of the generated scenario file
+  logger_script_path: "../../opt/carla_vloc_benchmark/src/carla_visual_navigation/utils/run-scenario-log.sh"
+  catalog_path: "../../opt/carla_vloc_benchmark/src/carla_visual_navigation/config/catalogs"
+  planner_stop_script_path: "../../opt/carla_vloc_benchmark/src/carla_visual_navigation/utils/run-planner-stop.sh"
+
+  controller_entry_name: 'VisualNavigatingAgent'
+  ekf_config_path: "/opt/carla_vloc_benchmark/src/carla_visual_navigation_agent/config/ekf.yaml"
+
+  town_name: Town01
+  route_group:
+      route_entry_name: "Map01_route01_maneuver"
+      goal_location_x: 88.5
+      goal_location_y: 112.0
+  goal_location_tolerance: 10
+  target_speed: 4.0
+  image_gallery_path: "/image-gallery/gallery_capture4_town01/"
+  localization_frequence: 2.0
+
+  top_k_matches: 5
+  global_extractor_name:
+    - "netvlad"
+    - "dir"
+
+  local_extractor_group:
+    - local_extractor_name: "d2net-ss"
+      local_matcher_name: "NN-ratio"
+
+    - local_extractor_name: "superpoint_aachen"
+      local_matcher_name: "superglue"
+
+    - local_extractor_name: "d2net-ss"
+      local_matcher_name: "NN-ratio"
+
+    - local_extractor_name: "sift"
+      local_matcher_name: "NN-ratio"
+
+  sun_group:
+    sun_intensity_startvalue: 1.0
+    sun_elevation_startvalue: 1.31
+    intensity_decrease_multiplier: 0.5
+    elevation_decrease_multiplier: 0.5
+    k_values: [0, 5]
+
+  precipitation_group:
+    precipitation_type: "dry"
+    precipitation_intensity: 0.0
+
+  visual_range: 100000.0
+  cloud_state: 'free'
+
+# gallery_capture5_town01 => image_density=7.0m
+viewpoint_experiment_gallery_capture5_town01:
+  template_path: '/opt/carla_vloc_benchmark/src/carla_visual_navigation/config/VisualNavigatorTemplate.xosc'
+  scenario_save_dir: '/scenarios/viewpoint_experiment_gallery_capture5_town01'
+  log_file_path: "/results/viewpoint_experiment_gallery_capture5_town01.json"
+  log_results: True
+
+  # Paths relative to location of the generated scenario file
+  logger_script_path: "../../opt/carla_vloc_benchmark/src/carla_visual_navigation/utils/run-scenario-log.sh"
+  catalog_path: "../../opt/carla_vloc_benchmark/src/carla_visual_navigation/config/catalogs"
+  planner_stop_script_path: "../../opt/carla_vloc_benchmark/src/carla_visual_navigation/utils/run-planner-stop.sh"
+
+  controller_entry_name: 'VisualNavigatingAgent'
+  ekf_config_path: "/opt/carla_vloc_benchmark/src/carla_visual_navigation_agent/config/ekf.yaml"
+
+  town_name: Town01
+  route_group:
+      route_entry_name: "Map01_route01_maneuver"
+      goal_location_x: 88.5
+      goal_location_y: 112.0
+  goal_location_tolerance: 10
+  target_speed: 4.0
+  image_gallery_path: "/image-gallery/gallery_capture5_town01/"
+  localization_frequence: 2.0
+
+  top_k_matches: 5
+  global_extractor_name:
+    - "netvlad"
+    - "dir"
+
+  local_extractor_group:
+    - local_extractor_name: "d2net-ss"
+      local_matcher_name: "NN-ratio"
+
+    - local_extractor_name: "superpoint_aachen"
+      local_matcher_name: "superglue"
+
+    - local_extractor_name: "d2net-ss"
+      local_matcher_name: "NN-ratio"
+
+    - local_extractor_name: "sift"
+      local_matcher_name: "NN-ratio"
+
+  sun_group:
+    sun_intensity_startvalue: 1.0
+    sun_elevation_startvalue: 1.31
+    intensity_decrease_multiplier: 0.5
+    elevation_decrease_multiplier: 0.5
+    k_values: [0, 5]
+
+  precipitation_group:
+    precipitation_type: "dry"
+    precipitation_intensity: 0.0
+
+  visual_range: 100000.0
+  cloud_state: 'free'
+
+# gallery_capture6_town01 => image_density=8.0m
+viewpoint_experiment_gallery_capture6_town01:
+  template_path: '/opt/carla_vloc_benchmark/src/carla_visual_navigation/config/VisualNavigatorTemplate.xosc'
+  scenario_save_dir: '/scenarios/viewpoint_experiment_gallery_capture6_town01'
+  log_file_path: "/results/viewpoint_experiment_gallery_capture6_town01.json"
+  log_results: True
+
+  # Paths relative to location of the generated scenario file
+  logger_script_path: "../../opt/carla_vloc_benchmark/src/carla_visual_navigation/utils/run-scenario-log.sh"
+  catalog_path: "../../opt/carla_vloc_benchmark/src/carla_visual_navigation/config/catalogs"
+  planner_stop_script_path: "../../opt/carla_vloc_benchmark/src/carla_visual_navigation/utils/run-planner-stop.sh"
+
+  controller_entry_name: 'VisualNavigatingAgent'
+  ekf_config_path: "/opt/carla_vloc_benchmark/src/carla_visual_navigation_agent/config/ekf.yaml"
+
+  town_name: Town01
+  route_group:
+      route_entry_name: "Map01_route01_maneuver"
+      goal_location_x: 88.5
+      goal_location_y: 112.0
+  goal_location_tolerance: 10
+  target_speed: 4.0
+  image_gallery_path: "/image-gallery/gallery_capture6_town01/"
+  localization_frequence: 2.0
+
+  top_k_matches: 5
+  global_extractor_name:
+    - "netvlad"
+    - "dir"
+
+  local_extractor_group:
+    - local_extractor_name: "d2net-ss"
+      local_matcher_name: "NN-ratio"
+
+    - local_extractor_name: "superpoint_aachen"
+      local_matcher_name: "superglue"
+
+    - local_extractor_name: "d2net-ss"
+      local_matcher_name: "NN-ratio"
+
+    - local_extractor_name: "sift"
+      local_matcher_name: "NN-ratio"
+
+  sun_group:
+    sun_intensity_startvalue: 1.0
+    sun_elevation_startvalue: 1.31
+    intensity_decrease_multiplier: 0.5
+    elevation_decrease_multiplier: 0.5
+    k_values: [0, 5]
+
+  precipitation_group:
+    precipitation_type: "dry"
+    precipitation_intensity: 0.0
+
+  visual_range: 100000.0
+  cloud_state: 'free'
+
+# gallery_capture7_town01 => image_density=9.0m
+viewpoint_experiment_gallery_capture7_town01:
+  template_path: '/opt/carla_vloc_benchmark/src/carla_visual_navigation/config/VisualNavigatorTemplate.xosc'
+  scenario_save_dir: '/scenarios/viewpoint_experiment_gallery_capture7_town01'
+  log_file_path: "/results/viewpoint_experiment_gallery_capture7_town01.json"
+  log_results: True
+
+  # Paths relative to location of the generated scenario file
+  logger_script_path: "../../opt/carla_vloc_benchmark/src/carla_visual_navigation/utils/run-scenario-log.sh"
+  catalog_path: "../../opt/carla_vloc_benchmark/src/carla_visual_navigation/config/catalogs"
+  planner_stop_script_path: "../../opt/carla_vloc_benchmark/src/carla_visual_navigation/utils/run-planner-stop.sh"
+
+  controller_entry_name: 'VisualNavigatingAgent'
+  ekf_config_path: "/opt/carla_vloc_benchmark/src/carla_visual_navigation_agent/config/ekf.yaml"
+
+  town_name: Town01
+  route_group:
+      route_entry_name: "Map01_route01_maneuver"
+      goal_location_x: 88.5
+      goal_location_y: 112.0
+  goal_location_tolerance: 10
+  target_speed: 4.0
+  image_gallery_path: "/image-gallery/gallery_capture7_town01/"
+  localization_frequence: 2.0
+
+  top_k_matches: 5
+  global_extractor_name:
+    - "netvlad"
+    - "dir"
+
+  local_extractor_group:
+    - local_extractor_name: "d2net-ss"
+      local_matcher_name: "NN-ratio"
+
+    - local_extractor_name: "superpoint_aachen"
+      local_matcher_name: "superglue"
+
+    - local_extractor_name: "d2net-ss"
+      local_matcher_name: "NN-ratio"
+
+    - local_extractor_name: "sift"
+      local_matcher_name: "NN-ratio"
+
+  sun_group:
+    sun_intensity_startvalue: 1.0
+    sun_elevation_startvalue: 1.31
+    intensity_decrease_multiplier: 0.5
+    elevation_decrease_multiplier: 0.5
+    k_values: [0, 5]
+
+  precipitation_group:
+    precipitation_type: "dry"
+    precipitation_intensity: 0.0
+
+  visual_range: 100000.0
+  cloud_state: 'free'
+
+# gallery_capture8_town01 => image_density=10.0m
+viewpoint_experiment_gallery_capture8_town01:
+  template_path: '/opt/carla_vloc_benchmark/src/carla_visual_navigation/config/VisualNavigatorTemplate.xosc'
+  scenario_save_dir: '/scenarios/viewpoint_experiment_gallery_capture8_town01'
+  log_file_path: "/results/viewpoint_experiment_gallery_capture8_town01.json"
+  log_results: True
+
+  # Paths relative to location of the generated scenario file
+  logger_script_path: "../../opt/carla_vloc_benchmark/src/carla_visual_navigation/utils/run-scenario-log.sh"
+  catalog_path: "../../opt/carla_vloc_benchmark/src/carla_visual_navigation/config/catalogs"
+  planner_stop_script_path: "../../opt/carla_vloc_benchmark/src/carla_visual_navigation/utils/run-planner-stop.sh"
+
+  controller_entry_name: 'VisualNavigatingAgent'
+  ekf_config_path: "/opt/carla_vloc_benchmark/src/carla_visual_navigation_agent/config/ekf.yaml"
+
+  town_name: Town01
+  route_group:
+      route_entry_name: "Map01_route01_maneuver"
+      goal_location_x: 88.5
+      goal_location_y: 112.0
+  goal_location_tolerance: 10
+  target_speed: 4.0
+  image_gallery_path: "/image-gallery/gallery_capture8_town01/"
+  localization_frequence: 2.0
+
+  top_k_matches: 5
+  global_extractor_name:
+    - "netvlad"
+    - "dir"
+
+  local_extractor_group:
+    - local_extractor_name: "d2net-ss"
+      local_matcher_name: "NN-ratio"
+
+    - local_extractor_name: "superpoint_aachen"
+      local_matcher_name: "superglue"
+
+    - local_extractor_name: "d2net-ss"
+      local_matcher_name: "NN-ratio"
+
+    - local_extractor_name: "sift"
+      local_matcher_name: "NN-ratio"
+
+  sun_group:
+    sun_intensity_startvalue: 1.0
+    sun_elevation_startvalue: 1.31
+    intensity_decrease_multiplier: 0.5
+    elevation_decrease_multiplier: 0.5
+    k_values: [0, 5]
+
+  precipitation_group:
+    precipitation_type: "dry"
+    precipitation_intensity: 0.0
+
+  visual_range: 100000.0
+  cloud_state: 'free'
+
+
+#####################
 # YAW EXPERIMENTS
 
 # viewpoint change: yaw rotation 90 degrees from the original position
@@ -622,8 +1375,8 @@ viewpoint_experiment_yaw1_town01:
   sun_group:
     sun_intensity_startvalue: 1.0
     sun_elevation_startvalue: 1.31
-    intensity_decrease_multiplier: 0.0
-    elevation_decrease_multiplier: 0.0
+    intensity_decrease_multiplier: 0.5
+    elevation_decrease_multiplier: 0.5
     k_values: [0, 5]
 
   precipitation_group:
@@ -679,8 +1432,8 @@ viewpoint_experiment_yaw2_town01:
   sun_group:
     sun_intensity_startvalue: 1.0
     sun_elevation_startvalue: 1.31
-    intensity_decrease_multiplier: 0.0
-    elevation_decrease_multiplier: 0.0
+    intensity_decrease_multiplier: 0.5
+    elevation_decrease_multiplier: 0.5
     k_values: [0, 5]
 
   precipitation_group:
@@ -736,8 +1489,8 @@ viewpoint_experiment_yaw3_town01:
   sun_group:
     sun_intensity_startvalue: 1.0
     sun_elevation_startvalue: 1.31
-    intensity_decrease_multiplier: 0.0
-    elevation_decrease_multiplier: 0.0
+    intensity_decrease_multiplier: 0.5
+    elevation_decrease_multiplier: 0.5
     k_values: [0, 5]
 
   precipitation_group:
@@ -793,8 +1546,8 @@ viewpoint_experiment_yaw4_town01:
   sun_group:
     sun_intensity_startvalue: 1.0
     sun_elevation_startvalue: 1.31
-    intensity_decrease_multiplier: 0.0
-    elevation_decrease_multiplier: 0.0
+    intensity_decrease_multiplier: 0.5
+    elevation_decrease_multiplier: 0.5
     k_values: [0, 5]
 
   precipitation_group:
@@ -850,8 +1603,8 @@ viewpoint_experiment_yaw5_town01:
   sun_group:
     sun_intensity_startvalue: 1.0
     sun_elevation_startvalue: 1.31
-    intensity_decrease_multiplier: 0.0
-    elevation_decrease_multiplier: 0.0
+    intensity_decrease_multiplier: 0.5
+    elevation_decrease_multiplier: 0.5
     k_values: [0, 5]
 
   precipitation_group:
@@ -907,8 +1660,8 @@ viewpoint_experiment_yaw6_town01:
   sun_group:
     sun_intensity_startvalue: 1.0
     sun_elevation_startvalue: 1.31
-    intensity_decrease_multiplier: 0.0
-    elevation_decrease_multiplier: 0.0
+    intensity_decrease_multiplier: 0.5
+    elevation_decrease_multiplier: 0.5
     k_values: [0, 5]
 
   precipitation_group:
@@ -964,8 +1717,8 @@ viewpoint_experiment_yaw7_town01:
   sun_group:
     sun_intensity_startvalue: 1.0
     sun_elevation_startvalue: 1.31
-    intensity_decrease_multiplier: 0.0
-    elevation_decrease_multiplier: 0.0
+    intensity_decrease_multiplier: 0.5
+    elevation_decrease_multiplier: 0.5
     k_values: [0, 5]
 
   precipitation_group:
@@ -1021,8 +1774,8 @@ viewpoint_experiment_yaw8_town01:
   sun_group:
     sun_intensity_startvalue: 1.0
     sun_elevation_startvalue: 1.31
-    intensity_decrease_multiplier: 0.0
-    elevation_decrease_multiplier: 0.0
+    intensity_decrease_multiplier: 0.5
+    elevation_decrease_multiplier: 0.5
     k_values: [0, 5]
 
   precipitation_group:
@@ -1081,8 +1834,8 @@ viewpoint_experiment_roll1_town01:
   sun_group:
     sun_intensity_startvalue: 1.0
     sun_elevation_startvalue: 1.31
-    intensity_decrease_multiplier: 0.0
-    elevation_decrease_multiplier: 0.0
+    intensity_decrease_multiplier: 0.5
+    elevation_decrease_multiplier: 0.5
     k_values: [0, 5]
 
   precipitation_group:
@@ -1138,8 +1891,8 @@ viewpoint_experiment_roll2_town01:
   sun_group:
     sun_intensity_startvalue: 1.0
     sun_elevation_startvalue: 1.31
-    intensity_decrease_multiplier: 0.0
-    elevation_decrease_multiplier: 0.0
+    intensity_decrease_multiplier: 0.5
+    elevation_decrease_multiplier: 0.5
     k_values: [0, 5]
 
   precipitation_group:
@@ -1195,8 +1948,8 @@ viewpoint_experiment_roll3_town01:
   sun_group:
     sun_intensity_startvalue: 1.0
     sun_elevation_startvalue: 1.31
-    intensity_decrease_multiplier: 0.0
-    elevation_decrease_multiplier: 0.0
+    intensity_decrease_multiplier: 0.5
+    elevation_decrease_multiplier: 0.5
     k_values: [0, 5]
 
   precipitation_group:
@@ -1252,8 +2005,8 @@ viewpoint_experiment_roll4_town01:
   sun_group:
     sun_intensity_startvalue: 1.0
     sun_elevation_startvalue: 1.31
-    intensity_decrease_multiplier: 0.0
-    elevation_decrease_multiplier: 0.0
+    intensity_decrease_multiplier: 0.5
+    elevation_decrease_multiplier: 0.5
     k_values: [0, 5]
 
   precipitation_group:
@@ -1309,8 +2062,8 @@ viewpoint_experiment_roll5_town01:
   sun_group:
     sun_intensity_startvalue: 1.0
     sun_elevation_startvalue: 1.31
-    intensity_decrease_multiplier: 0.0
-    elevation_decrease_multiplier: 0.0
+    intensity_decrease_multiplier: 0.5
+    elevation_decrease_multiplier: 0.5
     k_values: [0, 5]
 
   precipitation_group:
@@ -1366,8 +2119,8 @@ viewpoint_experiment_roll6_town01:
   sun_group:
     sun_intensity_startvalue: 1.0
     sun_elevation_startvalue: 1.31
-    intensity_decrease_multiplier: 0.0
-    elevation_decrease_multiplier: 0.0
+    intensity_decrease_multiplier: 0.5
+    elevation_decrease_multiplier: 0.5
     k_values: [0, 5]
 
   precipitation_group:
@@ -1423,8 +2176,8 @@ viewpoint_experiment_roll7_town01:
   sun_group:
     sun_intensity_startvalue: 1.0
     sun_elevation_startvalue: 1.31
-    intensity_decrease_multiplier: 0.0
-    elevation_decrease_multiplier: 0.0
+    intensity_decrease_multiplier: 0.5
+    elevation_decrease_multiplier: 0.5
     k_values: [0, 5]
 
   precipitation_group:
@@ -1484,8 +2237,8 @@ viewpoint_experiment_zpitch1_town01:
   sun_group:
     sun_intensity_startvalue: 1.0
     sun_elevation_startvalue: 1.31
-    intensity_decrease_multiplier: 0.0
-    elevation_decrease_multiplier: 0.0
+    intensity_decrease_multiplier: 0.5
+    elevation_decrease_multiplier: 0.5
     k_values: [0, 5]
 
   precipitation_group:
@@ -1541,8 +2294,8 @@ viewpoint_experiment_zpitch2_town01:
   sun_group:
     sun_intensity_startvalue: 1.0
     sun_elevation_startvalue: 1.31
-    intensity_decrease_multiplier: 0.0
-    elevation_decrease_multiplier: 0.0
+    intensity_decrease_multiplier: 0.5
+    elevation_decrease_multiplier: 0.5
     k_values: [0, 5]
 
   precipitation_group:
@@ -1598,8 +2351,8 @@ viewpoint_experiment_zpitch3_town01:
   sun_group:
     sun_intensity_startvalue: 1.0
     sun_elevation_startvalue: 1.31
-    intensity_decrease_multiplier: 0.0
-    elevation_decrease_multiplier: 0.0
+    intensity_decrease_multiplier: 0.5
+    elevation_decrease_multiplier: 0.5
     k_values: [0, 5]
 
   precipitation_group:
@@ -1655,8 +2408,8 @@ viewpoint_experiment_zpitch4_town01:
   sun_group:
     sun_intensity_startvalue: 1.0
     sun_elevation_startvalue: 1.31
-    intensity_decrease_multiplier: 0.0
-    elevation_decrease_multiplier: 0.0
+    intensity_decrease_multiplier: 0.5
+    elevation_decrease_multiplier: 0.5
     k_values: [0, 5]
 
   precipitation_group:
@@ -1712,8 +2465,8 @@ viewpoint_experiment_zpitch5_town01:
   sun_group:
     sun_intensity_startvalue: 1.0
     sun_elevation_startvalue: 1.31
-    intensity_decrease_multiplier: 0.0
-    elevation_decrease_multiplier: 0.0
+    intensity_decrease_multiplier: 0.5
+    elevation_decrease_multiplier: 0.5
     k_values: [0, 5]
 
   precipitation_group:
@@ -1769,8 +2522,8 @@ viewpoint_experiment_zpitch6_town01:
   sun_group:
     sun_intensity_startvalue: 1.0
     sun_elevation_startvalue: 1.31
-    intensity_decrease_multiplier: 0.0
-    elevation_decrease_multiplier: 0.0
+    intensity_decrease_multiplier: 0.5
+    elevation_decrease_multiplier: 0.5
     k_values: [0, 5]
 
   precipitation_group:
@@ -1826,8 +2579,8 @@ viewpoint_experiment_zpitch7_town01:
   sun_group:
     sun_intensity_startvalue: 1.0
     sun_elevation_startvalue: 1.31
-    intensity_decrease_multiplier: 0.0
-    elevation_decrease_multiplier: 0.0
+    intensity_decrease_multiplier: 0.5
+    elevation_decrease_multiplier: 0.5
     k_values: [0, 5]
 
   precipitation_group:
@@ -1883,8 +2636,8 @@ viewpoint_experiment_zpitch8_town01:
   sun_group:
     sun_intensity_startvalue: 1.0
     sun_elevation_startvalue: 1.31
-    intensity_decrease_multiplier: 0.0
-    elevation_decrease_multiplier: 0.0
+    intensity_decrease_multiplier: 0.5
+    elevation_decrease_multiplier: 0.5
     k_values: [0, 5]
 
   precipitation_group:
@@ -1898,6 +2651,7 @@ viewpoint_experiment_zpitch8_town01:
 ###########################################################################
 
 # BENCHMARK TESTS - CAN BE USED FOR ALL THE EXPERIMENTS AS A COMPARISON
+
 
 viewpoint_experiment_town01_odometry_only:
   template_path: '/opt/carla_vloc_benchmark/src/carla_visual_navigation/config/VisualNavigatorTemplate.xosc'
@@ -1992,8 +2746,8 @@ viewpoint_experiment_town01_autopilot:
   sun_group:
     sun_intensity_startvalue: 1.0
     sun_elevation_startvalue: 1.31
-    intensity_decrease_multiplier: 0.0
-    elevation_decrease_multiplier: 0.0
+    intensity_decrease_multiplier: 0.5
+    elevation_decrease_multiplier: 0.5
     k_values: [0, 5]
 
   precipitation_group:

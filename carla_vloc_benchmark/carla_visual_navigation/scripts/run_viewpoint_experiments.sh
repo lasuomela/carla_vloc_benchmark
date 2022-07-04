@@ -15,9 +15,9 @@ counter=1
 for entry in "$yaw_dir"/*
 do
   tmux send -t "$session_uuid:.1" "sleep 20 ; \
-  tmux send -t '$session_uuid:' 'ros2 launch carla_visual_navigation rviz_scenario_runner.launch.py town:='Town01' objects_config:='$entry'' Enter ; \
-  sleep 45 ; ros2 launch carla_visual_navigation scenario_executor.launch.py scenario_dir:='/scenarios/viewpoint_experiment_yaw${counter}_town01' repetitions:=5 ; \
-  tmux send -t '$session_uuid:' C-c ; counter=$((counter++))" Enter
+  tmux send -t '$session_uuid:' 'ros2 launch carla_visual_navigation cli_scenario_runner.launch.py town:='Town01' objects_config:='$entry'' Enter ; \
+  sleep 25 ; ros2 launch carla_visual_navigation scenario_executor.launch.py scenario_dir:='/scenarios/viewpoint_experiment_yaw${counter}_town01' repetitions:=5 ; \
+  sleep 15 ; tmux send -t '$session_uuid:' C-c ; sleep 5 ; counter=$((counter++))" Enter
 done
 
 
