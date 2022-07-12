@@ -35,24 +35,13 @@
                     "fov": 90.0
                 },
                 {
-                    "type": "sensor.camera.rgb",
-                    "id": "rgb_view",
-                    "spawn_point": {"x": -3.0, "y": 0.0, "z": 1.0, "roll": 0.0, "pitch": 20.0, "yaw": 0.0},
-                    "image_size_x": 960,
-                    "image_size_y": 540,
-                    "fov": 90.0,
-                    "attached_objects":
-                    [
-                        {
-                            "type": "actor.pseudo.control",
-                            "id": "control"
-                        }
-                    ]
-                },
-                {
                     "type": "sensor.other.collision",
                     "id": "collision",
                     "spawn_point": {"x": 0.0, "y": 0.0, "z": 0.0}
+                },
+                {
+                    "type": "sensor.pseudo.tf",
+                    "id": "placeholder_sensor_for_some_reason_it_does_not_work_without_this"
                 },
                 {
                     "type": "sensor.pseudo.tf",

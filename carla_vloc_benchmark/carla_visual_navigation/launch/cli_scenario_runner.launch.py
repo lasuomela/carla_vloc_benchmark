@@ -6,7 +6,7 @@ from ament_index_python.packages import get_package_share_directory
 
 
 package_name = "carla_visual_navigation"
-objects_config_path = os.path.join(get_package_share_directory(package_name), "config/objects_noview.json")
+objects_config_path = os.path.join(get_package_share_directory(package_name), "config/objects.json")
 
 
 def generate_launch_description():
