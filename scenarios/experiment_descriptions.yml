@@ -184,6 +184,7 @@ gallery_capture_town01:
   image_save_path: "/image-gallery/town01_route1/"
   # Distance between gallery images in meters
   image_density: 2.0
+  ego_vehicle_offset: 0
 
   sun_group:
     sun_intensity_startvalue: 1.0
@@ -221,6 +222,7 @@ gallery_capture_town10:
   image_save_path: "/image-gallery/gallery_capture_town10_route1/"
   # Distance between gallery images in meters
   image_density: 2.0
+  ego_vehicle_offset: 0
 
   sun_group:
     sun_intensity_startvalue: 1.0
@@ -261,6 +263,8 @@ illumination_experiment_town01:
   target_speed: 4.0
   image_gallery_path: "/image-gallery/town01_route1/"
   localization_frequence: 2.0
+  ego_vehicle_offset: 0
+
 
   top_k_matches: 5
   global_extractor_name:
@@ -268,7 +272,7 @@ illumination_experiment_town01:
     - "dir"
 
   local_extractor_group:
-    - local_extractor_name: "d2net-ss"
+    - local_extractor_name: "r2d2"
       local_matcher_name: "NN-ratio"
 
     - local_extractor_name: "superpoint_aachen"
@@ -285,7 +289,7 @@ illumination_experiment_town01:
     sun_elevation_startvalue: 1.31
     intensity_decrease_multiplier: 0.5
     elevation_decrease_multiplier: 0.5
-    k_values: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+    k_values: [0,1,2,3,4,5,6,7,8,9,10]
 
   precipitation_group:
     precipitation_type: "dry"
@@ -374,7 +378,7 @@ illumination_experiment_town01_autopilot:
     - "dir"
 
   local_extractor_group:
-    - local_extractor_name: "d2net-ss"
+    - local_extractor_name: "r2d2"
       local_matcher_name: "NN-ratio"
 
     - local_extractor_name: "superpoint_aachen"
@@ -391,7 +395,7 @@ illumination_experiment_town01_autopilot:
     sun_elevation_startvalue: 1.31
     intensity_decrease_multiplier: 0.5
     elevation_decrease_multiplier: 0.5
-    k_values: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+    k_values: [0,1,2,3,4,5,6,7,8,9,10]
 
   precipitation_group:
     precipitation_type: "dry"
@@ -423,7 +427,7 @@ illumination_experiment_town10:
       goal_location_y: 69.45
   goal_location_tolerance: 10
   target_speed: 4.0
-  image_gallery_path: "/image-gallery/town10_route1/"
+  image_gallery_path: "/image-gallery/gallery_capture_town10_route1/"
   localization_frequence: 2.0
 
   top_k_matches: 5
@@ -432,7 +436,7 @@ illumination_experiment_town10:
     - "dir"
 
   local_extractor_group:
-    - local_extractor_name: "d2net-ss"
+    - local_extractor_name: "r2d2"
       local_matcher_name: "NN-ratio"
 
     - local_extractor_name: "superpoint_aachen"
@@ -481,7 +485,7 @@ illumination_experiment_town10_odometry_only:
       goal_location_y: 69.45
   goal_location_tolerance: 10
   target_speed: 4.0
-  image_gallery_path: "/image-gallery/town10_route1/"
+  image_gallery_path: "/image-gallery/gallery_capture_town10_route1/"
   localization_frequence: 2.0
 
   # The vloc result isn't actually used but it's left defined
@@ -530,7 +534,7 @@ illumination_experiment_town10_autopilot:
       goal_location_y: 69.45
   goal_location_tolerance: 10
   target_speed: 4.0
-  image_gallery_path: "/image-gallery/town10_route1/"
+  image_gallery_path: "/image-gallery/gallery_capture_town10_route1/"
   localization_frequence: 2.0
 
   top_k_matches: 5
@@ -539,7 +543,7 @@ illumination_experiment_town10_autopilot:
     - "dir"
 
   local_extractor_group:
-    - local_extractor_name: "d2net-ss"
+    - local_extractor_name: "r2d2"
       local_matcher_name: "NN-ratio"
 
     - local_extractor_name: "superpoint_aachen"
@@ -565,9 +569,179 @@ illumination_experiment_town10_autopilot:
   visual_range: 100000.0
   cloud_state: 'free'
 
+###########################################
+#       WEATHER EXPERIMENTS
+##########################################
 
 
 
+weather_experiment_town10:
+  template_path: '/opt/carla_vloc_benchmark/src/carla_visual_navigation/config/VisualNavigatorTemplate.xosc'
+  scenario_save_dir: '/scenarios/weather_experiment_town10'
+  log_file_path: "/results/weather_experiment_town10.json"
+  log_results: True
+
+  # Paths relative to location of the generated scenario file
+  logger_script_path: "../../opt/carla_vloc_benchmark/src/carla_visual_navigation/utils/run-scenario-log.sh"
+  catalog_path: "../../opt/carla_vloc_benchmark/src/carla_visual_navigation/config/catalogs"
+  planner_stop_script_path: "../../opt/carla_vloc_benchmark/src/carla_visual_navigation/utils/run-planner-stop.sh"
+
+  controller_entry_name: 'VisualNavigatingAgent'
+  ekf_config_path: "/opt/carla_vloc_benchmark/src/carla_visual_navigation_agent/config/ekf.yaml"
+
+  town_name: Town10HD
+  route_group:
+      route_entry_name: "Map10HD_route01_maneuver"
+      goal_location_x: 79.6
+      goal_location_y: 69.45
+  goal_location_tolerance: 10
+  target_speed: 4.0
+  image_gallery_path: "/image-gallery/gallery_capture_town10_route1/"
+  localization_frequence: 2.0
+
+  top_k_matches: 5
+  global_extractor_name:
+    - "netvlad"
+    - "dir"
+
+  local_extractor_group:
+    - local_extractor_name: "r2d2"
+      local_matcher_name: "NN-ratio"
+
+    - local_extractor_name: "superpoint_aachen"
+      local_matcher_name: "superglue"
+
+    - local_extractor_name: "d2net-ss"
+      local_matcher_name: "NN-ratio"
+
+    - local_extractor_name: "sift"
+      local_matcher_name: "NN-ratio"
+
+  sun_group:
+    sun_intensity_startvalue: 1.0
+    sun_elevation_startvalue: 1.31
+    intensity_decrease_multiplier: 0.5
+    elevation_decrease_multiplier: 0.5
+    k_values: [0]
+
+  precipitation_group:
+    precipitation_type: "rain"
+    precipitation_intensity: 1.0
+
+  visual_range: [90.0, 60.0, 30.0, 10.0]
+  cloud_state: "overcast"
+
+
+
+weather_experiment_town10_2:
+  template_path: '/opt/carla_vloc_benchmark/src/carla_visual_navigation/config/VisualNavigatorTemplate.xosc'
+  scenario_save_dir: '/scenarios/weather_experiment_town10_2'
+  log_file_path: "/results/weather_experiment_town10_2.json"
+  log_results: True
+
+  # Paths relative to location of the generated scenario file
+  logger_script_path: "../../opt/carla_vloc_benchmark/src/carla_visual_navigation/utils/run-scenario-log.sh"
+  catalog_path: "../../opt/carla_vloc_benchmark/src/carla_visual_navigation/config/catalogs"
+  planner_stop_script_path: "../../opt/carla_vloc_benchmark/src/carla_visual_navigation/utils/run-planner-stop.sh"
+
+  controller_entry_name: 'VisualNavigatingAgent'
+  ekf_config_path: "/opt/carla_vloc_benchmark/src/carla_visual_navigation_agent/config/ekf.yaml"
+
+  town_name: Town10HD
+  route_group:
+      route_entry_name: "Map10HD_route01_maneuver"
+      goal_location_x: 79.6
+      goal_location_y: 69.45
+  goal_location_tolerance: 10
+  target_speed: 4.0
+  image_gallery_path: "/image-gallery/gallery_capture_town10_route1/"
+  localization_frequence: 2.0
+
+  top_k_matches: 5
+  global_extractor_name:
+    - "netvlad"
+
+  local_extractor_group:
+    - local_extractor_name: "r2d2"
+      local_matcher_name: "NN-ratio"
+
+    - local_extractor_name: "d2net-ss"
+      local_matcher_name: "NN-ratio"
+
+    - local_extractor_name: "sift"
+      local_matcher_name: "NN-ratio"
+
+  sun_group:
+    sun_intensity_startvalue: 1.0
+    sun_elevation_startvalue: 1.31
+    intensity_decrease_multiplier: 0.5
+    elevation_decrease_multiplier: 0.5
+    k_values: [0]
+
+  precipitation_group:
+    precipitation_type: "rain"
+    precipitation_intensity: 1.0
+
+  visual_range: [90.0]
+  cloud_state: "rainy"
+
+
+###
+
+weather_experiment_town10_autopilot:
+  template_path: '/opt/carla_vloc_benchmark/src/carla_visual_navigation/config/VisualNavigatorTemplate.xosc'
+  scenario_save_dir: '/scenarios/weather_experiment_town10_autopilot'
+  log_file_path: "/results/weather_experiment_town10_autopilot.json"
+  log_results: True
+
+  # Paths relative to location of the generated scenario file
+  logger_script_path: "../../opt/carla_vloc_benchmark/src/carla_visual_navigation/utils/run-scenario-log.sh"
+  catalog_path: "../../opt/carla_vloc_benchmark/src/carla_visual_navigation/config/catalogs"
+  planner_stop_script_path: "../../opt/carla_vloc_benchmark/src/carla_visual_navigation/utils/run-planner-stop.sh"
+
+  controller_entry_name: 'VisualLocalizationAgent'
+
+  town_name: Town10HD
+  route_group:
+      route_entry_name: "Map10HD_route01_maneuver"
+      goal_location_x: 79.6
+      goal_location_y: 69.45
+  goal_location_tolerance: 10
+  target_speed: 4.0
+  image_gallery_path: "/image-gallery/gallery_capture_town10_route1/"
+  localization_frequence: 2.0
+
+  top_k_matches: 5
+  global_extractor_name:
+    - "netvlad"
+    - "dir"
+
+  local_extractor_group:
+    - local_extractor_name: "r2d2"
+      local_matcher_name: "NN-ratio"
+
+    - local_extractor_name: "superpoint_aachen"
+      local_matcher_name: "superglue"
+
+    - local_extractor_name: "d2net-ss"
+      local_matcher_name: "NN-ratio"
+
+    - local_extractor_name: "sift"
+      local_matcher_name: "NN-ratio"
+
+  sun_group:
+    sun_intensity_startvalue: 1.0
+    sun_elevation_startvalue: 1.31
+    intensity_decrease_multiplier: 0.5
+    elevation_decrease_multiplier: 0.5
+    k_values: [0]
+
+  precipitation_group:
+    precipitation_type: "rain"
+    precipitation_intensity: 1.0
+
+  visual_range: [90.0, 60.0, 30.0, 10.0]
+  cloud_state: "overcast"
 
 ############################################
 #       VIEWPOINT EXPERIMENTS
@@ -902,7 +1076,7 @@ viewpoint_experiment_gallery_capture1_town01:
     - "dir"
 
   local_extractor_group:
-    - local_extractor_name: "d2net-ss"
+    - local_extractor_name: "r2d2"
       local_matcher_name: "NN-ratio"
 
     - local_extractor_name: "superpoint_aachen"
@@ -960,7 +1134,7 @@ viewpoint_experiment_gallery_capture2_town01:
     - "dir"
 
   local_extractor_group:
-    - local_extractor_name: "d2net-ss"
+    - local_extractor_name: "r2d2"
       local_matcher_name: "NN-ratio"
 
     - local_extractor_name: "superpoint_aachen"
@@ -1018,7 +1192,7 @@ viewpoint_experiment_gallery_capture3_town01:
     - "dir"
 
   local_extractor_group:
-    - local_extractor_name: "d2net-ss"
+    - local_extractor_name: "r2d2"
       local_matcher_name: "NN-ratio"
 
     - local_extractor_name: "superpoint_aachen"
@@ -1076,7 +1250,7 @@ viewpoint_experiment_gallery_capture4_town01:
     - "dir"
 
   local_extractor_group:
-    - local_extractor_name: "d2net-ss"
+    - local_extractor_name: "r2d2"
       local_matcher_name: "NN-ratio"
 
     - local_extractor_name: "superpoint_aachen"
@@ -1134,7 +1308,7 @@ viewpoint_experiment_gallery_capture5_town01:
     - "dir"
 
   local_extractor_group:
-    - local_extractor_name: "d2net-ss"
+    - local_extractor_name: "r2d2"
       local_matcher_name: "NN-ratio"
 
     - local_extractor_name: "superpoint_aachen"
@@ -1192,7 +1366,7 @@ viewpoint_experiment_gallery_capture6_town01:
     - "dir"
 
   local_extractor_group:
-    - local_extractor_name: "d2net-ss"
+    - local_extractor_name: "r2d2"
       local_matcher_name: "NN-ratio"
 
     - local_extractor_name: "superpoint_aachen"
@@ -1250,7 +1424,7 @@ viewpoint_experiment_gallery_capture7_town01:
     - "dir"
 
   local_extractor_group:
-    - local_extractor_name: "d2net-ss"
+    - local_extractor_name: "r2d2"
       local_matcher_name: "NN-ratio"
 
     - local_extractor_name: "superpoint_aachen"
@@ -1308,7 +1482,7 @@ viewpoint_experiment_gallery_capture8_town01:
     - "dir"
 
   local_extractor_group:
-    - local_extractor_name: "d2net-ss"
+    - local_extractor_name: "r2d2"
       local_matcher_name: "NN-ratio"
 
     - local_extractor_name: "superpoint_aachen"
@@ -1339,6 +1513,7 @@ viewpoint_experiment_gallery_capture8_town01:
 # YAW EXPERIMENTS
 
 # viewpoint change: yaw rotation 90 degrees from the original position
+  
 viewpoint_experiment_yaw1_town01:
   template_path: '/opt/carla_vloc_benchmark/src/carla_visual_navigation/config/VisualNavigatorTemplate.xosc'
   scenario_save_dir: '/scenarios/viewpoint_experiment_yaw1_town01'
@@ -1370,7 +1545,7 @@ viewpoint_experiment_yaw1_town01:
     - "dir"
 
   local_extractor_group:
-    - local_extractor_name: "d2net-ss"
+    - local_extractor_name: "r2d2"
       local_matcher_name: "NN-ratio"
 
     - local_extractor_name: "superpoint_aachen"
@@ -1395,6 +1570,15 @@ viewpoint_experiment_yaw1_town01:
 
   visual_range: 100000.0
   cloud_state: 'free'
+  
+  # Define viewpoint change for analysis purposes
+  viewpoint:
+      x: 0.0
+      y: 0.0
+      z: 0.0
+      roll: 0.0
+      yaw: 90.0
+      pitch: 0.0
 
 # viewpoint change: yaw rotation 67.5 degrees from the original position
 viewpoint_experiment_yaw2_town01:
@@ -1428,7 +1612,7 @@ viewpoint_experiment_yaw2_town01:
     - "dir"
 
   local_extractor_group:
-    - local_extractor_name: "d2net-ss"
+    - local_extractor_name: "r2d2"
       local_matcher_name: "NN-ratio"
 
     - local_extractor_name: "superpoint_aachen"
@@ -1453,6 +1637,17 @@ viewpoint_experiment_yaw2_town01:
 
   visual_range: 100000.0
   cloud_state: 'free'
+  
+  # Define viewpoint change for analysis purposes
+  viewpoint:
+      x: 0.0
+      y: 0.0
+      z: 0.0
+      roll: 0.0
+      yaw: 67.5
+      pitch: 0.0
+
+
 
 # viewpoint change: yaw rotation 45 degrees from the original position
 viewpoint_experiment_yaw3_town01:
@@ -1486,7 +1681,7 @@ viewpoint_experiment_yaw3_town01:
     - "dir"
 
   local_extractor_group:
-    - local_extractor_name: "d2net-ss"
+    - local_extractor_name: "r2d2"
       local_matcher_name: "NN-ratio"
 
     - local_extractor_name: "superpoint_aachen"
@@ -1511,6 +1706,15 @@ viewpoint_experiment_yaw3_town01:
 
   visual_range: 100000.0
   cloud_state: 'free'
+
+  # Define viewpoint change for analysis purposes
+  viewpoint:
+      x: 0.0
+      y: 0.0
+      z: 0.0
+      roll: 0.0
+      yaw: 45.0
+      pitch: 0.0
 
 # viewpoint change: yaw rotation 22.5 degrees from the original position
 viewpoint_experiment_yaw4_town01:
@@ -1544,7 +1748,7 @@ viewpoint_experiment_yaw4_town01:
     - "dir"
 
   local_extractor_group:
-    - local_extractor_name: "d2net-ss"
+    - local_extractor_name: "r2d2"
       local_matcher_name: "NN-ratio"
 
     - local_extractor_name: "superpoint_aachen"
@@ -1569,6 +1773,15 @@ viewpoint_experiment_yaw4_town01:
 
   visual_range: 100000.0
   cloud_state: 'free'
+
+  # Define viewpoint change for analysis purposes
+  viewpoint:
+      x: 0.0
+      y: 0.0
+      z: 0.0
+      roll: 0.0
+      yaw: 22.5
+      pitch: 0.0
 
 # viewpoint change: yaw rotation -22.5 degrees from the original position
 viewpoint_experiment_yaw5_town01:
@@ -1602,7 +1815,7 @@ viewpoint_experiment_yaw5_town01:
     - "dir"
 
   local_extractor_group:
-    - local_extractor_name: "d2net-ss"
+    - local_extractor_name: "r2d2"
       local_matcher_name: "NN-ratio"
 
     - local_extractor_name: "superpoint_aachen"
@@ -1627,6 +1840,17 @@ viewpoint_experiment_yaw5_town01:
 
   visual_range: 100000.0
   cloud_state: 'free'
+
+  # Define viewpoint change for analysis purposes
+  viewpoint:
+      x: 0.0
+      y: 0.0
+      z: 0.0
+      roll: 0.0
+      yaw: -22.5
+      pitch: 0.0
+
+
 
 # viewpoint change: yaw rotation -45 degrees from the original position
 viewpoint_experiment_yaw6_town01:
@@ -1660,7 +1884,7 @@ viewpoint_experiment_yaw6_town01:
     - "dir"
 
   local_extractor_group:
-    - local_extractor_name: "d2net-ss"
+    - local_extractor_name: "r2d2"
       local_matcher_name: "NN-ratio"
 
     - local_extractor_name: "superpoint_aachen"
@@ -1685,6 +1909,19 @@ viewpoint_experiment_yaw6_town01:
 
   visual_range: 100000.0
   cloud_state: 'free'
+
+  # Define viewpoint change for analysis purposes
+  viewpoint:
+      x: 0.0
+      y: 0.0
+      z: 0.0
+      roll: 0.0
+      yaw: -45.0
+      pitch: 0.0
+
+
+
+
 
 # viewpoint change: yaw rotation -67.5 degrees from the original position
 viewpoint_experiment_yaw7_town01:
@@ -1718,7 +1955,7 @@ viewpoint_experiment_yaw7_town01:
     - "dir"
 
   local_extractor_group:
-    - local_extractor_name: "d2net-ss"
+    - local_extractor_name: "r2d2"
       local_matcher_name: "NN-ratio"
 
     - local_extractor_name: "superpoint_aachen"
@@ -1743,6 +1980,16 @@ viewpoint_experiment_yaw7_town01:
 
   visual_range: 100000.0
   cloud_state: 'free'
+
+  # Define viewpoint change for analysis purposes
+  viewpoint:
+      x: 0.0
+      y: 0.0
+      z: 0.0
+      roll: 0.0
+      yaw: -67.5
+      pitch: 0.0
+
 
 # viewpoint change: yaw rotation -90 degrees from the original position
 viewpoint_experiment_yaw8_town01:
@@ -1776,7 +2023,7 @@ viewpoint_experiment_yaw8_town01:
     - "dir"
 
   local_extractor_group:
-    - local_extractor_name: "d2net-ss"
+    - local_extractor_name: "r2d2"
       local_matcher_name: "NN-ratio"
 
     - local_extractor_name: "superpoint_aachen"
@@ -1802,8 +2049,17 @@ viewpoint_experiment_yaw8_town01:
   visual_range: 100000.0
   cloud_state: 'free'
 
+  # Define viewpoint change for analysis purposes
+  viewpoint:
+      x: 0.0
+      y: 0.0
+      z: 0.0
+      roll: 0.0
+      yaw: -90.0
+      pitch: 0.0
+
 #####################
-# PITCH EXPERIMENTS
+# ROLL EXPERIMENTS
 
 # viewpoint change: roll rotation 45 degrees from the original position
 viewpoint_experiment_roll1_town01:
@@ -1837,7 +2093,7 @@ viewpoint_experiment_roll1_town01:
     - "dir"
 
   local_extractor_group:
-    - local_extractor_name: "d2net-ss"
+    - local_extractor_name: "r2d2"
       local_matcher_name: "NN-ratio"
 
     - local_extractor_name: "superpoint_aachen"
@@ -1895,7 +2151,7 @@ viewpoint_experiment_roll2_town01:
     - "dir"
 
   local_extractor_group:
-    - local_extractor_name: "d2net-ss"
+    - local_extractor_name: "r2d2"
       local_matcher_name: "NN-ratio"
 
     - local_extractor_name: "superpoint_aachen"
@@ -1953,7 +2209,7 @@ viewpoint_experiment_roll3_town01:
     - "dir"
 
   local_extractor_group:
-    - local_extractor_name: "d2net-ss"
+    - local_extractor_name: "r2d2"
       local_matcher_name: "NN-ratio"
 
     - local_extractor_name: "superpoint_aachen"
@@ -2011,7 +2267,7 @@ viewpoint_experiment_roll4_town01:
     - "dir"
 
   local_extractor_group:
-    - local_extractor_name: "d2net-ss"
+    - local_extractor_name: "r2d2"
       local_matcher_name: "NN-ratio"
 
     - local_extractor_name: "superpoint_aachen"
@@ -2069,7 +2325,7 @@ viewpoint_experiment_roll5_town01:
     - "dir"
 
   local_extractor_group:
-    - local_extractor_name: "d2net-ss"
+    - local_extractor_name: "r2d2"
       local_matcher_name: "NN-ratio"
 
     - local_extractor_name: "superpoint_aachen"
@@ -2127,7 +2383,7 @@ viewpoint_experiment_roll6_town01:
     - "dir"
 
   local_extractor_group:
-    - local_extractor_name: "d2net-ss"
+    - local_extractor_name: "r2d2"
       local_matcher_name: "NN-ratio"
 
     - local_extractor_name: "superpoint_aachen"
@@ -2185,7 +2441,7 @@ viewpoint_experiment_roll7_town01:
     - "dir"
 
   local_extractor_group:
-    - local_extractor_name: "d2net-ss"
+    - local_extractor_name: "r2d2"
       local_matcher_name: "NN-ratio"
 
     - local_extractor_name: "superpoint_aachen"
@@ -2215,7 +2471,7 @@ viewpoint_experiment_roll7_town01:
 #####################
 # CHANGE THE LOCATION OF THE CAMERA ON Z-AXIS (INCREASE THE HEIGHT) AND ADJUST PITCH ROTATION ACCORDINGLY
 
-# viewpoint change: z=3, pitch=5
+# viewpoint change: z=4
 viewpoint_experiment_zpitch1_town01:
   template_path: '/opt/carla_vloc_benchmark/src/carla_visual_navigation/config/VisualNavigatorTemplate.xosc'
   scenario_save_dir: '/scenarios/viewpoint_experiment_zpitch1_town01'
@@ -2247,7 +2503,7 @@ viewpoint_experiment_zpitch1_town01:
     - "dir"
 
   local_extractor_group:
-    - local_extractor_name: "d2net-ss"
+    - local_extractor_name: "r2d2"
       local_matcher_name: "NN-ratio"
 
     - local_extractor_name: "superpoint_aachen"
@@ -2273,7 +2529,9 @@ viewpoint_experiment_zpitch1_town01:
   visual_range: 100000.0
   cloud_state: 'free'
 
-# viewpoint change: z=4, pitch=10
+  ###
+
+# viewpoint change: z=6
 viewpoint_experiment_zpitch2_town01:
   template_path: '/opt/carla_vloc_benchmark/src/carla_visual_navigation/config/VisualNavigatorTemplate.xosc'
   scenario_save_dir: '/scenarios/viewpoint_experiment_zpitch2_town01'
@@ -2305,7 +2563,7 @@ viewpoint_experiment_zpitch2_town01:
     - "dir"
 
   local_extractor_group:
-    - local_extractor_name: "d2net-ss"
+    - local_extractor_name: "r2d2"
       local_matcher_name: "NN-ratio"
 
     - local_extractor_name: "superpoint_aachen"
@@ -2331,7 +2589,7 @@ viewpoint_experiment_zpitch2_town01:
   visual_range: 100000.0
   cloud_state: 'free'
 
-# viewpoint change: z=5, pitch=15
+# viewpoint change: z=7
 viewpoint_experiment_zpitch3_town01:
   template_path: '/opt/carla_vloc_benchmark/src/carla_visual_navigation/config/VisualNavigatorTemplate.xosc'
   scenario_save_dir: '/scenarios/viewpoint_experiment_zpitch3_town01'
@@ -2363,7 +2621,7 @@ viewpoint_experiment_zpitch3_town01:
     - "dir"
 
   local_extractor_group:
-    - local_extractor_name: "d2net-ss"
+    - local_extractor_name: "r2d2"
       local_matcher_name: "NN-ratio"
 
     - local_extractor_name: "superpoint_aachen"
@@ -2389,7 +2647,7 @@ viewpoint_experiment_zpitch3_town01:
   visual_range: 100000.0
   cloud_state: 'free'
 
-# viewpoint change: z=6, pitch=20
+# viewpoint change: z=8
 viewpoint_experiment_zpitch4_town01:
   template_path: '/opt/carla_vloc_benchmark/src/carla_visual_navigation/config/VisualNavigatorTemplate.xosc'
   scenario_save_dir: '/scenarios/viewpoint_experiment_zpitch4_town01'
@@ -2421,7 +2679,7 @@ viewpoint_experiment_zpitch4_town01:
     - "dir"
 
   local_extractor_group:
-    - local_extractor_name: "d2net-ss"
+    - local_extractor_name: "r2d2"
       local_matcher_name: "NN-ratio"
 
     - local_extractor_name: "superpoint_aachen"
@@ -2447,7 +2705,7 @@ viewpoint_experiment_zpitch4_town01:
   visual_range: 100000.0
   cloud_state: 'free'
 
-# viewpoint change: z=7, pitch=25
+# viewpoint change: z=9
 viewpoint_experiment_zpitch5_town01:
   template_path: '/opt/carla_vloc_benchmark/src/carla_visual_navigation/config/VisualNavigatorTemplate.xosc'
   scenario_save_dir: '/scenarios/viewpoint_experiment_zpitch5_town01'
@@ -2479,7 +2737,7 @@ viewpoint_experiment_zpitch5_town01:
     - "dir"
 
   local_extractor_group:
-    - local_extractor_name: "d2net-ss"
+    - local_extractor_name: "r2d2"
       local_matcher_name: "NN-ratio"
 
     - local_extractor_name: "superpoint_aachen"
@@ -2505,7 +2763,7 @@ viewpoint_experiment_zpitch5_town01:
   visual_range: 100000.0
   cloud_state: 'free'
 
-# viewpoint change: z=8, pitch=30
+# viewpoint change: z=10
 viewpoint_experiment_zpitch6_town01:
   template_path: '/opt/carla_vloc_benchmark/src/carla_visual_navigation/config/VisualNavigatorTemplate.xosc'
   scenario_save_dir: '/scenarios/viewpoint_experiment_zpitch6_town01'
@@ -2537,7 +2795,7 @@ viewpoint_experiment_zpitch6_town01:
     - "dir"
 
   local_extractor_group:
-    - local_extractor_name: "d2net-ss"
+    - local_extractor_name: "r2d2"
       local_matcher_name: "NN-ratio"
 
     - local_extractor_name: "superpoint_aachen"
@@ -2563,7 +2821,7 @@ viewpoint_experiment_zpitch6_town01:
   visual_range: 100000.0
   cloud_state: 'free'
 
-# viewpoint change: z=9, pitch=32.5
+# viewpoint change: z=11
 viewpoint_experiment_zpitch7_town01:
   template_path: '/opt/carla_vloc_benchmark/src/carla_visual_navigation/config/VisualNavigatorTemplate.xosc'
   scenario_save_dir: '/scenarios/viewpoint_experiment_zpitch7_town01'
@@ -2595,7 +2853,7 @@ viewpoint_experiment_zpitch7_town01:
     - "dir"
 
   local_extractor_group:
-    - local_extractor_name: "d2net-ss"
+    - local_extractor_name: "r2d2"
       local_matcher_name: "NN-ratio"
 
     - local_extractor_name: "superpoint_aachen"
@@ -2621,7 +2879,7 @@ viewpoint_experiment_zpitch7_town01:
   visual_range: 100000.0
   cloud_state: 'free'
 
-# viewpoint change: z=10, pitch=35
+# viewpoint change: z=13
 viewpoint_experiment_zpitch8_town01:
   template_path: '/opt/carla_vloc_benchmark/src/carla_visual_navigation/config/VisualNavigatorTemplate.xosc'
   scenario_save_dir: '/scenarios/viewpoint_experiment_zpitch8_town01'
@@ -2653,7 +2911,7 @@ viewpoint_experiment_zpitch8_town01:
     - "dir"
 
   local_extractor_group:
-    - local_extractor_name: "d2net-ss"
+    - local_extractor_name: "r2d2"
       local_matcher_name: "NN-ratio"
 
     - local_extractor_name: "superpoint_aachen"
@@ -2678,6 +2936,242 @@ viewpoint_experiment_zpitch8_town01:
 
   visual_range: 100000.0
   cloud_state: 'free'
+
+  ###
+
+  # z = 15
+viewpoint_experiment_zpitch9_town01:
+  template_path: '/opt/carla_vloc_benchmark/src/carla_visual_navigation/config/VisualNavigatorTemplate.xosc'
+  scenario_save_dir: '/scenarios/viewpoint_experiment_zpitch9_town01'
+  log_file_path: "/results/viewpoint_experiment_zpitch9_town01.json"
+  log_results: True
+
+  # Paths relative to location of the generated scenario file
+  logger_script_path: "../../opt/carla_vloc_benchmark/src/carla_visual_navigation/utils/run-scenario-log.sh"
+  catalog_path: "../../opt/carla_vloc_benchmark/src/carla_visual_navigation/config/catalogs"
+  planner_stop_script_path: "../../opt/carla_vloc_benchmark/src/carla_visual_navigation/utils/run-planner-stop.sh"
+
+  controller_entry_name: 'VisualNavigatingAgent'
+  ekf_config_path: "/opt/carla_vloc_benchmark/src/carla_visual_navigation_agent/config/ekf.yaml"
+
+  town_name: Town01
+  route_group:
+      route_entry_name: "Map01_route01_maneuver"
+      goal_location_x: 88.5
+      goal_location_y: 112.0
+  goal_location_tolerance: 10
+  target_speed: 4.0
+  image_gallery_path: "/image-gallery/town01_route1/"
+  localization_frequence: 2.0
+  ego_vehicle_offset: 0
+
+  top_k_matches: 5
+  global_extractor_name:
+    - "netvlad"
+    - "dir"
+
+  local_extractor_group:
+    - local_extractor_name: "r2d2"
+      local_matcher_name: "NN-ratio"
+
+    - local_extractor_name: "superpoint_aachen"
+      local_matcher_name: "superglue"
+
+    - local_extractor_name: "d2net-ss"
+      local_matcher_name: "NN-ratio"
+
+    - local_extractor_name: "sift"
+      local_matcher_name: "NN-ratio"
+
+  sun_group:
+    sun_intensity_startvalue: 1.0
+    sun_elevation_startvalue: 1.31
+    intensity_decrease_multiplier: 0.5
+    elevation_decrease_multiplier: 0.5
+    k_values: [0, 5]
+
+  precipitation_group:
+    precipitation_type: "dry"
+    precipitation_intensity: 0.0
+
+  visual_range: 100000.0
+  cloud_state: 'free'
+  ###
+
+
+  # z = 17
+
+viewpoint_experiment_zpitch10_town01:
+  template_path: '/opt/carla_vloc_benchmark/src/carla_visual_navigation/config/VisualNavigatorTemplate.xosc'
+  scenario_save_dir: '/scenarios/viewpoint_experiment_zpitch10_town01'
+  log_file_path: "/results/viewpoint_experiment_zpitch10_town01.json"
+  log_results: True
+
+  # Paths relative to location of the generated scenario file
+  logger_script_path: "../../opt/carla_vloc_benchmark/src/carla_visual_navigation/utils/run-scenario-log.sh"
+  catalog_path: "../../opt/carla_vloc_benchmark/src/carla_visual_navigation/config/catalogs"
+  planner_stop_script_path: "../../opt/carla_vloc_benchmark/src/carla_visual_navigation/utils/run-planner-stop.sh"
+
+  controller_entry_name: 'VisualNavigatingAgent'
+  ekf_config_path: "/opt/carla_vloc_benchmark/src/carla_visual_navigation_agent/config/ekf.yaml"
+
+  town_name: Town01
+  route_group:
+      route_entry_name: "Map01_route01_maneuver"
+      goal_location_x: 88.5
+      goal_location_y: 112.0
+  goal_location_tolerance: 10
+  target_speed: 4.0
+  image_gallery_path: "/image-gallery/town01_route1/"
+  localization_frequence: 2.0
+  ego_vehicle_offset: 0
+
+  top_k_matches: 5
+  global_extractor_name:
+    - "netvlad"
+    - "dir"
+
+  local_extractor_group:
+    - local_extractor_name: "r2d2"
+      local_matcher_name: "NN-ratio"
+
+    - local_extractor_name: "superpoint_aachen"
+      local_matcher_name: "superglue"
+
+    - local_extractor_name: "d2net-ss"
+      local_matcher_name: "NN-ratio"
+
+    - local_extractor_name: "sift"
+      local_matcher_name: "NN-ratio"
+
+  sun_group:
+    sun_intensity_startvalue: 1.0
+    sun_elevation_startvalue: 1.31
+    intensity_decrease_multiplier: 0.5
+    elevation_decrease_multiplier: 0.5
+    k_values: [0, 5]
+
+  precipitation_group:
+    precipitation_type: "dry"
+    precipitation_intensity: 0.0
+
+  visual_range: 100000.0
+  cloud_state: 'free'
+
+viewpoint_experiment_zpitch11_town01:
+  template_path: '/opt/carla_vloc_benchmark/src/carla_visual_navigation/config/VisualNavigatorTemplate.xosc'
+  scenario_save_dir: '/scenarios/viewpoint_experiment_zpitch11_town01'
+  log_file_path: "/results/viewpoint_experiment_zpitch11_town01.json"
+  log_results: True
+
+  # Paths relative to location of the generated scenario file
+  logger_script_path: "../../opt/carla_vloc_benchmark/src/carla_visual_navigation/utils/run-scenario-log.sh"
+  catalog_path: "../../opt/carla_vloc_benchmark/src/carla_visual_navigation/config/catalogs"
+  planner_stop_script_path: "../../opt/carla_vloc_benchmark/src/carla_visual_navigation/utils/run-planner-stop.sh"
+
+  controller_entry_name: 'VisualNavigatingAgent'
+  ekf_config_path: "/opt/carla_vloc_benchmark/src/carla_visual_navigation_agent/config/ekf.yaml"
+
+  town_name: Town01
+  route_group:
+      route_entry_name: "Map01_route01_maneuver"
+      goal_location_x: 88.5
+      goal_location_y: 112.0
+  goal_location_tolerance: 10
+  target_speed: 4.0
+  image_gallery_path: "/image-gallery/town01_route1/"
+  localization_frequence: 2.0
+  ego_vehicle_offset: 0
+
+  top_k_matches: 5
+  global_extractor_name:
+    - "netvlad"
+    - "dir"
+
+  local_extractor_group:
+    - local_extractor_name: "r2d2"
+      local_matcher_name: "NN-ratio"
+
+    - local_extractor_name: "superpoint_aachen"
+      local_matcher_name: "superglue"
+
+    - local_extractor_name: "d2net-ss"
+      local_matcher_name: "NN-ratio"
+
+    - local_extractor_name: "sift"
+      local_matcher_name: "NN-ratio"
+
+  sun_group:
+    sun_intensity_startvalue: 1.0
+    sun_elevation_startvalue: 1.31
+    intensity_decrease_multiplier: 0.5
+    elevation_decrease_multiplier: 0.5
+    k_values: [0, 5]
+
+  precipitation_group:
+    precipitation_type: "dry"
+    precipitation_intensity: 0.0
+
+  visual_range: 100000.0
+
+
+viewpoint_experiment_zpitch12_town01:
+  template_path: '/opt/carla_vloc_benchmark/src/carla_visual_navigation/config/VisualNavigatorTemplate.xosc'
+  scenario_save_dir: '/scenarios/viewpoint_experiment_zpitch12_town01'
+  log_file_path: "/results/viewpoint_experiment_zpitch12_town01.json"
+  log_results: True
+
+  # Paths relative to location of the generated scenario file
+  logger_script_path: "../../opt/carla_vloc_benchmark/src/carla_visual_navigation/utils/run-scenario-log.sh"
+  catalog_path: "../../opt/carla_vloc_benchmark/src/carla_visual_navigation/config/catalogs"
+  planner_stop_script_path: "../../opt/carla_vloc_benchmark/src/carla_visual_navigation/utils/run-planner-stop.sh"
+
+  controller_entry_name: 'VisualNavigatingAgent'
+  ekf_config_path: "/opt/carla_vloc_benchmark/src/carla_visual_navigation_agent/config/ekf.yaml"
+
+  town_name: Town01
+  route_group:
+      route_entry_name: "Map01_route01_maneuver"
+      goal_location_x: 88.5
+      goal_location_y: 112.0
+  goal_location_tolerance: 10
+  target_speed: 4.0
+  image_gallery_path: "/image-gallery/town01_route1/"
+  localization_frequence: 2.0
+  ego_vehicle_offset: 0
+
+  top_k_matches: 5
+  global_extractor_name:
+    - "netvlad"
+    - "dir"
+
+  local_extractor_group:
+    - local_extractor_name: "r2d2"
+      local_matcher_name: "NN-ratio"
+
+    - local_extractor_name: "superpoint_aachen"
+      local_matcher_name: "superglue"
+
+    - local_extractor_name: "d2net-ss"
+      local_matcher_name: "NN-ratio"
+
+    - local_extractor_name: "sift"
+      local_matcher_name: "NN-ratio"
+
+  sun_group:
+    sun_intensity_startvalue: 1.0
+    sun_elevation_startvalue: 1.31
+    intensity_decrease_multiplier: 0.5
+    elevation_decrease_multiplier: 0.5
+    k_values: [0, 5]
+
+  precipitation_group:
+    precipitation_type: "dry"
+    precipitation_intensity: 0.0
+
+  visual_range: 100000.0
+
+  ###
 
 
 
@@ -2718,7 +3212,7 @@ viewpoint_experiment_distance_town01:
     - "dir"
 
   local_extractor_group:
-    - local_extractor_name: "d2net-ss"
+    - local_extractor_name: "r2d2"
       local_matcher_name: "NN-ratio"
 
     - local_extractor_name: "superpoint_aachen"
@@ -2831,7 +3325,7 @@ viewpoint_experiment_town01_autopilot:
     - "dir"
 
   local_extractor_group:
-    - local_extractor_name: "d2net-ss"
+    - local_extractor_name: "r2d2"
       local_matcher_name: "NN-ratio"
 
     - local_extractor_name: "superpoint_aachen"
@@ -2856,3 +3350,1719 @@ viewpoint_experiment_town01_autopilot:
 
   visual_range: 100000.0
   cloud_state: 'free'
+
+  ###
+
+viewpoint_experiment_yaw1_town01_autopilot:
+  template_path: '/opt/carla_vloc_benchmark/src/carla_visual_navigation/config/VisualNavigatorTemplate.xosc'
+  scenario_save_dir: '/scenarios/viewpoint_experiment_yaw1_town01_autopilot'
+  log_file_path: "/results/viewpoint_experiment_yaw1_town01_autopilot.json"
+  log_results: True
+
+  # Paths relative to location of the generated scenario file
+  logger_script_path: "../../opt/carla_vloc_benchmark/src/carla_visual_navigation/utils/run-scenario-log.sh"
+  catalog_path: "../../opt/carla_vloc_benchmark/src/carla_visual_navigation/config/catalogs"
+  planner_stop_script_path: "../../opt/carla_vloc_benchmark/src/carla_visual_navigation/utils/run-planner-stop.sh"
+
+  controller_entry_name: 'VisualLocalizationAgent'
+
+  town_name: Town01
+  route_group:
+      route_entry_name: "Map01_route01_maneuver"
+      goal_location_x: 88.5
+      goal_location_y: 112.0
+  goal_location_tolerance: 10
+  target_speed: 4.0
+  image_gallery_path: "/image-gallery/town01_route1/"
+  localization_frequence: 2.0
+  ego_vehicle_offset: 0
+
+  top_k_matches: 5
+  global_extractor_name:
+    - "netvlad"
+    - "dir"
+
+  local_extractor_group:
+    - local_extractor_name: "r2d2"
+      local_matcher_name: "NN-ratio"
+
+    - local_extractor_name: "superpoint_aachen"
+      local_matcher_name: "superglue"
+
+    - local_extractor_name: "d2net-ss"
+      local_matcher_name: "NN-ratio"
+
+    - local_extractor_name: "sift"
+      local_matcher_name: "NN-ratio"
+
+  sun_group:
+    sun_intensity_startvalue: 1.0
+    sun_elevation_startvalue: 1.31
+    intensity_decrease_multiplier: 0.5
+    elevation_decrease_multiplier: 0.5
+    k_values: [0, 5]
+
+  precipitation_group:
+    precipitation_type: "dry"
+    precipitation_intensity: 0.0
+
+  visual_range: 100000.0
+  cloud_state: 'free'
+
+
+  ###
+
+viewpoint_experiment_yaw2_town01_autopilot:
+  template_path: '/opt/carla_vloc_benchmark/src/carla_visual_navigation/config/VisualNavigatorTemplate.xosc'
+  scenario_save_dir: '/scenarios/viewpoint_experiment_yaw2_town01_autopilot'
+  log_file_path: "/results/viewpoint_experiment_yaw2_town01_autopilot.json"
+  log_results: True
+
+  # Paths relative to location of the generated scenario file
+  logger_script_path: "../../opt/carla_vloc_benchmark/src/carla_visual_navigation/utils/run-scenario-log.sh"
+  catalog_path: "../../opt/carla_vloc_benchmark/src/carla_visual_navigation/config/catalogs"
+  planner_stop_script_path: "../../opt/carla_vloc_benchmark/src/carla_visual_navigation/utils/run-planner-stop.sh"
+
+  controller_entry_name: 'VisualLocalizationAgent'
+
+  town_name: Town01
+  route_group:
+      route_entry_name: "Map01_route01_maneuver"
+      goal_location_x: 88.5
+      goal_location_y: 112.0
+  goal_location_tolerance: 10
+  target_speed: 4.0
+  image_gallery_path: "/image-gallery/town01_route1/"
+  localization_frequence: 2.0
+  ego_vehicle_offset: 0
+
+  top_k_matches: 5
+  global_extractor_name:
+    - "netvlad"
+    - "dir"
+
+  local_extractor_group:
+    - local_extractor_name: "r2d2"
+      local_matcher_name: "NN-ratio"
+
+    - local_extractor_name: "superpoint_aachen"
+      local_matcher_name: "superglue"
+
+    - local_extractor_name: "d2net-ss"
+      local_matcher_name: "NN-ratio"
+
+    - local_extractor_name: "sift"
+      local_matcher_name: "NN-ratio"
+
+  sun_group:
+    sun_intensity_startvalue: 1.0
+    sun_elevation_startvalue: 1.31
+    intensity_decrease_multiplier: 0.5
+    elevation_decrease_multiplier: 0.5
+    k_values: [0, 5]
+
+  precipitation_group:
+    precipitation_type: "dry"
+    precipitation_intensity: 0.0
+
+  visual_range: 100000.0
+  cloud_state: 'free'
+
+
+
+  ###
+
+viewpoint_experiment_yaw3_town01_autopilot:
+  template_path: '/opt/carla_vloc_benchmark/src/carla_visual_navigation/config/VisualNavigatorTemplate.xosc'
+  scenario_save_dir: '/scenarios/viewpoint_experiment_yaw3_town01_autopilot'
+  log_file_path: "/results/viewpoint_experiment_yaw3_town01_autopilot.json"
+  log_results: True
+
+  # Paths relative to location of the generated scenario file
+  logger_script_path: "../../opt/carla_vloc_benchmark/src/carla_visual_navigation/utils/run-scenario-log.sh"
+  catalog_path: "../../opt/carla_vloc_benchmark/src/carla_visual_navigation/config/catalogs"
+  planner_stop_script_path: "../../opt/carla_vloc_benchmark/src/carla_visual_navigation/utils/run-planner-stop.sh"
+
+  controller_entry_name: 'VisualLocalizationAgent'
+
+  town_name: Town01
+  route_group:
+      route_entry_name: "Map01_route01_maneuver"
+      goal_location_x: 88.5
+      goal_location_y: 112.0
+  goal_location_tolerance: 10
+  target_speed: 4.0
+  image_gallery_path: "/image-gallery/town01_route1/"
+  localization_frequence: 2.0
+  ego_vehicle_offset: 0
+
+  top_k_matches: 5
+  global_extractor_name:
+    - "netvlad"
+    - "dir"
+
+  local_extractor_group:
+    - local_extractor_name: "r2d2"
+      local_matcher_name: "NN-ratio"
+
+    - local_extractor_name: "superpoint_aachen"
+      local_matcher_name: "superglue"
+
+    - local_extractor_name: "d2net-ss"
+      local_matcher_name: "NN-ratio"
+
+    - local_extractor_name: "sift"
+      local_matcher_name: "NN-ratio"
+
+  sun_group:
+    sun_intensity_startvalue: 1.0
+    sun_elevation_startvalue: 1.31
+    intensity_decrease_multiplier: 0.5
+    elevation_decrease_multiplier: 0.5
+    k_values: [0, 5]
+
+  precipitation_group:
+    precipitation_type: "dry"
+    precipitation_intensity: 0.0
+
+  visual_range: 100000.0
+  cloud_state: 'free'
+
+  ###
+
+
+viewpoint_experiment_yaw4_town01_autopilot:
+  template_path: '/opt/carla_vloc_benchmark/src/carla_visual_navigation/config/VisualNavigatorTemplate.xosc'
+  scenario_save_dir: '/scenarios/viewpoint_experiment_yaw4_town01_autopilot'
+  log_file_path: "/results/viewpoint_experiment_yaw4_town01_autopilot.json"
+  log_results: True
+
+  # Paths relative to location of the generated scenario file
+  logger_script_path: "../../opt/carla_vloc_benchmark/src/carla_visual_navigation/utils/run-scenario-log.sh"
+  catalog_path: "../../opt/carla_vloc_benchmark/src/carla_visual_navigation/config/catalogs"
+  planner_stop_script_path: "../../opt/carla_vloc_benchmark/src/carla_visual_navigation/utils/run-planner-stop.sh"
+
+  controller_entry_name: 'VisualLocalizationAgent'
+
+  town_name: Town01
+  route_group:
+      route_entry_name: "Map01_route01_maneuver"
+      goal_location_x: 88.5
+      goal_location_y: 112.0
+  goal_location_tolerance: 10
+  target_speed: 4.0
+  image_gallery_path: "/image-gallery/town01_route1/"
+  localization_frequence: 2.0
+  ego_vehicle_offset: 0
+
+  top_k_matches: 5
+  global_extractor_name:
+    - "netvlad"
+    - "dir"
+
+  local_extractor_group:
+    - local_extractor_name: "r2d2"
+      local_matcher_name: "NN-ratio"
+
+    - local_extractor_name: "superpoint_aachen"
+      local_matcher_name: "superglue"
+
+    - local_extractor_name: "d2net-ss"
+      local_matcher_name: "NN-ratio"
+
+    - local_extractor_name: "sift"
+      local_matcher_name: "NN-ratio"
+
+  sun_group:
+    sun_intensity_startvalue: 1.0
+    sun_elevation_startvalue: 1.31
+    intensity_decrease_multiplier: 0.5
+    elevation_decrease_multiplier: 0.5
+    k_values: [0, 5]
+
+  precipitation_group:
+    precipitation_type: "dry"
+    precipitation_intensity: 0.0
+
+  visual_range: 100000.0
+  cloud_state: 'free'
+
+  ###
+
+viewpoint_experiment_yaw5_town01_autopilot:
+  template_path: '/opt/carla_vloc_benchmark/src/carla_visual_navigation/config/VisualNavigatorTemplate.xosc'
+  scenario_save_dir: '/scenarios/viewpoint_experiment_yaw5_town01_autopilot'
+  log_file_path: "/results/viewpoint_experiment_yaw5_town01_autopilot.json"
+  log_results: True
+
+  # Paths relative to location of the generated scenario file
+  logger_script_path: "../../opt/carla_vloc_benchmark/src/carla_visual_navigation/utils/run-scenario-log.sh"
+  catalog_path: "../../opt/carla_vloc_benchmark/src/carla_visual_navigation/config/catalogs"
+  planner_stop_script_path: "../../opt/carla_vloc_benchmark/src/carla_visual_navigation/utils/run-planner-stop.sh"
+
+  controller_entry_name: 'VisualLocalizationAgent'
+
+  town_name: Town01
+  route_group:
+      route_entry_name: "Map01_route01_maneuver"
+      goal_location_x: 88.5
+      goal_location_y: 112.0
+  goal_location_tolerance: 10
+  target_speed: 4.0
+  image_gallery_path: "/image-gallery/town01_route1/"
+  localization_frequence: 2.0
+  ego_vehicle_offset: 0
+
+  top_k_matches: 5
+  global_extractor_name:
+    - "netvlad"
+    - "dir"
+
+  local_extractor_group:
+    - local_extractor_name: "r2d2"
+      local_matcher_name: "NN-ratio"
+
+    - local_extractor_name: "superpoint_aachen"
+      local_matcher_name: "superglue"
+
+    - local_extractor_name: "d2net-ss"
+      local_matcher_name: "NN-ratio"
+
+    - local_extractor_name: "sift"
+      local_matcher_name: "NN-ratio"
+
+  sun_group:
+    sun_intensity_startvalue: 1.0
+    sun_elevation_startvalue: 1.31
+    intensity_decrease_multiplier: 0.5
+    elevation_decrease_multiplier: 0.5
+    k_values: [0, 5]
+
+  precipitation_group:
+    precipitation_type: "dry"
+    precipitation_intensity: 0.0
+
+  visual_range: 100000.0
+  cloud_state: 'free'
+
+
+  ###
+ 
+
+viewpoint_experiment_yaw6_town01_autopilot:
+  template_path: '/opt/carla_vloc_benchmark/src/carla_visual_navigation/config/VisualNavigatorTemplate.xosc'
+  scenario_save_dir: '/scenarios/viewpoint_experiment_yaw6_town01_autopilot'
+  log_file_path: "/results/viewpoint_experiment_yaw6_town01_autopilot.json"
+  log_results: True
+
+  # Paths relative to location of the generated scenario file
+  logger_script_path: "../../opt/carla_vloc_benchmark/src/carla_visual_navigation/utils/run-scenario-log.sh"
+  catalog_path: "../../opt/carla_vloc_benchmark/src/carla_visual_navigation/config/catalogs"
+  planner_stop_script_path: "../../opt/carla_vloc_benchmark/src/carla_visual_navigation/utils/run-planner-stop.sh"
+
+  controller_entry_name: 'VisualLocalizationAgent'
+
+  town_name: Town01
+  route_group:
+      route_entry_name: "Map01_route01_maneuver"
+      goal_location_x: 88.5
+      goal_location_y: 112.0
+  goal_location_tolerance: 10
+  target_speed: 4.0
+  image_gallery_path: "/image-gallery/town01_route1/"
+  localization_frequence: 2.0
+  ego_vehicle_offset: 0
+
+  top_k_matches: 5
+  global_extractor_name:
+    - "netvlad"
+    - "dir"
+
+  local_extractor_group:
+    - local_extractor_name: "r2d2"
+      local_matcher_name: "NN-ratio"
+
+    - local_extractor_name: "superpoint_aachen"
+      local_matcher_name: "superglue"
+
+    - local_extractor_name: "d2net-ss"
+      local_matcher_name: "NN-ratio"
+
+    - local_extractor_name: "sift"
+      local_matcher_name: "NN-ratio"
+
+  sun_group:
+    sun_intensity_startvalue: 1.0
+    sun_elevation_startvalue: 1.31
+    intensity_decrease_multiplier: 0.5
+    elevation_decrease_multiplier: 0.5
+    k_values: [0, 5]
+
+  precipitation_group:
+    precipitation_type: "dry"
+    precipitation_intensity: 0.0
+
+  visual_range: 100000.0
+  cloud_state: 'free'
+
+
+
+  ###
+
+viewpoint_experiment_yaw7_town01_autopilot:
+  template_path: '/opt/carla_vloc_benchmark/src/carla_visual_navigation/config/VisualNavigatorTemplate.xosc'
+  scenario_save_dir: '/scenarios/viewpoint_experiment_yaw7_town01_autopilot'
+  log_file_path: "/results/viewpoint_experiment_yaw7_town01_autopilot.json"
+  log_results: True
+
+  # Paths relative to location of the generated scenario file
+  logger_script_path: "../../opt/carla_vloc_benchmark/src/carla_visual_navigation/utils/run-scenario-log.sh"
+  catalog_path: "../../opt/carla_vloc_benchmark/src/carla_visual_navigation/config/catalogs"
+  planner_stop_script_path: "../../opt/carla_vloc_benchmark/src/carla_visual_navigation/utils/run-planner-stop.sh"
+
+  controller_entry_name: 'VisualLocalizationAgent'
+
+  town_name: Town01
+  route_group:
+      route_entry_name: "Map01_route01_maneuver"
+      goal_location_x: 88.5
+      goal_location_y: 112.0
+  goal_location_tolerance: 10
+  target_speed: 4.0
+  image_gallery_path: "/image-gallery/town01_route1/"
+  localization_frequence: 2.0
+  ego_vehicle_offset: 0
+
+  top_k_matches: 5
+  global_extractor_name:
+    - "netvlad"
+    - "dir"
+
+  local_extractor_group:
+    - local_extractor_name: "r2d2"
+      local_matcher_name: "NN-ratio"
+
+    - local_extractor_name: "superpoint_aachen"
+      local_matcher_name: "superglue"
+
+    - local_extractor_name: "d2net-ss"
+      local_matcher_name: "NN-ratio"
+
+    - local_extractor_name: "sift"
+      local_matcher_name: "NN-ratio"
+
+  sun_group:
+    sun_intensity_startvalue: 1.0
+    sun_elevation_startvalue: 1.31
+    intensity_decrease_multiplier: 0.5
+    elevation_decrease_multiplier: 0.5
+    k_values: [0, 5]
+
+  precipitation_group:
+    precipitation_type: "dry"
+    precipitation_intensity: 0.0
+
+  visual_range: 100000.0
+  cloud_state: 'free'
+
+
+  ###
+
+viewpoint_experiment_yaw8_town01_autopilot:
+  template_path: '/opt/carla_vloc_benchmark/src/carla_visual_navigation/config/VisualNavigatorTemplate.xosc'
+  scenario_save_dir: '/scenarios/viewpoint_experiment_yaw8_town01_autopilot'
+  log_file_path: "/results/viewpoint_experiment_yaw8_town01_autopilot.json"
+  log_results: True
+
+  # Paths relative to location of the generated scenario file
+  logger_script_path: "../../opt/carla_vloc_benchmark/src/carla_visual_navigation/utils/run-scenario-log.sh"
+  catalog_path: "../../opt/carla_vloc_benchmark/src/carla_visual_navigation/config/catalogs"
+  planner_stop_script_path: "../../opt/carla_vloc_benchmark/src/carla_visual_navigation/utils/run-planner-stop.sh"
+
+  controller_entry_name: 'VisualLocalizationAgent'
+
+  town_name: Town01
+  route_group:
+      route_entry_name: "Map01_route01_maneuver"
+      goal_location_x: 88.5
+      goal_location_y: 112.0
+  goal_location_tolerance: 10
+  target_speed: 4.0
+  image_gallery_path: "/image-gallery/town01_route1/"
+  localization_frequence: 2.0
+  ego_vehicle_offset: 0
+
+  top_k_matches: 5
+  global_extractor_name:
+    - "netvlad"
+    - "dir"
+
+  local_extractor_group:
+    - local_extractor_name: "r2d2"
+      local_matcher_name: "NN-ratio"
+
+    - local_extractor_name: "superpoint_aachen"
+      local_matcher_name: "superglue"
+
+    - local_extractor_name: "d2net-ss"
+      local_matcher_name: "NN-ratio"
+
+    - local_extractor_name: "sift"
+      local_matcher_name: "NN-ratio"
+
+  sun_group:
+    sun_intensity_startvalue: 1.0
+    sun_elevation_startvalue: 1.31
+    intensity_decrease_multiplier: 0.5
+    elevation_decrease_multiplier: 0.5
+    k_values: [0, 5]
+
+  precipitation_group:
+    precipitation_type: "dry"
+    precipitation_intensity: 0.0
+
+  visual_range: 100000.0
+  cloud_state: 'free'
+
+
+  ###
+
+viewpoint_experiment_zpitch1_town01_autopilot:
+  template_path: '/opt/carla_vloc_benchmark/src/carla_visual_navigation/config/VisualNavigatorTemplate.xosc'
+  scenario_save_dir: '/scenarios/viewpoint_experiment_zpitch1_town01_autopilot'
+  log_file_path: "/results/viewpoint_experiment_zpitch1_town01_autopilot.json"
+  log_results: True
+
+  # Paths relative to location of the generated scenario file
+  logger_script_path: "../../opt/carla_vloc_benchmark/src/carla_visual_navigation/utils/run-scenario-log.sh"
+  catalog_path: "../../opt/carla_vloc_benchmark/src/carla_visual_navigation/config/catalogs"
+  planner_stop_script_path: "../../opt/carla_vloc_benchmark/src/carla_visual_navigation/utils/run-planner-stop.sh"
+
+  controller_entry_name: 'VisualLocalizationAgent'
+
+  town_name: Town01
+  route_group:
+      route_entry_name: "Map01_route01_maneuver"
+      goal_location_x: 88.5
+      goal_location_y: 112.0
+  goal_location_tolerance: 10
+  target_speed: 4.0
+  image_gallery_path: "/image-gallery/town01_route1/"
+  localization_frequence: 2.0
+  ego_vehicle_offset: 0
+
+  top_k_matches: 5
+  global_extractor_name:
+    - "netvlad"
+    - "dir"
+
+  local_extractor_group:
+    - local_extractor_name: "r2d2"
+      local_matcher_name: "NN-ratio"
+
+    - local_extractor_name: "superpoint_aachen"
+      local_matcher_name: "superglue"
+
+    - local_extractor_name: "d2net-ss"
+      local_matcher_name: "NN-ratio"
+
+    - local_extractor_name: "sift"
+      local_matcher_name: "NN-ratio"
+
+  sun_group:
+    sun_intensity_startvalue: 1.0
+    sun_elevation_startvalue: 1.31
+    intensity_decrease_multiplier: 0.5
+    elevation_decrease_multiplier: 0.5
+    k_values: [0, 5]
+
+  precipitation_group:
+    precipitation_type: "dry"
+    precipitation_intensity: 0.0
+
+  visual_range: 100000.0
+  cloud_state: 'free'
+
+  ###
+
+
+viewpoint_experiment_zpitch2_town01_autopilot:
+  template_path: '/opt/carla_vloc_benchmark/src/carla_visual_navigation/config/VisualNavigatorTemplate.xosc'
+  scenario_save_dir: '/scenarios/viewpoint_experiment_zpitch2_town01_autopilot'
+  log_file_path: "/results/viewpoint_experiment_zpitch2_town01_autopilot.json"
+  log_results: True
+
+  # Paths relative to location of the generated scenario file
+  logger_script_path: "../../opt/carla_vloc_benchmark/src/carla_visual_navigation/utils/run-scenario-log.sh"
+  catalog_path: "../../opt/carla_vloc_benchmark/src/carla_visual_navigation/config/catalogs"
+  planner_stop_script_path: "../../opt/carla_vloc_benchmark/src/carla_visual_navigation/utils/run-planner-stop.sh"
+
+  controller_entry_name: 'VisualLocalizationAgent'
+
+  town_name: Town01
+  route_group:
+      route_entry_name: "Map01_route01_maneuver"
+      goal_location_x: 88.5
+      goal_location_y: 112.0
+  goal_location_tolerance: 10
+  target_speed: 4.0
+  image_gallery_path: "/image-gallery/town01_route1/"
+  localization_frequence: 2.0
+  ego_vehicle_offset: 0
+
+  top_k_matches: 5
+  global_extractor_name:
+    - "netvlad"
+    - "dir"
+
+  local_extractor_group:
+    - local_extractor_name: "r2d2"
+      local_matcher_name: "NN-ratio"
+
+    - local_extractor_name: "superpoint_aachen"
+      local_matcher_name: "superglue"
+
+    - local_extractor_name: "d2net-ss"
+      local_matcher_name: "NN-ratio"
+
+    - local_extractor_name: "sift"
+      local_matcher_name: "NN-ratio"
+
+  sun_group:
+    sun_intensity_startvalue: 1.0
+    sun_elevation_startvalue: 1.31
+    intensity_decrease_multiplier: 0.5
+    elevation_decrease_multiplier: 0.5
+    k_values: [0, 5]
+
+  precipitation_group:
+    precipitation_type: "dry"
+    precipitation_intensity: 0.0
+
+  visual_range: 100000.0
+  cloud_state: 'free'
+
+
+  ###
+
+viewpoint_experiment_zpitch3_town01_autopilot:
+  template_path: '/opt/carla_vloc_benchmark/src/carla_visual_navigation/config/VisualNavigatorTemplate.xosc'
+  scenario_save_dir: '/scenarios/viewpoint_experiment_zpitch3_town01_autopilot'
+  log_file_path: "/results/viewpoint_experiment_zpitch3_town01_autopilot.json"
+  log_results: True
+
+  # Paths relative to location of the generated scenario file
+  logger_script_path: "../../opt/carla_vloc_benchmark/src/carla_visual_navigation/utils/run-scenario-log.sh"
+  catalog_path: "../../opt/carla_vloc_benchmark/src/carla_visual_navigation/config/catalogs"
+  planner_stop_script_path: "../../opt/carla_vloc_benchmark/src/carla_visual_navigation/utils/run-planner-stop.sh"
+
+  controller_entry_name: 'VisualLocalizationAgent'
+
+  town_name: Town01
+  route_group:
+      route_entry_name: "Map01_route01_maneuver"
+      goal_location_x: 88.5
+      goal_location_y: 112.0
+  goal_location_tolerance: 10
+  target_speed: 4.0
+  image_gallery_path: "/image-gallery/town01_route1/"
+  localization_frequence: 2.0
+  ego_vehicle_offset: 0
+
+  top_k_matches: 5
+  global_extractor_name:
+    - "netvlad"
+    - "dir"
+
+  local_extractor_group:
+    - local_extractor_name: "r2d2"
+      local_matcher_name: "NN-ratio"
+
+    - local_extractor_name: "superpoint_aachen"
+      local_matcher_name: "superglue"
+
+    - local_extractor_name: "d2net-ss"
+      local_matcher_name: "NN-ratio"
+
+    - local_extractor_name: "sift"
+      local_matcher_name: "NN-ratio"
+
+  sun_group:
+    sun_intensity_startvalue: 1.0
+    sun_elevation_startvalue: 1.31
+    intensity_decrease_multiplier: 0.5
+    elevation_decrease_multiplier: 0.5
+    k_values: [0, 5]
+
+  precipitation_group:
+    precipitation_type: "dry"
+    precipitation_intensity: 0.0
+
+  visual_range: 100000.0
+  cloud_state: 'free'
+
+  ###
+
+
+viewpoint_experiment_zpitch4_town01_autopilot:
+  template_path: '/opt/carla_vloc_benchmark/src/carla_visual_navigation/config/VisualNavigatorTemplate.xosc'
+  scenario_save_dir: '/scenarios/viewpoint_experiment_zpitch4_town01_autopilot'
+  log_file_path: "/results/viewpoint_experiment_zpitch4_town01_autopilot.json"
+  log_results: True
+
+  # Paths relative to location of the generated scenario file
+  logger_script_path: "../../opt/carla_vloc_benchmark/src/carla_visual_navigation/utils/run-scenario-log.sh"
+  catalog_path: "../../opt/carla_vloc_benchmark/src/carla_visual_navigation/config/catalogs"
+  planner_stop_script_path: "../../opt/carla_vloc_benchmark/src/carla_visual_navigation/utils/run-planner-stop.sh"
+
+  controller_entry_name: 'VisualLocalizationAgent'
+
+  town_name: Town01
+  route_group:
+      route_entry_name: "Map01_route01_maneuver"
+      goal_location_x: 88.5
+      goal_location_y: 112.0
+  goal_location_tolerance: 10
+  target_speed: 4.0
+  image_gallery_path: "/image-gallery/town01_route1/"
+  localization_frequence: 2.0
+  ego_vehicle_offset: 0
+
+  top_k_matches: 5
+  global_extractor_name:
+    - "netvlad"
+    - "dir"
+
+  local_extractor_group:
+    - local_extractor_name: "r2d2"
+      local_matcher_name: "NN-ratio"
+
+    - local_extractor_name: "superpoint_aachen"
+      local_matcher_name: "superglue"
+
+    - local_extractor_name: "d2net-ss"
+      local_matcher_name: "NN-ratio"
+
+    - local_extractor_name: "sift"
+      local_matcher_name: "NN-ratio"
+
+  sun_group:
+    sun_intensity_startvalue: 1.0
+    sun_elevation_startvalue: 1.31
+    intensity_decrease_multiplier: 0.5
+    elevation_decrease_multiplier: 0.5
+    k_values: [0, 5]
+
+  precipitation_group:
+    precipitation_type: "dry"
+    precipitation_intensity: 0.0
+
+  visual_range: 100000.0
+  cloud_state: 'free'
+
+  ###
+
+viewpoint_experiment_zpitch5_town01_autopilot:
+  template_path: '/opt/carla_vloc_benchmark/src/carla_visual_navigation/config/VisualNavigatorTemplate.xosc'
+  scenario_save_dir: '/scenarios/viewpoint_experiment_zpitch5_town01_autopilot'
+  log_file_path: "/results/viewpoint_experiment_zpitch5_town01_autopilot.json"
+  log_results: True
+
+  # Paths relative to location of the generated scenario file
+  logger_script_path: "../../opt/carla_vloc_benchmark/src/carla_visual_navigation/utils/run-scenario-log.sh"
+  catalog_path: "../../opt/carla_vloc_benchmark/src/carla_visual_navigation/config/catalogs"
+  planner_stop_script_path: "../../opt/carla_vloc_benchmark/src/carla_visual_navigation/utils/run-planner-stop.sh"
+
+  controller_entry_name: 'VisualLocalizationAgent'
+
+  town_name: Town01
+  route_group:
+      route_entry_name: "Map01_route01_maneuver"
+      goal_location_x: 88.5
+      goal_location_y: 112.0
+  goal_location_tolerance: 10
+  target_speed: 4.0
+  image_gallery_path: "/image-gallery/town01_route1/"
+  localization_frequence: 2.0
+  ego_vehicle_offset: 0
+
+  top_k_matches: 5
+  global_extractor_name:
+    - "netvlad"
+    - "dir"
+
+  local_extractor_group:
+    - local_extractor_name: "r2d2"
+      local_matcher_name: "NN-ratio"
+
+    - local_extractor_name: "superpoint_aachen"
+      local_matcher_name: "superglue"
+
+    - local_extractor_name: "d2net-ss"
+      local_matcher_name: "NN-ratio"
+
+    - local_extractor_name: "sift"
+      local_matcher_name: "NN-ratio"
+
+  sun_group:
+    sun_intensity_startvalue: 1.0
+    sun_elevation_startvalue: 1.31
+    intensity_decrease_multiplier: 0.5
+    elevation_decrease_multiplier: 0.5
+    k_values: [0, 5]
+
+  precipitation_group:
+    precipitation_type: "dry"
+    precipitation_intensity: 0.0
+
+  visual_range: 100000.0
+  cloud_state: 'free'
+
+
+  ###
+  
+viewpoint_experiment_zpitch6_town01_autopilot:
+  template_path: '/opt/carla_vloc_benchmark/src/carla_visual_navigation/config/VisualNavigatorTemplate.xosc'
+  scenario_save_dir: '/scenarios/viewpoint_experiment_zpitch6_town01_autopilot'
+  log_file_path: "/results/viewpoint_experiment_zpitch6_town01_autopilot.json"
+  log_results: True
+
+  # Paths relative to location of the generated scenario file
+  logger_script_path: "../../opt/carla_vloc_benchmark/src/carla_visual_navigation/utils/run-scenario-log.sh"
+  catalog_path: "../../opt/carla_vloc_benchmark/src/carla_visual_navigation/config/catalogs"
+  planner_stop_script_path: "../../opt/carla_vloc_benchmark/src/carla_visual_navigation/utils/run-planner-stop.sh"
+
+  controller_entry_name: 'VisualLocalizationAgent'
+
+  town_name: Town01
+  route_group:
+      route_entry_name: "Map01_route01_maneuver"
+      goal_location_x: 88.5
+      goal_location_y: 112.0
+  goal_location_tolerance: 10
+  target_speed: 4.0
+  image_gallery_path: "/image-gallery/town01_route1/"
+  localization_frequence: 2.0
+  ego_vehicle_offset: 0
+
+  top_k_matches: 5
+  global_extractor_name:
+    - "netvlad"
+    - "dir"
+
+  local_extractor_group:
+    - local_extractor_name: "r2d2"
+      local_matcher_name: "NN-ratio"
+
+    - local_extractor_name: "superpoint_aachen"
+      local_matcher_name: "superglue"
+
+    - local_extractor_name: "d2net-ss"
+      local_matcher_name: "NN-ratio"
+
+    - local_extractor_name: "sift"
+      local_matcher_name: "NN-ratio"
+
+  sun_group:
+    sun_intensity_startvalue: 1.0
+    sun_elevation_startvalue: 1.31
+    intensity_decrease_multiplier: 0.5
+    elevation_decrease_multiplier: 0.5
+    k_values: [0, 5]
+
+  precipitation_group:
+    precipitation_type: "dry"
+    precipitation_intensity: 0.0
+
+  visual_range: 100000.0
+  cloud_state: 'free'
+
+  ###
+  
+  
+viewpoint_experiment_zpitch7_town01_autopilot:
+  template_path: '/opt/carla_vloc_benchmark/src/carla_visual_navigation/config/VisualNavigatorTemplate.xosc'
+  scenario_save_dir: '/scenarios/viewpoint_experiment_zpitch7_town01_autopilot'
+  log_file_path: "/results/viewpoint_experiment_zpitch7_town01_autopilot.json"
+  log_results: True
+
+  # Paths relative to location of the generated scenario file
+  logger_script_path: "../../opt/carla_vloc_benchmark/src/carla_visual_navigation/utils/run-scenario-log.sh"
+  catalog_path: "../../opt/carla_vloc_benchmark/src/carla_visual_navigation/config/catalogs"
+  planner_stop_script_path: "../../opt/carla_vloc_benchmark/src/carla_visual_navigation/utils/run-planner-stop.sh"
+
+  controller_entry_name: 'VisualLocalizationAgent'
+
+  town_name: Town01
+  route_group:
+      route_entry_name: "Map01_route01_maneuver"
+      goal_location_x: 88.5
+      goal_location_y: 112.0
+  goal_location_tolerance: 10
+  target_speed: 4.0
+  image_gallery_path: "/image-gallery/town01_route1/"
+  localization_frequence: 2.0
+  ego_vehicle_offset: 0
+
+  top_k_matches: 5
+  global_extractor_name:
+    - "netvlad"
+    - "dir"
+
+  local_extractor_group:
+    - local_extractor_name: "r2d2"
+      local_matcher_name: "NN-ratio"
+
+    - local_extractor_name: "superpoint_aachen"
+      local_matcher_name: "superglue"
+
+    - local_extractor_name: "d2net-ss"
+      local_matcher_name: "NN-ratio"
+
+    - local_extractor_name: "sift"
+      local_matcher_name: "NN-ratio"
+
+  sun_group:
+    sun_intensity_startvalue: 1.0
+    sun_elevation_startvalue: 1.31
+    intensity_decrease_multiplier: 0.5
+    elevation_decrease_multiplier: 0.5
+    k_values: [0, 5]
+
+  precipitation_group:
+    precipitation_type: "dry"
+    precipitation_intensity: 0.0
+
+  visual_range: 100000.0
+  cloud_state: 'free'
+
+
+  ###
+
+viewpoint_experiment_zpitch8_town01_autopilot:
+  template_path: '/opt/carla_vloc_benchmark/src/carla_visual_navigation/config/VisualNavigatorTemplate.xosc'
+  scenario_save_dir: '/scenarios/viewpoint_experiment_zpitch8_town01_autopilot'
+  log_file_path: "/results/viewpoint_experiment_zpitch8_town01_autopilot.json"
+  log_results: True
+
+  # Paths relative to location of the generated scenario file
+  logger_script_path: "../../opt/carla_vloc_benchmark/src/carla_visual_navigation/utils/run-scenario-log.sh"
+  catalog_path: "../../opt/carla_vloc_benchmark/src/carla_visual_navigation/config/catalogs"
+  planner_stop_script_path: "../../opt/carla_vloc_benchmark/src/carla_visual_navigation/utils/run-planner-stop.sh"
+
+  controller_entry_name: 'VisualLocalizationAgent'
+
+  town_name: Town01
+  route_group:
+      route_entry_name: "Map01_route01_maneuver"
+      goal_location_x: 88.5
+      goal_location_y: 112.0
+  goal_location_tolerance: 10
+  target_speed: 4.0
+  image_gallery_path: "/image-gallery/town01_route1/"
+  localization_frequence: 2.0
+  ego_vehicle_offset: 0
+
+  top_k_matches: 5
+  global_extractor_name:
+    - "netvlad"
+    - "dir"
+
+  local_extractor_group:
+    - local_extractor_name: "r2d2"
+      local_matcher_name: "NN-ratio"
+
+    - local_extractor_name: "superpoint_aachen"
+      local_matcher_name: "superglue"
+
+    - local_extractor_name: "d2net-ss"
+      local_matcher_name: "NN-ratio"
+
+    - local_extractor_name: "sift"
+      local_matcher_name: "NN-ratio"
+
+  sun_group:
+    sun_intensity_startvalue: 1.0
+    sun_elevation_startvalue: 1.31
+    intensity_decrease_multiplier: 0.5
+    elevation_decrease_multiplier: 0.5
+    k_values: [0, 5]
+
+  precipitation_group:
+    precipitation_type: "dry"
+    precipitation_intensity: 0.0
+
+  visual_range: 100000.0
+  cloud_state: 'free'
+
+  ###
+
+
+viewpoint_experiment_zpitch9_town01_autopilot:
+  template_path: '/opt/carla_vloc_benchmark/src/carla_visual_navigation/config/VisualNavigatorTemplate.xosc'
+  scenario_save_dir: '/scenarios/viewpoint_experiment_zpitch9_town01_autopilot'
+  log_file_path: "/results/viewpoint_experiment_zpitch9_town01_autopilot.json"
+  log_results: True
+
+  # Paths relative to location of the generated scenario file
+  logger_script_path: "../../opt/carla_vloc_benchmark/src/carla_visual_navigation/utils/run-scenario-log.sh"
+  catalog_path: "../../opt/carla_vloc_benchmark/src/carla_visual_navigation/config/catalogs"
+  planner_stop_script_path: "../../opt/carla_vloc_benchmark/src/carla_visual_navigation/utils/run-planner-stop.sh"
+
+  controller_entry_name: 'VisualLocalizationAgent'
+
+  town_name: Town01
+  route_group:
+      route_entry_name: "Map01_route01_maneuver"
+      goal_location_x: 88.5
+      goal_location_y: 112.0
+  goal_location_tolerance: 10
+  target_speed: 4.0
+  image_gallery_path: "/image-gallery/town01_route1/"
+  localization_frequence: 2.0
+  ego_vehicle_offset: 0
+
+  top_k_matches: 5
+  global_extractor_name:
+    - "netvlad"
+    - "dir"
+
+  local_extractor_group:
+    - local_extractor_name: "r2d2"
+      local_matcher_name: "NN-ratio"
+
+    - local_extractor_name: "superpoint_aachen"
+      local_matcher_name: "superglue"
+
+    - local_extractor_name: "d2net-ss"
+      local_matcher_name: "NN-ratio"
+
+    - local_extractor_name: "sift"
+      local_matcher_name: "NN-ratio"
+
+  sun_group:
+    sun_intensity_startvalue: 1.0
+    sun_elevation_startvalue: 1.31
+    intensity_decrease_multiplier: 0.5
+    elevation_decrease_multiplier: 0.5
+    k_values: [0, 5]
+
+  precipitation_group:
+    precipitation_type: "dry"
+    precipitation_intensity: 0.0
+
+  visual_range: 100000.0
+  cloud_state: 'free'
+
+  ###
+
+
+viewpoint_experiment_zpitch10_town01_autopilot:
+  template_path: '/opt/carla_vloc_benchmark/src/carla_visual_navigation/config/VisualNavigatorTemplate.xosc'
+  scenario_save_dir: '/scenarios/viewpoint_experiment_zpitch10_town01_autopilot'
+  log_file_path: "/results/viewpoint_experiment_zpitch10_town01_autopilot.json"
+  log_results: True
+
+  # Paths relative to location of the generated scenario file
+  logger_script_path: "../../opt/carla_vloc_benchmark/src/carla_visual_navigation/utils/run-scenario-log.sh"
+  catalog_path: "../../opt/carla_vloc_benchmark/src/carla_visual_navigation/config/catalogs"
+  planner_stop_script_path: "../../opt/carla_vloc_benchmark/src/carla_visual_navigation/utils/run-planner-stop.sh"
+
+  controller_entry_name: 'VisualLocalizationAgent'
+
+  town_name: Town01
+  route_group:
+      route_entry_name: "Map01_route01_maneuver"
+      goal_location_x: 88.5
+      goal_location_y: 112.0
+  goal_location_tolerance: 10
+  target_speed: 4.0
+  image_gallery_path: "/image-gallery/town01_route1/"
+  localization_frequence: 2.0
+  ego_vehicle_offset: 0
+
+  top_k_matches: 5
+  global_extractor_name:
+    - "netvlad"
+    - "dir"
+
+  local_extractor_group:
+    - local_extractor_name: "r2d2"
+      local_matcher_name: "NN-ratio"
+
+    - local_extractor_name: "superpoint_aachen"
+      local_matcher_name: "superglue"
+
+    - local_extractor_name: "d2net-ss"
+      local_matcher_name: "NN-ratio"
+
+    - local_extractor_name: "sift"
+      local_matcher_name: "NN-ratio"
+
+  sun_group:
+    sun_intensity_startvalue: 1.0
+    sun_elevation_startvalue: 1.31
+    intensity_decrease_multiplier: 0.5
+    elevation_decrease_multiplier: 0.5
+    k_values: [0, 5]
+
+  precipitation_group:
+    precipitation_type: "dry"
+    precipitation_intensity: 0.0
+
+  visual_range: 100000.0
+  cloud_state: 'free'
+
+
+viewpoint_experiment_zpitch11_town01_autopilot:
+  template_path: '/opt/carla_vloc_benchmark/src/carla_visual_navigation/config/VisualNavigatorTemplate.xosc'
+  scenario_save_dir: '/scenarios/viewpoint_experiment_zpitch11_town01_autopilot'
+  log_file_path: "/results/viewpoint_experiment_zpitch11_town01_autopilot.json"
+  log_results: True
+
+  # Paths relative to location of the generated scenario file
+  logger_script_path: "../../opt/carla_vloc_benchmark/src/carla_visual_navigation/utils/run-scenario-log.sh"
+  catalog_path: "../../opt/carla_vloc_benchmark/src/carla_visual_navigation/config/catalogs"
+  planner_stop_script_path: "../../opt/carla_vloc_benchmark/src/carla_visual_navigation/utils/run-planner-stop.sh"
+
+  controller_entry_name: 'VisualLocalizationAgent'
+
+  town_name: Town01
+  route_group:
+      route_entry_name: "Map01_route01_maneuver"
+      goal_location_x: 88.5
+      goal_location_y: 112.0
+  goal_location_tolerance: 10
+  target_speed: 4.0
+  image_gallery_path: "/image-gallery/town01_route1/"
+  localization_frequence: 2.0
+  ego_vehicle_offset: 0
+
+  top_k_matches: 5
+  global_extractor_name:
+    - "netvlad"
+    - "dir"
+
+  local_extractor_group:
+    - local_extractor_name: "r2d2"
+      local_matcher_name: "NN-ratio"
+
+    - local_extractor_name: "superpoint_aachen"
+      local_matcher_name: "superglue"
+
+    - local_extractor_name: "d2net-ss"
+      local_matcher_name: "NN-ratio"
+
+    - local_extractor_name: "sift"
+      local_matcher_name: "NN-ratio"
+
+  sun_group:
+    sun_intensity_startvalue: 1.0
+    sun_elevation_startvalue: 1.31
+    intensity_decrease_multiplier: 0.5
+    elevation_decrease_multiplier: 0.5
+    k_values: [0, 5]
+
+  precipitation_group:
+    precipitation_type: "dry"
+    precipitation_intensity: 0.0
+
+  visual_range: 100000.0
+  cloud_state: 'free'
+
+viewpoint_experiment_zpitch12_town01_autopilot:
+  template_path: '/opt/carla_vloc_benchmark/src/carla_visual_navigation/config/VisualNavigatorTemplate.xosc'
+  scenario_save_dir: '/scenarios/viewpoint_experiment_zpitch12_town01_autopilot'
+  log_file_path: "/results/viewpoint_experiment_zpitch12_town01_autopilot.json"
+  log_results: True
+
+  # Paths relative to location of the generated scenario file
+  logger_script_path: "../../opt/carla_vloc_benchmark/src/carla_visual_navigation/utils/run-scenario-log.sh"
+  catalog_path: "../../opt/carla_vloc_benchmark/src/carla_visual_navigation/config/catalogs"
+  planner_stop_script_path: "../../opt/carla_vloc_benchmark/src/carla_visual_navigation/utils/run-planner-stop.sh"
+
+  controller_entry_name: 'VisualLocalizationAgent'
+
+  town_name: Town01
+  route_group:
+      route_entry_name: "Map01_route01_maneuver"
+      goal_location_x: 88.5
+      goal_location_y: 112.0
+  goal_location_tolerance: 10
+  target_speed: 4.0
+  image_gallery_path: "/image-gallery/town01_route1/"
+  localization_frequence: 2.0
+  ego_vehicle_offset: 0
+
+  top_k_matches: 5
+  global_extractor_name:
+    - "netvlad"
+    - "dir"
+
+  local_extractor_group:
+    - local_extractor_name: "r2d2"
+      local_matcher_name: "NN-ratio"
+
+    - local_extractor_name: "superpoint_aachen"
+      local_matcher_name: "superglue"
+
+    - local_extractor_name: "d2net-ss"
+      local_matcher_name: "NN-ratio"
+
+    - local_extractor_name: "sift"
+      local_matcher_name: "NN-ratio"
+
+  sun_group:
+    sun_intensity_startvalue: 1.0
+    sun_elevation_startvalue: 1.31
+    intensity_decrease_multiplier: 0.5
+    elevation_decrease_multiplier: 0.5
+    k_values: [0, 5]
+
+  precipitation_group:
+    precipitation_type: "dry"
+    precipitation_intensity: 0.0
+
+  visual_range: 100000.0
+  cloud_state: 'free'
+  ###
+
+viewpoint_experiment_roll1_town01_autopilot:
+  template_path: '/opt/carla_vloc_benchmark/src/carla_visual_navigation/config/VisualNavigatorTemplate.xosc'
+  scenario_save_dir: '/scenarios/viewpoint_experiment_roll1_town01_autopilot'
+  log_file_path: "/results/viewpoint_experiment_roll1_town01_autopilot.json"
+  log_results: True
+
+  # Paths relative to location of the generated scenario file
+  logger_script_path: "../../opt/carla_vloc_benchmark/src/carla_visual_navigation/utils/run-scenario-log.sh"
+  catalog_path: "../../opt/carla_vloc_benchmark/src/carla_visual_navigation/config/catalogs"
+  planner_stop_script_path: "../../opt/carla_vloc_benchmark/src/carla_visual_navigation/utils/run-planner-stop.sh"
+
+  controller_entry_name: 'VisualLocalizationAgent'
+
+  town_name: Town01
+  route_group:
+      route_entry_name: "Map01_route01_maneuver"
+      goal_location_x: 88.5
+      goal_location_y: 112.0
+  goal_location_tolerance: 10
+  target_speed: 4.0
+  image_gallery_path: "/image-gallery/town01_route1/"
+  localization_frequence: 2.0
+  ego_vehicle_offset: 0
+
+  top_k_matches: 5
+  global_extractor_name:
+    - "netvlad"
+    - "dir"
+
+  local_extractor_group:
+    - local_extractor_name: "r2d2"
+      local_matcher_name: "NN-ratio"
+
+    - local_extractor_name: "superpoint_aachen"
+      local_matcher_name: "superglue"
+
+    - local_extractor_name: "d2net-ss"
+      local_matcher_name: "NN-ratio"
+
+    - local_extractor_name: "sift"
+      local_matcher_name: "NN-ratio"
+
+  sun_group:
+    sun_intensity_startvalue: 1.0
+    sun_elevation_startvalue: 1.31
+    intensity_decrease_multiplier: 0.5
+    elevation_decrease_multiplier: 0.5
+    k_values: [0, 5]
+
+  precipitation_group:
+    precipitation_type: "dry"
+    precipitation_intensity: 0.0
+
+  visual_range: 100000.0
+  cloud_state: 'free'
+
+  ###
+
+
+viewpoint_experiment_roll2_town01_autopilot:
+  template_path: '/opt/carla_vloc_benchmark/src/carla_visual_navigation/config/VisualNavigatorTemplate.xosc'
+  scenario_save_dir: '/scenarios/viewpoint_experiment_roll2_town01_autopilot'
+  log_file_path: "/results/viewpoint_experiment_roll2_town01_autopilot.json"
+  log_results: True
+
+  # Paths relative to location of the generated scenario file
+  logger_script_path: "../../opt/carla_vloc_benchmark/src/carla_visual_navigation/utils/run-scenario-log.sh"
+  catalog_path: "../../opt/carla_vloc_benchmark/src/carla_visual_navigation/config/catalogs"
+  planner_stop_script_path: "../../opt/carla_vloc_benchmark/src/carla_visual_navigation/utils/run-planner-stop.sh"
+
+  controller_entry_name: 'VisualLocalizationAgent'
+
+  town_name: Town01
+  route_group:
+      route_entry_name: "Map01_route01_maneuver"
+      goal_location_x: 88.5
+      goal_location_y: 112.0
+  goal_location_tolerance: 10
+  target_speed: 4.0
+  image_gallery_path: "/image-gallery/town01_route1/"
+  localization_frequence: 2.0
+  ego_vehicle_offset: 0
+
+  top_k_matches: 5
+  global_extractor_name:
+    - "netvlad"
+    - "dir"
+
+  local_extractor_group:
+    - local_extractor_name: "r2d2"
+      local_matcher_name: "NN-ratio"
+
+    - local_extractor_name: "superpoint_aachen"
+      local_matcher_name: "superglue"
+
+    - local_extractor_name: "d2net-ss"
+      local_matcher_name: "NN-ratio"
+
+    - local_extractor_name: "sift"
+      local_matcher_name: "NN-ratio"
+
+  sun_group:
+    sun_intensity_startvalue: 1.0
+    sun_elevation_startvalue: 1.31
+    intensity_decrease_multiplier: 0.5
+    elevation_decrease_multiplier: 0.5
+    k_values: [0, 5]
+
+  precipitation_group:
+    precipitation_type: "dry"
+    precipitation_intensity: 0.0
+
+  visual_range: 100000.0
+  cloud_state: 'free'
+
+
+  ###
+ 
+viewpoint_experiment_roll3_town01_autopilot:
+  template_path: '/opt/carla_vloc_benchmark/src/carla_visual_navigation/config/VisualNavigatorTemplate.xosc'
+  scenario_save_dir: '/scenarios/viewpoint_experiment_roll3_town01_autopilot'
+  log_file_path: "/results/viewpoint_experiment_roll3_town01_autopilot.json"
+  log_results: True
+
+  # Paths relative to location of the generated scenario file
+  logger_script_path: "../../opt/carla_vloc_benchmark/src/carla_visual_navigation/utils/run-scenario-log.sh"
+  catalog_path: "../../opt/carla_vloc_benchmark/src/carla_visual_navigation/config/catalogs"
+  planner_stop_script_path: "../../opt/carla_vloc_benchmark/src/carla_visual_navigation/utils/run-planner-stop.sh"
+
+  controller_entry_name: 'VisualLocalizationAgent'
+
+  town_name: Town01
+  route_group:
+      route_entry_name: "Map01_route01_maneuver"
+      goal_location_x: 88.5
+      goal_location_y: 112.0
+  goal_location_tolerance: 10
+  target_speed: 4.0
+  image_gallery_path: "/image-gallery/town01_route1/"
+  localization_frequence: 2.0
+  ego_vehicle_offset: 0
+
+  top_k_matches: 5
+  global_extractor_name:
+    - "netvlad"
+    - "dir"
+
+  local_extractor_group:
+    - local_extractor_name: "r2d2"
+      local_matcher_name: "NN-ratio"
+
+    - local_extractor_name: "superpoint_aachen"
+      local_matcher_name: "superglue"
+
+    - local_extractor_name: "d2net-ss"
+      local_matcher_name: "NN-ratio"
+
+    - local_extractor_name: "sift"
+      local_matcher_name: "NN-ratio"
+
+  sun_group:
+    sun_intensity_startvalue: 1.0
+    sun_elevation_startvalue: 1.31
+    intensity_decrease_multiplier: 0.5
+    elevation_decrease_multiplier: 0.5
+    k_values: [0, 5]
+
+  precipitation_group:
+    precipitation_type: "dry"
+    precipitation_intensity: 0.0
+
+  visual_range: 100000.0
+  cloud_state: 'free'
+
+  ###
+ 
+viewpoint_experiment_roll4_town01_autopilot:
+  template_path: '/opt/carla_vloc_benchmark/src/carla_visual_navigation/config/VisualNavigatorTemplate.xosc'
+  scenario_save_dir: '/scenarios/viewpoint_experiment_roll4_town01_autopilot'
+  log_file_path: "/results/viewpoint_experiment_roll4_town01_autopilot.json"
+  log_results: True
+
+  # Paths relative to location of the generated scenario file
+  logger_script_path: "../../opt/carla_vloc_benchmark/src/carla_visual_navigation/utils/run-scenario-log.sh"
+  catalog_path: "../../opt/carla_vloc_benchmark/src/carla_visual_navigation/config/catalogs"
+  planner_stop_script_path: "../../opt/carla_vloc_benchmark/src/carla_visual_navigation/utils/run-planner-stop.sh"
+
+  controller_entry_name: 'VisualLocalizationAgent'
+
+  town_name: Town01
+  route_group:
+      route_entry_name: "Map01_route01_maneuver"
+      goal_location_x: 88.5
+      goal_location_y: 112.0
+  goal_location_tolerance: 10
+  target_speed: 4.0
+  image_gallery_path: "/image-gallery/town01_route1/"
+  localization_frequence: 2.0
+  ego_vehicle_offset: 0
+
+  top_k_matches: 5
+  global_extractor_name:
+    - "netvlad"
+    - "dir"
+
+  local_extractor_group:
+    - local_extractor_name: "r2d2"
+      local_matcher_name: "NN-ratio"
+
+    - local_extractor_name: "superpoint_aachen"
+      local_matcher_name: "superglue"
+
+    - local_extractor_name: "d2net-ss"
+      local_matcher_name: "NN-ratio"
+
+    - local_extractor_name: "sift"
+      local_matcher_name: "NN-ratio"
+
+  sun_group:
+    sun_intensity_startvalue: 1.0
+    sun_elevation_startvalue: 1.31
+    intensity_decrease_multiplier: 0.5
+    elevation_decrease_multiplier: 0.5
+    k_values: [0, 5]
+
+  precipitation_group:
+    precipitation_type: "dry"
+    precipitation_intensity: 0.0
+
+  visual_range: 100000.0
+  cloud_state: 'free'
+
+  ###
+ 
+viewpoint_experiment_roll5_town01_autopilot:
+  template_path: '/opt/carla_vloc_benchmark/src/carla_visual_navigation/config/VisualNavigatorTemplate.xosc'
+  scenario_save_dir: '/scenarios/viewpoint_experiment_roll5_town01_autopilot'
+  log_file_path: "/results/viewpoint_experiment_roll5_town01_autopilot.json"
+  log_results: True
+
+  # Paths relative to location of the generated scenario file
+  logger_script_path: "../../opt/carla_vloc_benchmark/src/carla_visual_navigation/utils/run-scenario-log.sh"
+  catalog_path: "../../opt/carla_vloc_benchmark/src/carla_visual_navigation/config/catalogs"
+  planner_stop_script_path: "../../opt/carla_vloc_benchmark/src/carla_visual_navigation/utils/run-planner-stop.sh"
+
+  controller_entry_name: 'VisualLocalizationAgent'
+
+  town_name: Town01
+  route_group:
+      route_entry_name: "Map01_route01_maneuver"
+      goal_location_x: 88.5
+      goal_location_y: 112.0
+  goal_location_tolerance: 10
+  target_speed: 4.0
+  image_gallery_path: "/image-gallery/town01_route1/"
+  localization_frequence: 2.0
+  ego_vehicle_offset: 0
+
+  top_k_matches: 5
+  global_extractor_name:
+    - "netvlad"
+    - "dir"
+
+  local_extractor_group:
+    - local_extractor_name: "r2d2"
+      local_matcher_name: "NN-ratio"
+
+    - local_extractor_name: "superpoint_aachen"
+      local_matcher_name: "superglue"
+
+    - local_extractor_name: "d2net-ss"
+      local_matcher_name: "NN-ratio"
+
+    - local_extractor_name: "sift"
+      local_matcher_name: "NN-ratio"
+
+  sun_group:
+    sun_intensity_startvalue: 1.0
+    sun_elevation_startvalue: 1.31
+    intensity_decrease_multiplier: 0.5
+    elevation_decrease_multiplier: 0.5
+    k_values: [0, 5]
+
+  precipitation_group:
+    precipitation_type: "dry"
+    precipitation_intensity: 0.0
+
+  visual_range: 100000.0
+  cloud_state: 'free'
+
+  ###
+ 
+viewpoint_experiment_roll6_town01_autopilot:
+  template_path: '/opt/carla_vloc_benchmark/src/carla_visual_navigation/config/VisualNavigatorTemplate.xosc'
+  scenario_save_dir: '/scenarios/viewpoint_experiment_roll6_town01_autopilot'
+  log_file_path: "/results/viewpoint_experiment_roll6_town01_autopilot.json"
+  log_results: True
+
+  # Paths relative to location of the generated scenario file
+  logger_script_path: "../../opt/carla_vloc_benchmark/src/carla_visual_navigation/utils/run-scenario-log.sh"
+  catalog_path: "../../opt/carla_vloc_benchmark/src/carla_visual_navigation/config/catalogs"
+  planner_stop_script_path: "../../opt/carla_vloc_benchmark/src/carla_visual_navigation/utils/run-planner-stop.sh"
+
+  controller_entry_name: 'VisualLocalizationAgent'
+
+  town_name: Town01
+  route_group:
+      route_entry_name: "Map01_route01_maneuver"
+      goal_location_x: 88.5
+      goal_location_y: 112.0
+  goal_location_tolerance: 10
+  target_speed: 4.0
+  image_gallery_path: "/image-gallery/town01_route1/"
+  localization_frequence: 2.0
+  ego_vehicle_offset: 0
+
+  top_k_matches: 5
+  global_extractor_name:
+    - "netvlad"
+    - "dir"
+
+  local_extractor_group:
+    - local_extractor_name: "r2d2"
+      local_matcher_name: "NN-ratio"
+
+    - local_extractor_name: "superpoint_aachen"
+      local_matcher_name: "superglue"
+
+    - local_extractor_name: "d2net-ss"
+      local_matcher_name: "NN-ratio"
+
+    - local_extractor_name: "sift"
+      local_matcher_name: "NN-ratio"
+
+  sun_group:
+    sun_intensity_startvalue: 1.0
+    sun_elevation_startvalue: 1.31
+    intensity_decrease_multiplier: 0.5
+    elevation_decrease_multiplier: 0.5
+    k_values: [0, 5]
+
+  precipitation_group:
+    precipitation_type: "dry"
+    precipitation_intensity: 0.0
+
+  visual_range: 100000.0
+  cloud_state: 'free'
+
+  ###
+
+
+viewpoint_experiment_roll7_town01_autopilot:
+  template_path: '/opt/carla_vloc_benchmark/src/carla_visual_navigation/config/VisualNavigatorTemplate.xosc'
+  scenario_save_dir: '/scenarios/viewpoint_experiment_roll7_town01_autopilot'
+  log_file_path: "/results/viewpoint_experiment_roll7_town01_autopilot.json"
+  log_results: True
+
+  # Paths relative to location of the generated scenario file
+  logger_script_path: "../../opt/carla_vloc_benchmark/src/carla_visual_navigation/utils/run-scenario-log.sh"
+  catalog_path: "../../opt/carla_vloc_benchmark/src/carla_visual_navigation/config/catalogs"
+  planner_stop_script_path: "../../opt/carla_vloc_benchmark/src/carla_visual_navigation/utils/run-planner-stop.sh"
+
+  controller_entry_name: 'VisualLocalizationAgent'
+
+  town_name: Town01
+  route_group:
+      route_entry_name: "Map01_route01_maneuver"
+      goal_location_x: 88.5
+      goal_location_y: 112.0
+  goal_location_tolerance: 10
+  target_speed: 4.0
+  image_gallery_path: "/image-gallery/town01_route1/"
+  localization_frequence: 2.0
+  ego_vehicle_offset: 0
+
+  top_k_matches: 5
+  global_extractor_name:
+    - "netvlad"
+    - "dir"
+
+  local_extractor_group:
+    - local_extractor_name: "r2d2"
+      local_matcher_name: "NN-ratio"
+
+    - local_extractor_name: "superpoint_aachen"
+      local_matcher_name: "superglue"
+
+    - local_extractor_name: "d2net-ss"
+      local_matcher_name: "NN-ratio"
+
+    - local_extractor_name: "sift"
+      local_matcher_name: "NN-ratio"
+
+  sun_group:
+    sun_intensity_startvalue: 1.0
+    sun_elevation_startvalue: 1.31
+    intensity_decrease_multiplier: 0.5
+    elevation_decrease_multiplier: 0.5
+    k_values: [0, 5]
+
+  precipitation_group:
+    precipitation_type: "dry"
+    precipitation_intensity: 0.0
+
+  visual_range: 100000.0
+  cloud_state: 'free'
+
+  ###
+ 
+viewpoint_experiment_roll8_town01_autopilot:
+  template_path: '/opt/carla_vloc_benchmark/src/carla_visual_navigation/config/VisualNavigatorTemplate.xosc'
+  scenario_save_dir: '/scenarios/viewpoint_experiment_roll8_town01_autopilot'
+  log_file_path: "/results/viewpoint_experiment_roll8_town01_autopilot.json"
+  log_results: True
+
+  # Paths relative to location of the generated scenario file
+  logger_script_path: "../../opt/carla_vloc_benchmark/src/carla_visual_navigation/utils/run-scenario-log.sh"
+  catalog_path: "../../opt/carla_vloc_benchmark/src/carla_visual_navigation/config/catalogs"
+  planner_stop_script_path: "../../opt/carla_vloc_benchmark/src/carla_visual_navigation/utils/run-planner-stop.sh"
+
+  controller_entry_name: 'VisualLocalizationAgent'
+
+  town_name: Town01
+  route_group:
+      route_entry_name: "Map01_route01_maneuver"
+      goal_location_x: 88.5
+      goal_location_y: 112.0
+  goal_location_tolerance: 10
+  target_speed: 4.0
+  image_gallery_path: "/image-gallery/town01_route1/"
+  localization_frequence: 2.0
+  ego_vehicle_offset: 0
+
+  top_k_matches: 5
+  global_extractor_name:
+    - "netvlad"
+    - "dir"
+
+  local_extractor_group:
+    - local_extractor_name: "r2d2"
+      local_matcher_name: "NN-ratio"
+
+    - local_extractor_name: "superpoint_aachen"
+      local_matcher_name: "superglue"
+
+    - local_extractor_name: "d2net-ss"
+      local_matcher_name: "NN-ratio"
+
+    - local_extractor_name: "sift"
+      local_matcher_name: "NN-ratio"
+
+  sun_group:
+    sun_intensity_startvalue: 1.0
+    sun_elevation_startvalue: 1.31
+    intensity_decrease_multiplier: 0.5
+    elevation_decrease_multiplier: 0.5
+    k_values: [0, 5]
+
+  precipitation_group:
+    precipitation_type: "dry"
+    precipitation_intensity: 0.0
+
+  visual_range: 100000.0
+  cloud_state: 'free'
+
+
+  ###
+
+viewpoint_experiment_town01_autopilot:
+  template_path: '/opt/carla_vloc_benchmark/src/carla_visual_navigation/config/VisualNavigatorTemplate.xosc'
+  scenario_save_dir: '/scenarios/viewpoint_experiment_town01_autopilot'
+  log_file_path: "/results/viewpoint_experiment_town01_autopilot.json"
+  log_results: True
+
+  # Paths relative to location of the generated scenario file
+  logger_script_path: "../../opt/carla_vloc_benchmark/src/carla_visual_navigation/utils/run-scenario-log.sh"
+  catalog_path: "../../opt/carla_vloc_benchmark/src/carla_visual_navigation/config/catalogs"
+  planner_stop_script_path: "../../opt/carla_vloc_benchmark/src/carla_visual_navigation/utils/run-planner-stop.sh"
+
+  controller_entry_name: 'VisualLocalizationAgent'
+
+  town_name: Town01
+  route_group:
+      route_entry_name: "Map01_route01_maneuver"
+      goal_location_x: 88.5
+      goal_location_y: 112.0
+  goal_location_tolerance: 10
+  target_speed: 4.0
+  image_gallery_path: "/image-gallery/town01_route1/"
+  localization_frequence: 2.0
+  ego_vehicle_offset: 0
+
+  top_k_matches: 5
+  global_extractor_name:
+    - "netvlad"
+    - "dir"
+
+  local_extractor_group:
+    - local_extractor_name: "r2d2"
+      local_matcher_name: "NN-ratio"
+
+    - local_extractor_name: "superpoint_aachen"
+      local_matcher_name: "superglue"
+
+    - local_extractor_name: "d2net-ss"
+      local_matcher_name: "NN-ratio"
+
+    - local_extractor_name: "sift"
+      local_matcher_name: "NN-ratio"
+
+  sun_group:
+    sun_intensity_startvalue: 1.0
+    sun_elevation_startvalue: 1.31
+    intensity_decrease_multiplier: 0.5
+    elevation_decrease_multiplier: 0.5
+    k_values: [0, 5]
+
+  precipitation_group:
+    precipitation_type: "dry"
+    precipitation_intensity: 0.0
+
+  visual_range: 100000.0
+  cloud_state: 'free'
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

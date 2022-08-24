@@ -2,7 +2,7 @@
 
 echo "Publishing logger command..."
 
-while getopts "a:b:c:d:e:f:g:h:i:j:k:l:m:n:o:p:q:r:s:t:u:" opt
+while getopts "a:b:c:d:e:f:g:h:i:j:k:l:m:n:o:p:q:r:s:t:u:v:" opt
 do
    case "$opt" in
       a ) town_name="$OPTARG" ;;
@@ -26,6 +26,7 @@ do
       s ) scenario_success="$OPTARG" ;;
       t ) scenario_filepath="$OPTARG" ;;
       u ) visual_range="$OPTARG" ;;
+      v ) cloud_state="$OPTARG" ;;
    esac
 done
 
@@ -45,6 +46,7 @@ ros2 service call /log_scenario_results carla_visual_navigation_interfaces/srv/L
  precipitation_type: $precipitation_type,
  precipitation_intensity: $precipitation_intensity, \
  visual_range: $visual_range, \
+ cloud_state: $cloud_state, \
  route_entry_name: $route_entry_name, \
  target_speed: $target_speed, \
  log_file_path: $log_file_path, \

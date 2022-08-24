@@ -35,6 +35,14 @@
                     "fov": 90.0
                 },
                 {
+                    "type": "sensor.camera.rgb",
+                    "id": "rgb_view",
+                    "spawn_point": {"x": 2.0, "y": 0.0, "z": 2.0, "roll": 0.0, "pitch": 0.0, "yaw": 270.0},
+                    "image_size_x": 1,
+                    "image_size_y": 1,
+                    "fov": 90.0
+                },
+                {
                     "type": "sensor.other.collision",
                     "id": "collision",
                     "spawn_point": {"x": 0.0, "y": 0.0, "z": 0.0}

@@ -68,7 +68,6 @@ class LocalPlanner(CompatibleNode):
         self._target_speed = 0.0
         self._target_pose = None
         self._target_pose_idx = None
-        self.vehicle_offset = self.get_param("ego_vehicle_offset")
 
 
         self._buffer_size = 5
@@ -206,19 +205,13 @@ class LocalPlanner(CompatibleNode):
 
             if self._target_pose is None:
                 self._target_pose = self._compute_target_waypoint(self._current_pose)
-                if self.vehicle_offset != 0:
-                    self._target_pose = self.offset_route(self._target_pose, self.vehicle_offset)
 
             while (self._target_pose_idx+1 != len(self._waypoints_queue)) & (distance_vehicle(self._target_pose, self._current_pose.position) < self.min_distance):
                 self._target_pose_idx += 1
                 self._target_pose = self._waypoints_queue[self._target_pose_idx]
-                if self.vehicle_offset != 0:
-                    self._target_pose = self.offset_route(self._target_pose, self.vehicle_offset)
 
             if distance_vehicle(self._target_pose, self._current_pose.position) > self.max_distance:
                 self._target_pose = self._compute_target_waypoint(self._current_pose)
-                if self.vehicle_offset != 0:
-                    self._target_pose = self.offset_route(self._target_pose, self.vehicle_offset)
 
             self._target_pose_publisher.publish(self.pose_to_marker_msg(self._target_pose))
 

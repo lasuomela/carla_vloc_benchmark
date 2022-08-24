@@ -31,7 +31,6 @@
     <ParameterDeclaration name="logger_script_path" parameterType="string" value="logger_script_path_template"/>
     <ParameterDeclaration name="scenario_filepath" parameterType="string" value="scenario_filepath_template"/>
     <ParameterDeclaration name="planner_stop_script_path" parameterType="string" value="planner_stop_script_path_template"/>
-    <ParameterDeclaration name="ego_vehicle_offset" parameterType="string" value="ego_vehicle_offset_template"/>
   </ParameterDeclarations>
   <CatalogLocations>
     <ControllerCatalog>
@@ -89,7 +88,6 @@
                       <ParameterAssignment parameterRef="gallery_sfm_path" value="$gallery_sfm_path"/>
                       <ParameterAssignment parameterRef="localization_frequence" value="$localization_frequence"/>
 		      <ParameterAssignment parameterRef="top_k_matches" value="$top_k_matches"/>
-		      <ParameterAssignment parameterRef="ego_vehicle_offset" value="$ego_vehicle_offset"/>
                     </ParameterAssignments>
                   </CatalogReference>
                 </AssignControllerAction>
@@ -224,7 +222,8 @@
                   -r $log_results
                   -s $scenario_success
                   -t $scenario_filepath
-                  -u $visual_range"/>
+		  -u $visual_range
+		  -v $cloud_state"/>
                 </UserDefinedAction>
               </Action>
               <StartTrigger>

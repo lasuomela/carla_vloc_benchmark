@@ -55,9 +55,8 @@ class ScenarioBatchExecutor(Node):
 
         scenario_list.sort()
         self.scenario_list = [{'scenario_path': path, 'remaining_executions': repetitions} for path in scenario_list]
-
-        if 'log_file_path_template' in experiment_params:
-            self.scenario_list = prune_scenario_list(experiment_params['log_file_path_template'][0], self.scenario_list)
+        if 'log_file_path' in experiment_params:
+            self.scenario_list = prune_scenario_list(experiment_params['log_file_path'], self.scenario_list)
 
         self.scenario_repetitions = repetitions
 
@@ -197,7 +196,6 @@ class ScenarioBatchExecutor(Node):
 
 
 def prune_scenario_list(log_file_path, scenario_list):
-
     if Path(log_file_path).is_file():
         with open(log_file_path, 'r+') as f:
             logs = json.load(f)

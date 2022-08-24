@@ -18,7 +18,6 @@
     <ParameterDeclaration name="goal_location_y" parameterType="string" value="goal_location_y_template"/>
     <ParameterDeclaration name="goal_location_tolerance" parameterType="string" value="goal_location_tolerance_template"/>
     <ParameterDeclaration name="scenario_filepath" parameterType="string" value="scenario_filepath_template"/>
-    <ParameterDeclaration name="ego_vehicle_offset" parameterType="string" value="ego_vehicle_offset_template"/>
   </ParameterDeclarations>
   <CatalogLocations>
     <ControllerCatalog>
@@ -68,7 +67,6 @@
                     <ParameterAssignments>
                       <ParameterAssignment parameterRef="image_save_path" value="$image_save_path"/>
 		      <ParameterAssignment parameterRef="image_density" value="$image_density"/>
-		      <ParameterAssignment parameterRef="ego_vehicle_offset" value="$ego_vehicle_offset"/>
                     </ParameterAssignments>
                   </CatalogReference>
                 </AssignControllerAction>

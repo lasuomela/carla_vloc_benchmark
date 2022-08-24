@@ -1,25 +1,49 @@
 #!/bin/bash
-
-roll_dir=/opt/carla_vloc_benchmark/src/carla_visual_navigation/config/viewpoint_experiment_objects/roll
-yaw_dir=/opt/carla_vloc_benchmark/src/carla_visual_navigation/config/viewpoint_experiment_objects/yaw
-zpitch_dir=/opt/carla_vloc_benchmark/src/carla_visual_navigation/config/viewpoint_experiment_objects/z_pitch
-
-tmux new -s "$session_uuid"
-tmux send -t "$session_uuid:" "clear" Enter
-tmux splitw -t "$session_uuid:" -dh
+autopilot=False
+odometry=False
+repetitions=5
+exactname=False
 
 
-tmux send -t "$session_uuid:.1" "clear ; printf 'Executing viewpoint-experiments... Starting with roll changes.\n' ; sleep 2 " Enter
+display_help() {
+	echo "Arguments:" >&2
+	echo "	-e	Experiment name		Name of the expriment(s)			(Required)"
+	echo "	-t	Town name								(Required)"
+	echo "	-a	Autopilot		Run autopilot experiments			(Optional)	Default value: False"
+	echo "	-o	Odometry 		Run odometry experiment				(Optional)	Default value: False"
+	echo "	-r	Repetitions		Number of executions for each experiment	(Optional)	Default value: 5"
+	echo "	-n	Exact name 		Experiment name parameter uses exact naming	(Optional)	Default value: False"
+	echo "	-h	Help"
+	exit 1
+}
 
-counter=1
-for entry in "$yaw_dir"/*
+if [ "$1" == "-h" ]; then
+	display_help
+fi
+
+while getopts e:t:a:o:r:n: flag
 do
-  tmux send -t "$session_uuid:.1" "sleep 20 ; \
-  tmux send -t '$session_uuid:' 'ros2 launch carla_visual_navigation cli_scenario_runner.launch.py town:='Town01' objects_config:='$entry'' Enter ; \
-  sleep 25 ; ros2 launch carla_visual_navigation scenario_executor.launch.py scenario_dir:='/scenarios/viewpoint_experiment_yaw${counter}_town01' repetitions:=5 ; \
-  sleep 15 ; tmux send -t '$session_uuid:' C-c ; sleep 5 ; counter=$((counter++))" Enter
+	case "$flag" in
+		e) experiment=${OPTARG};;
+		t) town=${OPTARG};;
+		a) autopilot=${OPTARG};;
+		o) odometry=${OPTARG};;
+		r) repetitions=${OPTARG};;
+		n) exactname=${OPTARG};;
+		*) 
+			echo 'Error in command line parsing' >&2
+			display_help
+	esac
 done
 
+shift "$(( OPTIND - 1 ))"
 
-tmux attach -t "$session_uuid"
-tmux send -t"$session_uuid:.1" C-d
+if [ -z "$experiment" ] || [ -z "$town" ]; then
+	echo 'Missing required -e  or -t' >&2
+	display_help
+fi
+
+echo "experiment $experiment, town $town, autopilot $autopilot odometry $odometry repetitions $repetitions exactname $exactname"
+tmux new -d -s session_test
+tmux send-keys -t session_test.0 "python run_experiments.py scenario --experiment $experiment --town $town --autopilot $autopilot --odometry $odometry --repetitions $repetitions --exact-name $exactname" ENTER
+tmux a -t session_test

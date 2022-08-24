@@ -44,10 +44,6 @@ def generate_launch_description():
             name='control_time_step',
             default_value= '0.05'
         ),
-        launch.actions.DeclareLaunchArgument(
-            name='ego_vehicle_offset',
-            default_value='0.0'
-        ),
         launch_ros.actions.Node(
             package='carla_visual_navigation_agent',
             executable='local_planner_pid',
@@ -75,9 +71,6 @@ def generate_launch_description():
                 {
                     'control_time_step': launch.substitutions.LaunchConfiguration('control_time_step')
                 },
-                {
-                    'ego_vehicle_offset': launch.substitutions.LaunchConfiguration('ego_vehicle_offset')
-                }
             ]
         ),
     launch_ros.actions.Node(

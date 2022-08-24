@@ -79,10 +79,6 @@ def generate_launch_description():
     	name='odometry_topic',
     	default_value='/carla/ego_vehicle/odometry'
         ),
-     launch.actions.DeclareLaunchArgument(
-            name='ego_vehicle_offset',
-            default_value='0.0'
-        ),
     launch.actions.IncludeLaunchDescription(
     		launch.launch_description_sources.PythonLaunchDescriptionSource(
         	os.path.join(get_package_share_directory(
@@ -92,7 +88,6 @@ def generate_launch_description():
         'role_name': launch.substitutions.LaunchConfiguration('role_name'),
         'planner_odometry_topic':  '/odometry/filtered',
         'ekf_config_path': launch.substitutions.LaunchConfiguration('ekf_config_path'),
-        'ego_vehicle_offset': launch.substitutions.LaunchConfiguration('ego_vehicle_offset')
 	    }.items()
 	),
     launch.actions.IncludeLaunchDescription(

@@ -19,7 +19,6 @@
         <ParameterDeclaration name="gallery_sfm_path" parameterType="string" value=""/>
         <ParameterDeclaration name="localization_frequence" parameterType="string" value=""/>
         <ParameterDeclaration name="top_k_matches" parameterType="string" value=""/>
-	<ParameterDeclaration name="ego_vehicle_offset" parameterType="string" value="0.0"/>
     </ParameterDeclarations>
       <Properties>
           <Property name="module" value="$module" />
@@ -36,7 +35,6 @@
           <Property name="gallery_sfm_path" value="$gallery_sfm_path"/>
           <Property name="localization_frequence" value="$localization_frequence"/>
 	  <Property name="top_k_matches" value="$top_k_matches"/>
-	  <Property name="ego_vehicle_offset" value="$ego_vehicle_offset"/>
       </Properties>
   </Controller>
 
@@ -63,7 +61,6 @@
       <ParameterDeclaration name="base_frame" parameterType="string" value="ego_vehicle"/>
       <ParameterDeclaration name="sensor_frame" parameterType="string" value="ego_vehicle/rgb_front"/>
       <ParameterDeclaration name="synchrony_diff" parameterType="string" value="0.01"/>
-      <ParameterDeclaration name="ego_vehicle_offset" parameterType="string" value="0.0"/>
     </ParameterDeclarations>
     <Properties>
         <Property name="module" value="$module" />
@@ -77,7 +74,6 @@
         <Property name="base_frame" value="$base_frame"/>
         <Property name="sensor_frame" value="$sensor_frame"/>
 	<Property name="synchrony_diff" value="$synchrony_diff"/>
-	<Property name="ego_vehicle_offset" value="$ego_vehicle_offset"/>
     </Properties>
   </Controller>
 

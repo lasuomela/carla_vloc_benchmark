@@ -65,6 +65,8 @@ launch_test /opt/visual_robot_localization/src/visual_robot_localization/test/vi
 
 If all functions correctly, you are good to go.
 
+---
+
 ## Reproduce the paper experiments
 
 ### 1. Launch the environment
@@ -109,7 +111,8 @@ ros2 launch carla_visual_navigation rviz_scenario_runner.launch.py town:='Town01
 ros2 launch carla_visual_navigation scenario_executor.launch.py scenario_dir:='/scenarios/gallery_capture_town01_route1' repetitions:=1
 ```
 
-If everything went okay, you should now have a folder `/image-gallery/town01_route1` with images captured along the route. Repeat for Town10:
+If everything went okay, you should now have a folder `/image-gallery/town01_route1` 
+with images captured along the route. Repeat for Town10:
 
 ```sh
 # Tmux window 1
@@ -121,7 +124,8 @@ ros2 launch carla_visual_navigation scenario_executor.launch.py scenario_dir:='/
 
 ### 3. Run 3D reconstruction for the gallery images
 
-Next, we triangulate sparse 3D models from the gallery images and their camera poses. The models are saved in the respective image capture folders in `/image-gallery/`
+Next, we triangulate sparse 3D models from the gallery images and their camera poses. 
+The models are saved in the respective image capture folders in `/image-gallery/`
 
 ```sh
 cd /opt/carla_vloc_benchmark/src/carla_visual_navigation/scripts
@@ -141,10 +145,9 @@ cd /opt/visual_robot_localization/src/visual_robot_localization/utils
 ./visualize_colmap.sh --image_folder '/image-gallery/town01_route1' --localization_combination_name 'netvlad+superpoint_aachen+superglue'
 ```
 
-### 4. Run the experiments
+### 4. Run the illumination experiments
 
 To replicate the experiment results:
-
 
 ```sh
 # Launch terminal multiplexer
@@ -164,18 +167,241 @@ ros2 launch carla_visual_navigation scenario_executor.launch.py scenario_dir:='/
 ros2 launch carla_visual_navigation scenario_executor.launch.py scenario_dir:='/scenarios/illumination_experiment_town01_odometry_only' repetitions:=5
 ```
 
-Completing the experiments can take a long time. Once the experiments have been completed, repeat for the Town10 envrionment. The results are saved to `/results/`. To produce aggregated metrics, you can run
+Completing the experiments can take a long time. Once the experiments have been completed, 
+repeat for the Town10 envrionment. The results are saved to `/results/`.
+
+### 5. Run the viewpoint change experiments
+Viewpoint change -experiments uses the same gallery images and sparse 3D models as in illumination experiments.
+Each viewpoint change (e.g., change in camera angle) has its own experiment description 
+in `scenarios/experiment_descriptions.yml` and sensor configuration file in  
+`carla_vloc_benchmark/carla_visual_navigation/config/viewpoint_experiment_objects/`.
+
+Run an experiment with camera yaw angle rotation of 22.5 degrees:
+```sh
+# Tmux window 1
+ros2 launch carla_visual_navigation cli_scenario_runner.launch.py town:='Town01'
+
+# In Tmux window 2, start scenario execution for Town01, with yaw1 sensor configuration path and 5 repetitions of each scenario file
+ros2 launch carla_visual_navigation scenario_executor.launch.py scenario_dir:='/scenarios/viewpoint_experiment_yaw1_town01' objects_config:='/opt/carla_vloc_benchmark/src/carla_visual_navigation/config/viewpoint_experiment_objects/yaw/objects_yaw1.json' repetitions:=5
+
+# Once all the scenarios have been finished, run the scenarios with autopilot to measure visual localization recall
+# Remember to define the same sensor configuration file as previously
+ros2 launch carla_visual_navigation scenario_executor.launch.py scenario_dir:='/scenarios/viewpoint_experiment_yaw1_town01_autopilot' objects_config:='/opt/carla_vloc_benchmark/src/carla_visual_navigation/config/viewpoint_experiment_objects/yaw/objects_yaw1.json' repetitions:=1
+
+# If Illumination experiments are performed, then there is no need to measure navigation performance with wheel odometry only. Same results can be used for viewpoint experiments
+
+# Otherwise, measure navigation performance with wheel odometry only
+ros2 launch carla_visual_navigation scenario_executor.launch.py scenario_dir:='/scenarios/illumination_experiment_town01_odometry_only' repetitions:=5
+```
+
+Repeat the previous commands with other camera angles _(yaw2, yaw3, yaw4, ...)_ 
+and viewpoint changes _(roll, z&pitch)_ The results are saved to `/results/`.
+
+---
+
+#### Alternative way to run the viewpoint experiments is to use following command:
+
+```shell
+cd /opt/carla_vloc_benchmark/src/carla_visual_navigation/scripts
+
+# Execute all scenarios which starts with "viewpoint_experiment_yaw"
+./run_viewpoint_experiments.sh -e viewpoint_experiment_yaw -a True -t Town01
+```
+This will open tmux session where scenario executor and scenario runner -commands are executed using
+defined parameters. Above command will run all the viewpoint experiments which starts with `viewpoint_experiment_yaw`
+and corresponding autopilot experiments. Script will also restart the experiments from the previous 
+run if the execution stops for some reason. 
+
+The script uses following parameters:
+- `-e`: **Experiment name** (**Required**, String), can be used to run exact experiments like `viewpoint_experiment_yaw1` or all the 
+experiments belonging to the same category `viewpoint_experiment_yaw`.
+- `-t`: **Town name** (**Required**, String)
+- `-a`: **Autopilot** (Optional, Boolean), if corresponding autopilot experiments are executed after. _Default value: False_
+- `-o`: **Odometry** (Optional, Boolean), if odometry experiment is executed after. _Default value: False_
+- `-r`: **Repetitions** (Optional, Int) how many times each experiment should be executed. _Default value: 5_
+- `-n`: **Exact experiment name** (Optional, Boolean), if exact experiment name should be used. _Default value: False_
+
+---
+
+### 6. Run the weather experiments
+
+Run the experiments with weather changes:
+```sh
+# Tmux window 1
+ros2 launch carla_visual_navigation cli_scenario_runner.launch.py town:='Town10HD'
+
+# Tmux window 2
+ros2 launch carla_visual_navigation scenario_executor.launch.py scenario_dir:='/scenarios/weather_experiment_town10' repetitions:=5
+
+# Once all the scenarios have been finished, run the scenarios with autopilot to measure visual localization recall
+ros2 launch carla_visual_navigation scenario_executor.launch.py scenario_dir:='/scenarios/weather_experiment_town10_autopilot' repetitions:=1
+
+# If Illumination experiments are performed, then there is no need to measure navigation performance with wheel odometry only. Same results can be used for viewpoint experiments
+
+# Otherwise, measure navigation performance with wheel odometry only
+ros2 launch carla_visual_navigation scenario_executor.launch.py scenario_dir:='/scenarios/illumination_experiment_town10_odometry_only' repetitions:=5
+```
+
+### 7. Produce aggregate metrics
+Produce aggregate metrics and plots from the results.
 
 ```sh
 cd /opt/carla_visual_navigation/src/carla_visual_navigation/scripts
-python analyze_illumination_scenario_logs.py
+python analyze_viewpoint_yaw_scenario_logs2.py
 ```
+
+---
 
 ## Adding new visual localization methods
 
-The visual localization methods are integrated through the awesome [hloc toolbox](https://github.com/cvg/Hierarchical-Localization), for which we provide a ROS2 wrapper in the [visual_robot_localization](https://github.com/lasuomela/visual_robot_localization) package. See hloc documentation on how to contribute new visual localization methods. After a method has been added to hloc, it can be used in the experiments by specifying the method in the experiment parameters (`/scenarios/experiment_descriptions.yml`)
+The visual localization methods are integrated through the awesome 
+[hloc toolbox](https://github.com/cvg/Hierarchical-Localization), 
+for which we provide a ROS2 wrapper in the 
+[visual_robot_localization](https://github.com/lasuomela/visual_robot_localization) package. 
+See hloc documentation on how to contribute new visual localization methods. 
+After a method has been added to hloc, it can be used in the experiments by specifying the method 
+in the experiment parameters (`/scenarios/experiment_descriptions.yml`)
 
+---
 
 ## Defining your own experiments
 
-Documentation TBD. See `/scenarios/experiment_descriptions.yml` and the scenario template `carla_vloc_benchmark/carla_visual_navigation/config/VisualNavigatorTemplate.xosc` for some options.
+### 1. Define experiment descriptions
+Experiments are defined in `/scenarios/experiment_descriptions.yml` using YAML. 
+Experiment descriptions should contain all the parameters and parameter combinations used in 
+scenarios. **Parameter naming should be the same as in the OpenSCENARIO template files.**
+
+Experiment names should be named with the following structure:
+- Main category - _Viewpoint_
+- experiment
+- Sub category - _yaw1 (optional - only if different scenarios should be grouped together)_
+- Town name - _Town01_
+- autopilot - _measuring visual localization recall_
+
+This naming structure would provide a following experiment and autopilot names: 
+`viewpoint_experiment_yaw1_town01` and `viewpoint_experiment_yaw1_town01_autopilot`
+
+This naming structure is used when aggregate metrics are produced using the command 
+`python analyze_viewpoint_yaw_scenario_logs2.py` where sub categories (e.g., all yaw changes) 
+are grouped together to produce combined metrics.
+
+Example experiment definition structure:
+```sh
+ # Experiment name
+ experiment_1_name:
+   # The idea is to create scenario files that contain all the possible permutations of the parameters specified for an experiment.
+   parameter_1_name: parameter_1_value
+   parameter_2_name: parameter_2_value
+   parameter_3_name: [parameter_3_value_a, parameter_3_value_b, parameter_3_value_c]
+   # Sometimes parameters needs to be grouped together, e.g., SuperPoint extractor with Superglue matcher. 
+   parameter_4_group:
+     - group_param_1_a_name: group_param_1_a_value
+       group_param_1_b_name: group_param_1_b_value
+
+     - group_param_2_a_name: group_param_2_a_value
+       group_param_2_b_name: group_param_2_b_value
+
+ experiment_2_name:
+   etc.
+```
+See `/scenarios/experiment_descriptions.yml` for more examples and details.
+
+
+### 2. Define OpenSCENARIO template
+ASAM OpenSCENARIO templates are defined in `carla_vloc_benchmark/carla_visual_navigation/config` using XML. 
+Experiment parameters defined in `/scenarios/experiment_descriptions.yml` are used to 
+populate the values in scenario template.
+
+Example OpenScenario template structure:
+```sh
+<?xml version="1.0"?>
+<OpenSCENARIO>
+  <FileHeader revMajor="1" revMinor="0" date="2021-05-04T00:00:00" description="CARLA:TemplateName" author="author"/>
+  <ParameterDeclarations>
+    <ParameterDeclaration name="town_name" parameterType="string" value="town_name_template"/>
+    <ParameterDeclaration name="ekf_config_path" parameterType="string" value="ekf_config_path_template"/>
+    <ParameterDeclaration name="global_extractor_name" parameterType="string" value="global_extractor_name_template"/>
+    ...
+  </ParameterDeclarations>
+  <CatalogLocations>
+    <ControllerCatalog>
+      <Directory path="catalog_path_template"/>
+    </ControllerCatalog>
+    ...
+  </CatalogLocations>
+  <RoadNetwork>
+    ...
+  </RoadNetwork>
+  <Entities>
+    ...
+  </Entities>
+  <Storyboard>
+    ...
+  </Storyboard>
+</OpenSCENARIO>
+```
+
+See [ASAM OpenSCENARIO User guide](https://releases.asam.net/OpenSCENARIO/1.0.0/ASAM_OpenSCENARIO_BS-1-2_User-Guide_V1-0-0.html) and [documentation](https://releases.asam.net/OpenSCENARIO/1.0.0/Model-Documentation/index.html) for detailed instructions and supported parameters. 
+
+Example template can be seen in `carla_vloc_benchmark/carla_visual_navigation/config/VisualNavigatorTemplate.xosc`. 
+
+### 3. Define OpenSCENARIO catalog
+ASAM OpenSCENARIO catalogs are defined in `carla_vloc_benchmark/carla_visual_navigation/config/catalogs` using XML. Catalogs contain the vehicle, controller, environment and route specifications, which are provided in this repository.  
+
+Example OpenSCENARIO catalog definition structure _(vehicle)_:
+```shell
+<?xml version="1.0" encoding="UTF-8"?>
+<OpenSCENARIO>
+  <FileHeader revMajor="1" revMinor="0" date="2020-03-20T00:00:00" description="CARLA:ControllerCatalog" author="" />
+  <Catalog name="VehicleCatalog">
+    <Vehicle name="vehicle.tesla.model3" vehicleCategory="car">
+        <ParameterDeclarations/>
+        <Performance maxSpeed="69.444" maxAcceleration="10.0" maxDeceleration="10.0"/>
+        <BoundingBox>
+          <Center x="1.5" y="0.0" z="0.9"/>
+          <Dimensions width="2.1" length="4.5" height="1.8"/>
+        </BoundingBox>
+        <Axles>
+          <FrontAxle maxSteering="0.5" wheelDiameter="0.6" trackWidth="1.8" positionX="3.1" positionZ="0.3"/>
+          <RearAxle maxSteering="0.0" wheelDiameter="0.6" trackWidth="1.8" positionX="0.0" positionZ="0.3"/>
+        </Axles>
+        <Properties>
+          <Property name="type" value="ego_vehicle"/>
+          <Property name="color" value="0,0,255"/>
+        </Properties>
+      </Vehicle>
+  </Catalog>
+</OpenSCENARIO>
+```
+
+See [ASAM OpenSCENARIO User guide](https://releases.asam.net/OpenSCENARIO/1.0.0/ASAM_OpenSCENARIO_BS-1-2_User-Guide_V1-0-0.html) and [documentation](https://releases.asam.net/OpenSCENARIO/1.0.0/Model-Documentation/index.html) for detailed instructions and supported parameters.
+
+### 4. Generate scenario files
+Scenario files can be generated if experiments are defined in `scenarios/experiment_descriptions.yml`, 
+OpenSCENARIO template in `carla_vloc_benchmark/carla_visual_navigation/config` 
+and vehicle, controller, environment and route specification catalogs in 
+`carla_vloc_benchmark/carla_visual_navigation/config/catalogs` using following commands:
+
+```shell
+# Launch a container which contains the autonomous agent and scenario execution logic
+cd docker
+./run-ros-bridge-scenario.sh
+
+cd /opt/carla_vloc_benchmark/src/carla_visual_navigation/scripts
+
+# Generate the scenario files described in /scenarios/experiment_descriptions.yml
+python template_scenario_creator.py
+```
+
+`template_scneario_creator.py` populates the OpenSCENARIO templates with parameter values 
+from experiment descriptions and creates a scenario file for each parameter combination. 
+Populated scenario files and parameter file are stored in `scenarios/experiment_name` 
+with names `combination_000.xosc, combination_001.xosc, ...` and `parameters.yml`.
+
+
+
+
+
+
+
+

@@ -29,7 +29,7 @@
                 {
                     "type": "sensor.camera.rgb",
                     "id": "rgb_front",
-                    "spawn_point": {"x": 2.0, "y": 0.0, "z": 9.0, "roll": 0.0, "pitch": 32.5, "yaw": 270.0},
+                    "spawn_point": {"x": 2.0, "y": 0.0, "z": 10.0, "roll": 0.0, "pitch": 37.5, "yaw": 270.0},
                     "image_size_x": 800,
                     "image_size_y": 600,
                     "fov": 90.0
@@ -38,16 +38,9 @@
                     "type": "sensor.camera.rgb",
                     "id": "rgb_view",
                     "spawn_point": {"x": -3.0, "y": 0.0, "z": 1.0, "roll": 0.0, "pitch": 20.0, "yaw": 0.0},
-                    "image_size_x": 960,
-                    "image_size_y": 540,
-                    "fov": 90.0,
-                    "attached_objects":
-                    [
-                        {
-                            "type": "actor.pseudo.control",
-                            "id": "control"
-                        }
-                    ]
+                    "image_size_x": 1,
+                    "image_size_y": 1,
+                    "fov": 90.0
                 },
                 {
                     "type": "sensor.other.collision",

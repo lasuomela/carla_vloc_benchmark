@@ -6,7 +6,7 @@ from ament_index_python.packages import get_package_share_directory
 
 
 package_name = "carla_visual_navigation"
-objects_config_path = os.path.join(get_package_share_directory(package_name), "config/objects.json")
+objects_config_path = os.path.join(get_package_share_directory(package_name), "config/objects_noview.json")
 
 
 def generate_launch_description():
@@ -33,7 +33,7 @@ def generate_launch_description():
         ),
         launch.actions.DeclareLaunchArgument(
             name='fixed_delta_seconds',
-            default_value='0.05'
+            default_value='0.03'
         ),
         launch.actions.DeclareLaunchArgument(
             name='scenario_runner_path',
