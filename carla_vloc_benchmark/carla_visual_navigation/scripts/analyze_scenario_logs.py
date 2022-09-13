@@ -11,478 +11,464 @@ import seaborn
 import itertools
 from copy import deepcopy
 
+
+
+# Define special key values for viewpoint experiments (angles and heights), used for plotting
+yaw_vals = [0, 90, 67.5, 45, 22.5, -22.5, -45, -67.5, -90]
+z_vals = [0, 2, 4, 5, 6, 7, 8, 9, 10, 11, 13, 15, 16]
+roll = [0, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55]
+
 def main():
+   
+
+    # ODOMETRY TOWN01
+    save_dir = os.path.join('/results/', 'town01', 'odometry')
+    Path(save_dir).mkdir(parents=True, exist_ok=True)
+    odometry_filepath = 'illumination_experiment_town01_odometry_only.json'
     
-    # Group by:
-    # - Town
-    #  - odometry
-    #  - Main category (illumination, viewpoint, weather...)
-    #    - sub category (yaw, z, roll etc.)
-    #      - experiment & autopilot files
-    experiment_files_grouped = {}
-    
-    result_dir = '/results'
-
-    # Get all experiment results (experiments and autopilots) and odometries
-    experiment_files = [f for f in os.listdir(result_dir) if os.path.isfile(os.path.join(result_dir, f)) and 'odometry' not in f]
-    odometry_files = [f for f in os.listdir(result_dir) if os.path.isfile(os.path.join(result_dir, f)) and 'odometry' in f]
-    
-    print(f'Perform odometry results...')
-
-    # Loop through odometry files and find one for each town
-    for filename in odometry_files:
-
-        town = [x for x in filename.split('_') if 'town' in x][0]
-        save_dir = os.path.join(result_dir, town.lower(), 'odometry')
-        Path(save_dir).mkdir(parents=True, exist_ok=True)
-
-        odometry_file_path = os.path.join(result_dir, filename)
-        odometry_filename = filename
-
-        print(f'  - Calculate odometry results from file: {filename}')
-
-        # Get odometry results and save
-        odometry_aggregate = aggregate_results(odometry_file_path)
-        with open(os.path.join(save_dir, odometry_filename.replace('.json', '_grouped_by_scenario.json')), 'w') as f:
-            json.dump(odometry_aggregate, f, indent=4)
-        
-        # Store the results in the main dictionary for later use
-        odometry_failure_rate = odometry_aggregate["combination_000.xosc"]["scenario_results"]["crashes_per_km"]
-        odometry_fragmentation = odometry_aggregate["combination_000.xosc"]["scenario_results"]["crash_fragmentation"]
-        experiment_files_grouped[town] = {'odometry': {'failure_rate': odometry_failure_rate, 'fragmentation': odometry_fragmentation, 'aggregate': odometry_aggregate } }
-
-
-
-
-
-    # Define special key values for viewpoint experiments (angles and heights), used for plotting
-    yaw_vals = [0, 90, 67.5, 45, 22.5, -22.5, -45, -67.5, -90]
-    z_vals = [0, 2, 4, 5, 6, 7, 8, 9, 10, 11, 13, 15, 16]
+    odometry_aggregate_town01 = aggregate_results(os.path.join('/results', odometry_filepath))
+    with open(os.path.join(save_dir, odometry_filepath.replace('.json', '_grouped_by_scenario.json')), 'w') as f:
+        json.dump(odometry_aggregate_town01, f, indent=4)
     
     
-    print('\n\nInitializing the dictionary...') 
+    # ODOMETRY TOWN10 
+    save_dir = os.path.join('/results/', 'town10', 'odometry')
+    Path(save_dir).mkdir(parents=True, exist_ok=True)
+    odometry_filepath = 'illumination_experiment_town10_odometry_only.json'
+
+    odometry_aggregate_town10 = aggregate_results(os.path.join('/results', odometry_filepath))
+    with open(os.path.join(save_dir, odometry_filepath.replace('.json', '_grouped_by_scenario.json')), 'w') as f:
+        json.dump(odometry_aggregate_town10, f, indent=4)
+
+
+
+
+
+
+    # ILLUMINATION, TOWN1
+    experiment='illumination_experiment'
+    town='town01'
+    plot_x_label='K-value'
     
-    # Loop through all the experiment files to build the main dictionary
-    for filename in experiment_files:
-        # Filenames are in order: main category_experiment_sub category_town OR main category_experiment_town
-        # Therefore, town is always idx: 2 or 3, main category is idx 1 and sub category 2
+    print(f'\nEXPERIMENT: {experiment} TOWN: {town}\n')
 
-        splitted_filename=filename.replace('.json', '').split('_')
-        main_category = splitted_filename[0]
-        
-        # init vars fpr the dictionary
-        sub_category = None
-        town = None
-        autopilot = False
-        method = None
-        sub_cat_idx = None
-        experiment_val = None
-        
-        # check if the file is for autopilot or experiment
-        if 'autopilot' in filename:
-            autopilot = True
-
-            # the experiment name is always 5 long if there is main category, town, sub category and autopilot (e.g., viewpoint_experiment_yaw1_town01_autopilot)
-            if len(splitted_filename) == 5:
-                town=splitted_filename[3]
-                sub_category=splitted_filename[2]
-                method=''.join(i for i in sub_category if not i.isdigit())
-                sub_cat_idx=int(''.join(i for i in sub_category if i.isdigit()))
-                
-                # Use special key values (e.g. viewpoint_experiment_zpitch1_autopilot, zpitch1 is the sub category, 1 in the end is the index to get the correct value from the list)
-                if 'yaw' in method.lower():
-                    experiment_val = yaw_vals[sub_cat_idx]
-                elif 'pitch' in method.lower():
-                    experiment_val = z_vals[sub_cat_idx]
-            
-            # The experiment name will be 4 long if there is a main category, town, and autopilot
-            elif len(splitted_filename) == 4:
-                town=splitted_filename[2]
-
-        # Experiment files
-        else:
-            # File name is always 4 long if it contains main category, town and subcategory (e.g., viewpoint_experiment_yaw1_town01)
-            if len(splitted_filename) == 4:
-                town=splitted_filename[3]
-                sub_category=splitted_filename[2]
-
-
-                method=''.join(i for i in sub_category if not i.isdigit())
-                sub_cat_idx=int(''.join(i for i in sub_category if i.isdigit()))
-                
-                if 'yaw' in method.lower():
-                    experiment_val = yaw_vals[sub_cat_idx]
-                elif 'pitch' in method.lower():
-                    experiment_val = z_vals[sub_cat_idx]
-            # Name is always 3 long if it contains main category and town (e.g., illumination_experiment_town01)
-            elif len(splitted_filename) == 3:
-                town=splitted_filename[2]
-        
-
-        # Define the dictionary items
-        dict_vals = {'file_path': os.path.join(result_dir, filename), 'filename': filename, 'experiment_idx': sub_cat_idx, 'experiment_val': experiment_val, 'scenarios': None}    
-        empty_dict_vals = {'file_path': None, 'filename': None, 'experiment_idx': None, 'experiment_val': None, 'scenarios': None }
-
-        # Init experiment_files_grouped dict
-        if town in experiment_files_grouped.keys():
-            # init main category sub dict if not found
-            if main_category in experiment_files_grouped[town].keys():
-                # init method to the dict if not found
-                if method is not None and method in experiment_files_grouped[town][main_category].keys():
-                    # init sub category if not found
-                    if sub_category in experiment_files_grouped[town][main_category][method].keys():
-                        # add data if all keys were found
-                        if autopilot:
-                            experiment_files_grouped[town][main_category][method][sub_category]['autopilot'] = dict_vals
-                        else:
-                            experiment_files_grouped[town][main_category][method][sub_category]['experiment'] = dict_vals
-                    else:
+    experiment_filepath = os.path.join('/results', experiment + '_' + town + '.json')
+    autopilot_filepath = os.path.join('/results', experiment + '_' + town + '_autopilot.json')
     
-                        if autopilot:
-                            experiment_files_grouped[town][main_category][method][sub_category] = { 'autopilot': dict_vals, 'experiment': empty_dict_vals }
-                        else:
-                            experiment_files_grouped[town][main_category][method][sub_category] = { 'autopilot': empty_dict_vals, 'experiment': dict_vals }
-                
-                # Name contains e.g., "yaw", viewpoint_experiment_yaw1_town01
-                elif method is not None:
-
-                    if autopilot:
-                        experiment_files_grouped[town][main_category][method] = { sub_category: { 'autopilot': dict_vals, 'experiment': empty_dict_vals } }
-                    else:
-                        experiment_files_grouped[town][main_category][method] = { sub_category: { 'autopilot': empty_dict_vals, 'experiment': dict_vals } }
-                # Name doesnt contain method, so it must be something like "illumination_experiment_town01"
-                elif method is None:
-                    if autopilot:
-                        experiment_files_grouped[town][main_category]['autopilot'] = dict_vals
-                    else:
-                        experiment_files_grouped[town][main_category]['experiment'] = dict_vals
-            
-            # No method, e.g., illumination_experiment_town01
-            elif method is None:
-                if autopilot:
-                    experiment_files_grouped[town][main_category] = {'autopilot': dict_vals, 'experiment': empty_dict_vals}
-                else:
-                    experiment_files_grouped[town][main_category] = {'autopilot': empty_dict_vals, 'experiment': dict_vals}
-            # Contains method, e.g., viewpoint_experiment_yaw1_town1
-            elif method is not None:
-                if autopilot:
-                    experiment_files_grouped[town][main_category] = { method: { sub_category: { 'autopilot': dict_vals, 'experiment': empty_dict_vals } } }
-                else:
-                    experiment_files_grouped[town][main_category] = { method: { sub_category: { 'autopilot': empty_dict_vals, 'experiment': dict_vals } } }
-        # Name contains method
-        elif town is not None and method is not None:
-            if autopilot:
-                experiment_files_grouped[town] = { main_category: { method: { sub_category: { 'autopilot': dict_vals, 'experiment': empty_dict_vals } } } }
-            else:
-                experiment_files_grouped[town] = { main_category: { method: { sub_category: { 'autopilot': empty_dict_vals, 'experiment': dict_vals } } } }
-        # Name doesnt contain method
-        elif town is not None and method is None:
-
-            if autopilot:
-                experiment_files_grouped[town] = { main_category: { 'autopilot': dict_vals, 'experiment': empty_dict_vals } }
-            else:
-                experiment_files_grouped[town] = { main_category: { 'autopilot': empty_dict_vals, 'experiment': dict_vals } }
-    # Initialization of the dictionary is finished
-
-    illumination_results = []
-    weather_results = []
-    # Loop through the dictionary to fill the scenario results
-    for town in experiment_files_grouped.keys():
-        # Odometry is required, so if its not present, move on
-        if 'odometry' not in experiment_files_grouped[town].keys():
-            continue
-        for main_category in experiment_files_grouped[town].keys():
-
-            # Skip odometry category, since results for it has been acquired
-            if main_category == 'odometry':
-                continue
-            
-            ##########################
-            #   ILLUMINATION RESULTS
-            ##########################
-
-            # If autopilot is in the keys, it means we are processing file e.g., illumination_experiment_town01 which doesnt contain methods or subcategories etc.
-            if 'autopilot' in experiment_files_grouped[town][main_category].keys():
-
-                # Move on if experiment or autopilot does not have result files
-                if experiment_files_grouped[town][main_category]['experiment']['filename'] == None:
-                    continue
-                
-
-                print(f"\n\nResults from file: {experiment_files_grouped[town][main_category]['experiment']['filename']}")
-                
-                # Create dirs and init vars
-                save_dir = os.path.join(result_dir, town, main_category, experiment_files_grouped[town][main_category]['experiment']['filename'].replace('.json', ''))
-                plot_savedir = os.path.join(save_dir, 'plots')
-                
-                Path(plot_savedir).mkdir(parents=True, exist_ok=True)
-                
-                autopilot_filepath = experiment_files_grouped[town][main_category]['autopilot']['file_path']
-                experiment_filepath = experiment_files_grouped[town][main_category]['experiment']['file_path']
-
-                odometry_failure_rate = experiment_files_grouped[town]['odometry']['failure_rate']
-                odometry_fragmentation = experiment_files_grouped[town]['odometry']['fragmentation']
-                
-                # Process files and get results
-                print(f"  - Processing log file: {experiment_files_grouped[town][main_category]['experiment']['filename']}")
-                aggregate, by_method = process_log_file(experiment_filepath,
-                                                        save_dir=save_dir,
-                                                        autopilot=False,
-                                                        plot_kvalues=True,
-                                                        odometry_failure_rate=odometry_failure_rate,
-                                                        create_latex=True,
-                                                        latex_accuracies=False,
-                                                        latex_failurerates=True)
-           
-                print(f"  - Processing autopilot log file: {experiment_files_grouped[town][main_category]['autopilot']['filename']}")
-                aggregate_autopilot, by_method_autopilot = process_log_file(autopilot_filepath,
-                                                                            save_dir=save_dir,
-                                                                            autopilot=False,
-                                                                            plot_kvalues=False,
-                                                                            odometry_failure_rate=0,
-                                                                            create_latex=True,
-                                                                            latex_accuracies=True,
-                                                                            latex_failurerates=False)
-                
-                if main_category=='weather':
-                    weather_results = [aggregate, by_method, aggregate_autopilot, by_method_autopilot]
-                elif main_category=='illumination':
-                    illumination_results=[aggregate, by_method, aggregate_autopilot, by_method_autopilot]
-                    #print(by_method['netvlad+r2d2+NN-ratio'])
-                    #print(by_method.keys())
-                    #return
-
-                # Store results in the dictionary for the later use
-                experiment_files_grouped[town][main_category]['autopilot']['scenarios'] = aggregate_autopilot
-                experiment_files_grouped[town][main_category]['experiment']['scenarios'] = aggregate
-                
-                plot_label='K-value' 
-                if main_category == 'weather':
-                    plot_label='Visual range in meters'
-
-
-                print(f"  - Creating failurerate & recall plots: {experiment_files_grouped[town][main_category]['experiment']['filename']}, and saving to path: {plot_savedir}")
-
-                # Create plots
-                create_failurerate_recall_plots(by_method_autopilot, by_method, odometry_failure_rate, odometry_fragmentation, plot_savedir, town, exclude_legend=False, plot_label=plot_label)
-                #plot_crash_locations(aggregate, plot_savedir)
-                savepath=os.path.join(plot_savedir, 'delay_plot.png')
-                
-                print(f"  - Creating computation delay plots: {experiment_files_grouped[town][main_category]['autopilot']['filename']}, and saving to path: {savepath}")
-                create_computation_delay_plots(by_method_autopilot, savepath)
-                
-                continue
-
-
-
-
-            ####################################################################################
-            #       ONE VIEWPOINT EXPERIMENTS, e.g., viewpoint_experiment_yaw1
-            #   plots will be similar to illumination where x labels are the tested k values
-            ####################################################################################
-
-            # Process files which containes methods and subcategories, e.g., viewpoint_experiment_yaw1_town01
-            for method in experiment_files_grouped[town][main_category].keys():
-                for sub_category in experiment_files_grouped[town][main_category][method].keys(): 
-
-                    # Move on if experiment or autopilot doesnt have result file
-                    if experiment_files_grouped[town][main_category][method][sub_category]['experiment']['filename'] == None or experiment_files_grouped[town][main_category][method][sub_category]['autopilot']['filename'] == None:
-                        continue
-                    
-                    print(f"\n\nResults from file: {experiment_files_grouped[town][main_category][method][sub_category]['experiment']['filename']}")
-                    
-                    # Create dirs and init vars
-                    save_dir=os.path.join(result_dir, town, main_category, method, experiment_files_grouped[town][main_category][method][sub_category]['experiment']['filename'].replace('.json', ''))
-                    plot_savedir=os.path.join(save_dir, 'plots')
-                    
-                    Path(plot_savedir).mkdir(parents=True, exist_ok=True)
-
-
-                    autopilot_filepath = experiment_files_grouped[town][main_category][method][sub_category]['autopilot']['file_path']
-                    experiment_filepath = experiment_files_grouped[town][main_category][method][sub_category]['experiment']['file_path']
-                
-                    odometry_failure_rate = experiment_files_grouped[town]['odometry']['failure_rate']
-                    odometry_fragmentation = experiment_files_grouped[town]['odometry']['fragmentation']
-                    
-                    print(f"  - Processing log files: {experiment_files_grouped[town][main_category][method][sub_category]['experiment']['filename']}")
-                    # Get results
-                    aggregate, by_method = process_log_file(experiment_filepath,
-                                                            save_dir=save_dir,
-                                                            autopilot=False,
-                                                            plot_kvalues=True,
-                                                            odometry_failure_rate=odometry_failure_rate,
-                                                            create_latex=True,
-                                                            latex_accuracies=False,
-                                                            latex_failurerates=True)
-           
-                    print(f"  - Processing autopilot log files: {experiment_files_grouped[town][main_category][method][sub_category]['autopilot']['filename']}")
-                    aggregate_autopilot, by_method_autopilot = process_log_file(autopilot_filepath,
-                                                                                save_dir=save_dir,
-                                                                                autopilot=False,
-                                                                                plot_kvalues=False,
-                                                                                odometry_failure_rate=0,
-                                                                                create_latex=True,
-                                                                                latex_accuracies=True,
-                                                                                latex_failurerates=False)
-                    # Save results in the dict
-                    experiment_files_grouped[town][main_category][method][sub_category]['autopilot']['scenarios'] = aggregate_autopilot
-                    experiment_files_grouped[town][main_category][method][sub_category]['experiment']['scenarios'] = aggregate
-                   
-
-                    plot_label='K-value' 
-                    if main_category == 'weather':
-                        plot_label='visual range in meters'
-
-                    print(f"  - Creating failurerate & recall plots: {experiment_files_grouped[town][main_category][method][sub_category]['experiment']['filename']}, and saving to path: {plot_savedir}")
-                    # Create plots
-                    create_failurerate_recall_plots(by_method_autopilot, by_method, odometry_failure_rate, odometry_fragmentation, plot_savedir, town, exclude_legend=False, plot_label=plot_label)
-                    #plot_crash_locations(aggregate, plot_savedir)
-                    savepath=os.path.join(plot_savedir, 'delay_plot.png')
-                    
-                    print(f"  - Creating computation delay plots: {experiment_files_grouped[town][main_category][method][sub_category]['autopilot']['filename']}, and saving to path: {savepath}")
-                    create_computation_delay_plots(by_method_autopilot, savepath)
-
-
-
-
-    ################################################################################
-    #               WEATHER RESULTS WITH ILLUMINATION AS COMPARISON POINT
-    ###############################################################################
-
-    print('\n\nProcess weather experiments again, so that the comparison point can be added to the plots')
-
-
-    # unpack the results from the previous step
-    weather_aggregate, weather_by_method, weather_agg_autopilot, weather_by_method_autopilot = weather_results 
-    ill_aggregate, ill_by_method, ill_agg_autopilot, ill_by_method_autopilot = illumination_results
-    
-
-    # Add illumination results as comparison with k=0
-    for method in ill_by_method:
-        # 100 here is just the x value where illumination comparison is placed in the plot
-        # since the results sould get better when fog distance is increased 10->30->60->90 ...
-        # Change if needed
-        weather_by_method[method][100] = ill_by_method[method][0.0]
-    
-    # Add illumination results for autopilot as comparison with k=0
-    for method in ill_by_method_autopilot:
-        # 100 here is just the x value where illumination comparison is placed in the plot
-        # since the results should get better when the fog distance is increased 10->30->60->90 ...
-        # change if needed
-        weather_by_method_autopilot[method][100] = ill_by_method_autopilot[method][0.0]
-    
-    # Get town10 odometry
-    odometry_failure_rate=experiment_files_grouped['town10']['odometry']['failure_rate']
-    odometry_fragmentation=experiment_files_grouped['town10']['odometry']['fragmentation']
-    
-
-    # defined save path and create directory if not already created
-    save_dir = os.path.join('/results', 'town10', 'weather', experiment_files_grouped['town10']['weather']['experiment']['filename'].replace('.json', ''))
+    save_dir = os.path.join('/results', town, experiment)
     plot_savedir = os.path.join(save_dir, 'plots')
     Path(plot_savedir).mkdir(parents=True, exist_ok=True)
+   
     
 
-    print(f"  - Create failurerate & recall plots: {experiment_files_grouped['town10']['weather']['experiment']['filename']} and save to path: {plot_savedir}")
+    odometry_failure_rate = odometry_aggregate_town01['combination_000.xosc']['scenario_results']['crashes_per_km']
+    odometry_fragmentation = odometry_aggregate_town01['combination_000.xosc']['scenario_results']['crash_fragmentation']
     
-    # Create plots
-    create_failurerate_recall_plots(weather_by_method_autopilot, weather_by_method, odometry_failure_rate, odometry_fragmentation, plot_savedir, 'Town10', exclude_legend=False, plot_label='Visual range')
+    # Process files and get results
+    illumination_aggregate_town01, illumination_by_method_town01 = process_log_file(experiment_filepath,
+                                                                                    save_dir=save_dir,
+                                                                                    autopilot=False,
+                                                                                    plot_kvalues=True,
+                                                                                    odometry_failure_rate=odometry_failure_rate,
+                                                                                    create_latex=True,
+                                                                                    latex_accuracies=False,
+                                                                                    latex_failurerates=True)
+
+    illumination_aggregate_autopilot_town01, illumination_by_method_autopilot_town01 = process_log_file(autopilot_filepath,
+                                                                                                        save_dir=save_dir,
+                                                                                                        autopilot=False,
+                                                                                                        plot_kvalues=False,
+                                                                                                        odometry_failure_rate=0,
+                                                                                                        create_latex=True,
+                                                                                                        latex_accuracies=True,
+                                                                                                        latex_failurerates=False)
+
+
+
+
+    create_failurerate_recall_plots(illumination_by_method_autopilot_town01, illumination_by_method_town01, odometry_failure_rate, odometry_fragmentation, plot_savedir, town, exclude_legend=False, plot_label=plot_x_label)
     #plot_crash_locations(aggregate, plot_savedir)
-    savepath=os.path.join(plot_savedir, 'delay_plot.png')
+    savepath=os.path.join(plot_savedir, 'delay_plot.png') 
+    create_computation_delay_plots(illumination_by_method_autopilot_town01, savepath)
+
+
+
+
+
+
+
+    # ILLUMINATION TOWN10
+    experiment='illumination_experiment'
+    town='town10'
+    plot_x_label='K-value'
+
+    print(f'\nEXPERIMENT: {experiment} TOWN: {town}\n')
     
+    experiment_filepath = os.path.join('/results', experiment + '_' + town + '.json')
+    autopilot_filepath = os.path.join('/results', experiment + '_' + town + '_autopilot.json')
     
-    print(f"  - Create computation delay plots: {experiment_files_grouped['town10']['weather']['autopilot']['filename']} and save to path: {savepath}")
-    create_computation_delay_plots(weather_by_method_autopilot, savepath)
+    save_dir = os.path.join('/results', town, experiment)
+    plot_savedir = os.path.join(save_dir, 'plots')
+    Path(plot_savedir).mkdir(parents=True, exist_ok=True)
+   
+    
+
+    odometry_failure_rate = odometry_aggregate_town10['combination_000.xosc']['scenario_results']['crashes_per_km']
+    odometry_fragmentation = odometry_aggregate_town10['combination_000.xosc']['scenario_results']['crash_fragmentation']
+    
+    # Process files and get results
+    illumination_aggregate_town10, illumination_by_method_town10 = process_log_file(experiment_filepath,
+                                                                                    save_dir=save_dir,
+                                                                                    autopilot=False,
+                                                                                    plot_kvalues=True,
+                                                                                    odometry_failure_rate=odometry_failure_rate,
+                                                                                    create_latex=True,
+                                                                                    latex_accuracies=False,
+                                                                                    latex_failurerates=True)
+
+    illumination_aggregate_autopilot_town10, illumination_by_method_autopilot_town10 = process_log_file(autopilot_filepath,
+                                                                                                        save_dir=save_dir,
+                                                                                                        autopilot=False,
+                                                                                                        plot_kvalues=False,
+                                                                                                        odometry_failure_rate=0,
+                                                                                                        create_latex=True,
+                                                                                                        latex_accuracies=True,
+                                                                                                        latex_failurerates=False)
 
 
 
 
-    print('\n\nAll of the single result files are processed. Moving on to grouping experiments together (viewpoint)...\n\n')
+    create_failurerate_recall_plots(illumination_by_method_autopilot_town10, illumination_by_method_town10, odometry_failure_rate, odometry_fragmentation, plot_savedir, town, exclude_legend=False, plot_label=plot_x_label)
+    #plot_crash_locations(aggregate, plot_savedir)
+    savepath=os.path.join(plot_savedir, 'delay_plot.png') 
+    create_computation_delay_plots(illumination_by_method_autopilot_town10, savepath)
 
 
-    #####################################################################################################################
-    #                               COMBINED VIEWPOINT EXPERIMENTS e.g., yaw, zpitch etc. 
-    #     produces combined results for each k value (0,5), where x labels are the viewpoint changes (e.g., yaw angle)
-    ######################################################################################################################
 
-    # Process viewpoint experiments
-    for town in experiment_files_grouped.keys():
 
-        # Odometry is required so only move on if its present
-        if 'odometry' not in experiment_files_grouped[town].keys():
-            continue
+    
+    # WEATHER TOWN10
+    experiment='weather_experiment'
+    town='town10'
+    plot_x_label="Fog distance"
+    comparison_x_label = 100 # X label for the comparison results => without weather conditions
+
+    print(f'\nEXPERIMENT: {experiment} TOWN: {town}\n')
+
+    experiment_filepath = os.path.join('/results', experiment + '_' + town + '.json')
+    autopilot_filepath = os.path.join('/results', experiment + '_' + town + '_autopilot.json')
+    
+    save_dir = os.path.join('/results', town, experiment)
+    plot_savedir = os.path.join(save_dir, 'plots')
+    Path(plot_savedir).mkdir(parents=True, exist_ok=True)
+   
+    
+    odometry_failure_rate = odometry_aggregate_town10['combination_000.xosc']['scenario_results']['crashes_per_km']
+    odometry_fragmentation = odometry_aggregate_town10['combination_000.xosc']['scenario_results']['crash_fragmentation']
+    
+    # Process files and get results
+    weather_aggregate_town10, weather_by_method_town10 = process_log_file(experiment_filepath,
+                                                                          save_dir=save_dir,
+                                                                          autopilot=False,
+                                                                          plot_kvalues=True,
+                                                                          odometry_failure_rate=odometry_failure_rate,
+                                                                          create_latex=True,
+                                                                          latex_accuracies=False,
+                                                                          latex_failurerates=True)
+
+    weather_aggregate_autopilot_town10, weather_by_method_autopilot_town10 = process_log_file(autopilot_filepath,
+                                                                                              save_dir=save_dir,
+                                                                                              autopilot=False,
+                                                                                              plot_kvalues=False,
+                                                                                              odometry_failure_rate=0,
+                                                                                              create_latex=True,
+                                                                                              latex_accuracies=True,
+                                                                                              latex_failurerates=False)
+
+
+
+    for method in illumination_by_method_town10:
+        weather_by_method_town10[method][comparison_x_label] = illumination_by_method_town10[method][0.0]
+    
+    for method in illumination_by_method_autopilot_town10:
+        weather_by_method_autopilot_town10[method][comparison_x_label] = illumination_by_method_autopilot_town10[method][0.0]
+
+    create_failurerate_recall_plots(weather_by_method_autopilot_town10, weather_by_method_town10, odometry_failure_rate, odometry_fragmentation, plot_savedir, town, exclude_legend=False, plot_label=plot_x_label)
+    #plot_crash_locations(aggregate, plot_savedir)
+    savepath=os.path.join(plot_savedir, 'delay_plot.png') 
+    create_computation_delay_plots(weather_by_method_autopilot_town10, savepath)
+
+
+
+
+
+
+    print('\n\nVIEWPOINT EXPERIMENTS - Z & PITCH\n')
+
+    # VIEWPOINT, ZPITCH, TOWN1 
+
+    # define parameters
+    viewpoint_change = 'zpitch'
+    experiment='viewpoint_experiment_zpitch'
+    town='town01'
+    plot_x_title='Z-value'
+    x_labels = [2, 4, 5, 6, 7, 8, 9, 10, 11, 13, 15, 16]
+    comparison_x_label=0 # X label for the comparison results => original height and pitch
+
+    
+    experiment_filepaths = [f for f in os.listdir('/results') if os.path.isfile(os.path.join('/results', f)) and viewpoint_change in f and 'autopilot' not in f]
+    autopilot_filepaths = [f for f in os.listdir('/results') if os.path.isfile(os.path.join('/results', f)) and viewpoint_change in f and 'autopilot' in f]
+
+    experiment_autopilot_pairs = []
+
+    for experiment_filepath in experiment_filepaths:
+        for autopilot_filepath in autopilot_filepaths:
+            e = experiment_filepath.replace('_town01.json', '')
+            a = autopilot_filepath.replace('_town01_autopilot.json', '')
+
+            if e == a:
+                experiment_autopilot_pairs.append((experiment_filepath, autopilot_filepath))
+                break
+
+    experiment_autopilot_pairs.sort(key=lambda x: int(''.join(filter(str.isdigit, x[0].replace('_town01.json','')))))
+    
+    save_dir = os.path.join('/results', town, experiment)
+    plot_savedir = os.path.join(save_dir, 'plots')
+    Path(plot_savedir).mkdir(parents=True, exist_ok=True)
+ 
+    odometry_failure_rate = odometry_aggregate_town01['combination_000.xosc']['scenario_results']['crashes_per_km']
+    odometry_fragmentation = odometry_aggregate_town01['combination_000.xosc']['scenario_results']['crash_fragmentation']
+
+    experiment_results=[]
+
+    for experiment_filepath, autopilot_filepath in experiment_autopilot_pairs:
         
-        for main_category in experiment_files_grouped[town].keys():
-            
-            # Do not process odometries itself, its just required for the plots etc.
-            if 'odometry' == main_category :
-                continue
-
-            for method in experiment_files_grouped[town][main_category].keys():
-             
-                # if keys contains autopilot it means we are not processing viewpoint experiments or any other stuff which has method included in the name
-                if 'autopilot' in experiment_files_grouped[town][main_category].keys() or method == 'roll':
-                    continue
-                
-                # Collect all the sub categories into new dict, e.g., yaw1, yaw2, yaw3, etc... to the same dict
-                experiment_files_grouped_by_method={}
-
-                for sub_category in experiment_files_grouped[town][main_category][method].keys():
-                    experiment_scenarios = experiment_files_grouped[town][main_category][method][sub_category]['experiment']['scenarios']
-                    autopilot_scenarios = experiment_files_grouped[town][main_category][method][sub_category]['autopilot']['scenarios']
-
-                    dict_key = experiment_files_grouped[town][main_category][method][sub_category]['experiment']['experiment_val']
-                    experiment_files_grouped_by_method[dict_key] = {'autopilot': autopilot_scenarios, 'experiment': experiment_scenarios}
-                
-                # Add benchmark results (0 angle or 0 height), in this case it is illumination result
-                experiment_files_grouped_by_method[0] = {'autopilot': experiment_files_grouped[town]['illumination']['autopilot']['scenarios'], 'experiment': experiment_files_grouped[town]['illumination']['experiment']['scenarios']}
-
-                # Define here different plotting funcitionality for experiments if needed.
-                if main_category == 'viewpoint':
-                    
-                    # get grouped results
-                    by_method, by_method_autopilot = group_by_method_and_viewpoint(experiment_files_grouped_by_method)
-                    
-                    # Create a plot and results for each kvalue
-                    for kvalue in by_method.keys():
-                        print(f'\n\nWorking on K={kvalue}, Town={town}, Experiment category={main_category}, Method={method}')
-
-                        # Init vars and create dirs
-                        kvalue_filename = str(int(kvalue))
-                        by_method_save = deepcopy(by_method[kvalue])
-                        by_method_autopilot_save = deepcopy(by_method_autopilot[kvalue])
-
-                        save_dir = os.path.join('/results/', town, main_category, method)
-                        Path(save_dir).mkdir(parents=True, exist_ok=True)
-                        
-                        # Create result json files
-                        with open(os.path.join(save_dir, f'{method}_kval{kvalue_filename}_grouped.json'), 'w') as f:
-                            json.dump(by_method_save, f, indent=4)
+        print('\n', experiment_filepath, '\n')
         
-                        with open(os.path.join(save_dir, f'{method}_kval{kvalue_filename}_grouped_autopilot.json'), 'w') as f:
-                            json.dump(by_method_autopilot_save, f, indent=4)
-                        
-                        # Get odometry results
-                        odometry_failure_rate = experiment_files_grouped[town]['odometry']['failure_rate']
-                        odometry_fragmentation = experiment_files_grouped[town]['odometry']['fragmentation']
-                        
+        #Define savepaths etc.
+        save_dir = os.path.join('/results', town, experiment, experiment_filepath.replace('.json', ''))
+        plot_savedir = os.path.join(save_dir, 'plots')
+        Path(plot_savedir).mkdir(parents=True, exist_ok=True)
+        
+        experiment_filepath = os.path.join('/results', experiment_filepath)
+        aggregate, by_method = process_log_file(experiment_filepath,
+                                                save_dir=save_dir,
+                                                autopilot=False,
+                                                plot_kvalues=True,
+                                                odometry_failure_rate=odometry_failure_rate,
+                                                create_latex=True,
+                                                latex_accuracies=False,
+                                                latex_failurerates=True)
+        
+        autopilot_filepath = os.path.join('/results', autopilot_filepath)
+        aggregate_autopilot, by_method_autopilot = process_log_file(autopilot_filepath,
+                                                                    save_dir=save_dir,
+                                                                    autopilot=False,
+                                                                    plot_kvalues=False,
+                                                                    odometry_failure_rate=0,
+                                                                    create_latex=True,
+                                                                    latex_accuracies=True,
+                                                                    latex_failurerates=False)
+
+        experiment_results.append((aggregate, by_method, aggregate_autopilot, by_method_autopilot))
+
+        create_failurerate_recall_plots(by_method_autopilot, by_method, odometry_failure_rate, odometry_fragmentation, plot_savedir, town, exclude_legend=False, plot_label=plot_x_title)
+        #plot_crash_locations(aggregate, plot_savedir)
+        savepath=os.path.join(plot_savedir, 'delay_plot.png') 
+        create_computation_delay_plots(by_method_autopilot, savepath)
 
 
-                        # Create and save plots
-                        Path(os.path.join(save_dir, 'plots', f'kvalue_{kvalue_filename}')).mkdir(parents=True, exist_ok=True)
-                        plot_savedir=os.path.join(save_dir, 'plots', f'kvalue_{kvalue_filename}')
-                        
-                        
-                        print(f"  - Creating failurerate & recall plots and saving to path: {plot_savedir}")
-                        create_failurerate_recall_plots(by_method_autopilot[kvalue], by_method[kvalue], odometry_failure_rate, odometry_fragmentation, plot_savedir, town, exclude_legend=False, plot_label=f'{method}, k-value={kvalue_filename}')
-                        savepath=os.path.join(plot_savedir, 'delay_plot.png')
-                        
-                        
-                        print(f"  - Creating delay plots and saving to path: {savepath}")
-                        create_computation_delay_plots(by_method_autopilot[kvalue], savepath)
-                
+    experiment_files_grouped_by_method={}
+    
+    for i, results in enumerate(experiment_results):
+        experiment_scenarios = results[0] # Aggregate results
+        autopilot_scenarios = results[2] # Autopilot aggregate
+
+        dict_key = x_labels[i]
+        experiment_files_grouped_by_method[dict_key] = {'autopilot': autopilot_scenarios, 'experiment': experiment_scenarios}
+    
+    # Add benchmark results (0 angle or 0 height), in this case it is illumination result
+    experiment_files_grouped_by_method[comparison_x_label] = {'autopilot': illumination_aggregate_autopilot_town01, 'experiment': illumination_aggregate_town01}
+
+
+    # get grouped results
+    by_method, by_method_autopilot = group_by_method_and_viewpoint(experiment_files_grouped_by_method)
+    
+
+
+
+
+    print('\nCOMBINED Z & PITCH RESULTS\n')
+
+    # Define parameters for combined results
+    plot_x_title = f'z, k-value={kvalue_filename}'
+    
+    # Create a plot and results for each kvalue
+    for kvalue in by_method.keys():
+        
+        print(f'\nK-value: {kvalue}')
+
+        # Init vars and create dirs
+        kvalue_filename = str(int(kvalue))
+        by_method_save = deepcopy(by_method[kvalue])
+        by_method_autopilot_save = deepcopy(by_method_autopilot[kvalue])
+
+        save_dir = os.path.join('/results/', town, experiment)
+        Path(save_dir).mkdir(parents=True, exist_ok=True)
+        
+        # Create result json files
+        with open(os.path.join(save_dir, f'zpitch_kval{kvalue_filename}_grouped.json'), 'w') as f:
+            json.dump(by_method_save, f, indent=4)
+
+        with open(os.path.join(save_dir, f'zpitch_kval{kvalue_filename}_grouped_autopilot.json'), 'w') as f:
+            json.dump(by_method_autopilot_save, f, indent=4)
+        
+
+        # Create and save plots
+        Path(os.path.join(save_dir, 'plots', f'kvalue_{kvalue_filename}')).mkdir(parents=True, exist_ok=True)
+        plot_savedir=os.path.join(save_dir, 'plots', f'kvalue_{kvalue_filename}')
+        
+        
+        create_failurerate_recall_plots(by_method_autopilot_save, by_method_save, odometry_failure_rate, odometry_fragmentation, plot_savedir, town, exclude_legend=False, plot_label=plot_x_title)
+        savepath=os.path.join(plot_savedir, 'delay_plot.png')
+        create_computation_delay_plots(by_method_autopilot_save, savepath)
+
+
+
+
+
+
+
+    print('\n\nVIEWPOINT EXPERIMENTS - YAW\n')
+
+    # VIEWPOINT, YAW, TOWN1
+
+    # Define parameters
+    viewpoint_change = 'yaw'
+    experiment='viewpoint_experiment_yaw'
+    town='town01'
+    plot_x_title='Yaw change'
+    x_labels = [90, 67.5, 45, 22.5, -22.5, -45, -67.5, -90]
+    comparison_x_label=0 # X label for the comparison results => 0 degree change in yaw angle
+
+    experiment_filepaths = [f for f in os.listdir('/results') if os.path.isfile(os.path.join('/results', f)) and viewpoint_change in f and 'autopilot' not in f]
+    autopilot_filepaths = [f for f in os.listdir('/results') if os.path.isfile(os.path.join('/results', f)) and viewpoint_change in f and 'autopilot' in f]
+    
+    experiment_autopilot_pairs = []
+
+    for experiment_filepath in experiment_filepaths:
+        for autopilot_filepath in autopilot_filepaths:
+            e = experiment_filepath.replace('_town01.json', '')
+            a = autopilot_filepath.replace('_town01_autopilot.json', '')
+
+            if e == a:
+                experiment_autopilot_pairs.append((experiment_filepath, autopilot_filepath))
+                break
+
+    experiment_autopilot_pairs.sort(key=lambda x: int(''.join(filter(str.isdigit, x[0].replace('_town01.json','')))))
+
+    save_dir = os.path.join('/results', town, experiment)
+    plot_savedir = os.path.join(save_dir, 'plots')
+    Path(plot_savedir).mkdir(parents=True, exist_ok=True)
+ 
+    odometry_failure_rate = odometry_aggregate_town01['combination_000.xosc']['scenario_results']['crashes_per_km']
+    odometry_fragmentation = odometry_aggregate_town01['combination_000.xosc']['scenario_results']['crash_fragmentation']
+
+    experiment_results=[]
+
+    for experiment_filepath, autopilot_filepath in experiment_autopilot_pairs:
+        
+        print('\n', experiment_filepath, '\n')
+
+        # Define savepaths etc.
+        save_dir = os.path.join('/results', town, experiment, experiment_filepath.replace('.json', ''))
+        plot_savedir = os.path.join(save_dir, 'plots')
+        Path(plot_savedir).mkdir(parents=True, exist_ok=True)
+        
+        experiment_filepath = os.path.join('/results', experiment_filepath)
+        aggregate, by_method = process_log_file(experiment_filepath,
+                                                save_dir=save_dir,
+                                                autopilot=False,
+                                                plot_kvalues=True,
+                                                odometry_failure_rate=odometry_failure_rate,
+                                                create_latex=True,
+                                                latex_accuracies=False,
+                                                latex_failurerates=True)
+        
+        autopilot_filepath = os.path.join('/results', autopilot_filepath)
+        aggregate_autopilot, by_method_autopilot = process_log_file(autopilot_filepath,
+                                                                    save_dir=save_dir,
+                                                                    autopilot=False,
+                                                                    plot_kvalues=False,
+                                                                    odometry_failure_rate=0,
+                                                                    create_latex=True,
+                                                                    latex_accuracies=True,
+                                                                    latex_failurerates=False)
+
+        experiment_results.append((aggregate, by_method, aggregate_autopilot, by_method_autopilot))
+
+        create_failurerate_recall_plots(by_method_autopilot, by_method, odometry_failure_rate, odometry_fragmentation, plot_savedir, town, exclude_legend=False, plot_label=plot_x_title)
+        #plot_crash_locations(aggregate, plot_savedir)
+        savepath=os.path.join(plot_savedir, 'delay_plot.png') 
+        create_computation_delay_plots(by_method_autopilot, savepath)
+
+
+    experiment_files_grouped_by_method={}
+    
+    for i, results in enumerate(experiment_results):
+        experiment_scenarios = results[0] # Aggregate results
+        autopilot_scenarios = results[2] # Autopilot aggregate
+
+        dict_key = x_labels[i]
+        experiment_files_grouped_by_method[dict_key] = {'autopilot': autopilot_scenarios, 'experiment': experiment_scenarios}
+    
+    # Add benchmark results to 0 angle
+    experiment_files_grouped_by_method[comparison_x_label] = {'autopilot': illumination_aggregate_autopilot_town01, 'experiment': illumination_aggregate_town01}
+
+
+    # get grouped results
+    by_method, by_method_autopilot = group_by_method_and_viewpoint(experiment_files_grouped_by_method)
+    
+
+    
+    # Define parameters for combined results
+    plot_x_title = f'yaw, k-value={kvalue_filename}'
+
+
+    print('\nCOMBINED YAW RESULTS\n')
+
+    # Create a plot and results for each kvalue
+    for kvalue in by_method.keys():
+        print(f'\nK-value: {kvalue}')
+        # Init vars and create dirs
+        kvalue_filename = str(int(kvalue))
+        by_method_save = deepcopy(by_method[kvalue])
+        by_method_autopilot_save = deepcopy(by_method_autopilot[kvalue])
+
+        save_dir = os.path.join('/results/', town, experiment)
+        Path(save_dir).mkdir(parents=True, exist_ok=True)
+        
+        # Create result json files
+        with open(os.path.join(save_dir, f'yaw_kval{kvalue_filename}_grouped.json'), 'w') as f:
+            json.dump(by_method_save, f, indent=4)
+
+        with open(os.path.join(save_dir, f'yaw_kval{kvalue_filename}_grouped_autopilot.json'), 'w') as f:
+            json.dump(by_method_autopilot_save, f, indent=4)
+        
+
+        # Create and save plots
+        Path(os.path.join(save_dir, 'plots', f'kvalue_{kvalue_filename}')).mkdir(parents=True, exist_ok=True)
+        plot_savedir=os.path.join(save_dir, 'plots', f'kvalue_{kvalue_filename}')
+        
+        
+        create_failurerate_recall_plots(by_method_autopilot_save, by_method_save, odometry_failure_rate, odometry_fragmentation, plot_savedir, town, exclude_legend=False, plot_label=plot_x_title)
+        savepath=os.path.join(plot_savedir, 'delay_plot.png')
+        create_computation_delay_plots(by_method_autopilot_save, savepath)
 
 
     return
+
+
 
 def plot_crash_locations(scenario_runs, savedir):
 
