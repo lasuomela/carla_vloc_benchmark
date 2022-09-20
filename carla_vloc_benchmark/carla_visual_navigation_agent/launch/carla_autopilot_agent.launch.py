@@ -66,7 +66,7 @@ def generate_launch_description():
                 },
                 {
                     'control_time_step': launch.substitutions.LaunchConfiguration('control_time_step')
-                }
+                },
             ]
         ),
         launch_ros.actions.Node(

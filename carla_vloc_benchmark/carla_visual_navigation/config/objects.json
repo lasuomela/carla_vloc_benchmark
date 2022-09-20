@@ -1,5 +1,5 @@
-{   
-    "objects": 
+{
+    "objects":
     [
         {
             "type": "sensor.pseudo.traffic_lights",
@@ -24,7 +24,7 @@
         {
             "type": "vehicle.tesla.model3",
             "id": "ego_vehicle",
-            "sensors": 
+            "sensors":
             [
                 {
                     "type": "sensor.camera.rgb",
@@ -38,8 +38,8 @@
                     "type": "sensor.camera.rgb",
                     "id": "rgb_view",
                     "spawn_point": {"x": -3.0, "y": 0.0, "z": 1.0, "roll": 0.0, "pitch": 20.0, "yaw": 0.0},
-                    "image_size_x": 960,
-                    "image_size_y": 540,
+                    "image_size_x": 1920,
+                    "image_size_y": 1080,
                     "fov": 90.0,
                     "attached_objects":
                     [

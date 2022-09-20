@@ -87,7 +87,7 @@
                       <ParameterAssignment parameterRef="image_gallery_path" value="$image_gallery_path"/>
                       <ParameterAssignment parameterRef="gallery_sfm_path" value="$gallery_sfm_path"/>
                       <ParameterAssignment parameterRef="localization_frequence" value="$localization_frequence"/>
-                      <ParameterAssignment parameterRef="top_k_matches" value="$top_k_matches"/>
+		      <ParameterAssignment parameterRef="top_k_matches" value="$top_k_matches"/>
                     </ParameterAssignments>
                   </CatalogReference>
                 </AssignControllerAction>
@@ -222,7 +222,8 @@
                   -r $log_results
                   -s $scenario_success
                   -t $scenario_filepath
-                  -u $visual_range"/>
+		  -u $visual_range
+		  -v $cloud_state"/>
                 </UserDefinedAction>
               </Action>
               <StartTrigger>

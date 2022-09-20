@@ -213,7 +213,6 @@ class LocalPlanner(CompatibleNode):
             if distance_vehicle(self._target_pose, self._current_pose.position) > self.max_distance:
                 self._target_pose = self._compute_target_waypoint(self._current_pose)
 
-
             self._target_pose_publisher.publish(self.pose_to_marker_msg(self._target_pose))
 
             # move using PID controllers
@@ -221,6 +220,34 @@ class LocalPlanner(CompatibleNode):
                 self._target_speed, self._current_speed, self._current_pose, self._target_pose)
 
             self._control_cmd_publisher.publish(control_msg)
+
+    def offset_route(self, target_pose, distance):
+
+        # Test offsetting the target pose by d
+        if self._target_pose_idx+1 != len(self._waypoints_queue):
+
+            prev_target_pose_tmp = self._waypoints_queue[self._target_pose_idx].position
+            current_target_pose = [self._waypoints_queue[self._target_pose_idx+1].position.x, self._waypoints_queue[self._target_pose_idx+1].position.y]
+            prev_target_pose = [prev_target_pose_tmp.x, prev_target_pose_tmp.y]
+
+            try:
+                slope = (current_target_pose[1]-prev_target_pose[1])/(current_target_pose[0]-prev_target_pose[0])
+                pslope = -1/slope
+            except ZeroDivisionError:
+                slope = (current_target_pose[1]-prev_target_pose[1])/((current_target_pose[0]-prev_target_pose[0])+0.00001)
+                pslope = -1/(slope+0.00001)
+
+            sign_x = ((pslope > 0) == (prev_target_pose[0] > current_target_pose[0])) * 2 - 1
+            sign_y = ((pslope > 0) == (prev_target_pose[1] > current_target_pose[1])) * 2 - 1
+
+            delta_x = sign_x * -distance / ((1 + pslope**2)**0.5)
+            delta_y = pslope * delta_x
+
+            target_pose.position.x = float(np.round(current_target_pose[0] + delta_x, 2))
+            target_pose.position.y = float(np.round(current_target_pose[1] + delta_y,2 ))
+
+        return target_pose
+
 
     def emergency_stop(self):
         control_msg = CarlaEgoVehicleControl()

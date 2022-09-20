@@ -1,5 +1,5 @@
-{   
-    "objects": 
+{
+    "objects":
     [
         {
             "type": "sensor.pseudo.traffic_lights",
@@ -24,24 +24,24 @@
         {
             "type": "vehicle.tesla.model3",
             "id": "ego_vehicle",
-            "sensors": 
+            "sensors":
             [
                 {
                     "type": "sensor.camera.rgb",
                     "id": "rgb_front",
-                    "spawn_point": {"x": 2.0, "y": 0.0, "z": 2.0, "roll": 0.0, "pitch": 0.0, "yaw": 270.0},
+                    "spawn_point": {"x": 2.0, "y": 0.0, "z": 7.0, "roll": 0.0, "pitch": 27.5, "yaw": 270.0},
                     "image_size_x": 800,
                     "image_size_y": 600,
                     "fov": 90.0
                 },
-                {
-                    "type": "sensor.camera.rgb",
-                    "id": "rgb_view",
-                    "spawn_point": {"x": 2.0, "y": 0.0, "z": 2.0, "roll": 0.0, "pitch": 0.0, "yaw": 270.0},
-                    "image_size_x": 1,
-                    "image_size_y": 1,
-                    "fov": 90.0
-                },
+		{
+		    "type": "sensor.camera.rgb",
+		    "id": "placeholder",
+		    "spawn_point": {"x":0.0, "y": 0.0, "z":0.0, "roll":0.0, "pitch":0.0, "yaw": 0.0},
+		    "image_size_x": 1,
+		    "image_size_y": 1,
+		    "fov": 90.0
+		},
                 {
                     "type": "sensor.other.collision",
                     "id": "collision",
