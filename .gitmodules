@@ -9,4 +9,4 @@
 	url = git@github.com:cra-ros-pkg/robot_localization.git
 [submodule "visual_robot_localization"]
 	path = visual_robot_localization
-	url = git@github.com:JussiKalliola/visual_robot_localization.git
+	url = git@github.com:lasuomela/visual_robot_localization.git
