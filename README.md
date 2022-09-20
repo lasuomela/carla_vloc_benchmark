@@ -12,8 +12,16 @@ Benchmark visual localization methods for robot navigation.
 [Video](https://youtu.be/OGjrOt_N1xM)
 
 >A Simulation Benchmark for Vision-based Autonomous Navigation   
->Lauri Suomela, Atakan Dag, Harry Edelman, Joni-Kristian Kämäräinen  
+>Lauri Suomela, Jussi Kalliola, Atakan Dag, Harry Edelman, Joni-Kristian Kämäräinen  
 >arXiv
+
+
+## System requirements
+
+- [Docker](https://www.docker.com/)
+- [Nvidia-docker](https://github.com/NVIDIA/nvidia-docker)
+- Nvidia GPU with minimum of 12GB memory. *Recommended Nvidia RTX3090*
+- 70GB disk space for Docker images
 
 ## Installation
 
@@ -67,7 +75,7 @@ If all functions correctly, you are good to go.
 
 ---
 
-## Reproduce the paper experiments
+<details><summary><b><font size="+2">Reproduce the paper experiments</font></b></summary>
 
 ### 1. Launch the environment
 In one terminal window, launch the Carla simulator:
@@ -171,22 +179,27 @@ Completing the experiments can take a long time. Once the experiments have been 
 repeat for the Town10 envrionment. The results are saved to `/results/`.
 
 ### 5. Run the viewpoint change experiments
-Viewpoint change -experiments uses the same gallery images and sparse 3D models as in illumination experiments.
+Viewpoint change -experiments uses the same gallery images and sparse 3D models as in the illumination experiments.
 Each viewpoint change (e.g., change in camera angle) has its own experiment description 
 in `scenarios/experiment_descriptions.yml` and sensor configuration file in  
 `carla_vloc_benchmark/carla_visual_navigation/config/viewpoint_experiment_objects/`.
 
-Run an experiment with camera yaw angle rotation of 22.5 degrees:
+Run an experiment with the following camera position: `z=4.0, pitch=10.0`
 ```sh
 # Tmux window 1
-ros2 launch carla_visual_navigation cli_scenario_runner.launch.py town:='Town01'
+ros2 launch carla_visual_navigation cli_scenario_runner.launch.py town:='Town01' objects_config:='/opt/carla_vloc_benchmark/src/carla_visual_navigation/config/viewpoint_experiment_objects/zpitch/objects_zpitch1.json'
 
-# In Tmux window 2, start scenario execution for Town01, with yaw1 sensor configuration path and 5 repetitions of each scenario file
-ros2 launch carla_visual_navigation scenario_executor.launch.py scenario_dir:='/scenarios/viewpoint_experiment_yaw1_town01' objects_config:='/opt/carla_vloc_benchmark/src/carla_visual_navigation/config/viewpoint_experiment_objects/yaw/objects_yaw1.json' repetitions:=5
+# In Tmux window 2, start scenario execution for Town01 and 5 repetitions of each scenario file
+ros2 launch carla_visual_navigation scenario_executor.launch.py scenario_dir:='/scenarios/viewpoint_experiment_zpitch1_town01' repetitions:=5
 
 # Once all the scenarios have been finished, run the scenarios with autopilot to measure visual localization recall
 # Remember to define the same sensor configuration file as previously
-ros2 launch carla_visual_navigation scenario_executor.launch.py scenario_dir:='/scenarios/viewpoint_experiment_yaw1_town01_autopilot' objects_config:='/opt/carla_vloc_benchmark/src/carla_visual_navigation/config/viewpoint_experiment_objects/yaw/objects_yaw1.json' repetitions:=1
+
+# Tmux window 1
+ros2 launch carla_visual_navigation cli_scenario_runner.launch.py town:='Town01' objects_config:='/opt/carla_vloc_benchmark/src/carla_visual_navigation/config/viewpoint_experiment_objects/zpitch/objects_zpitch1.json'
+
+# Tmux window 2
+ros2 launch carla_visual_navigation scenario_executor.launch.py scenario_dir:='/scenarios/viewpoint_experiment_zpitch1_town01_autopilot' repetitions:=1
 
 # If Illumination experiments are performed, then there is no need to measure navigation performance with wheel odometry only. Same results can be used for viewpoint experiments
 
@@ -194,8 +207,46 @@ ros2 launch carla_visual_navigation scenario_executor.launch.py scenario_dir:='/
 ros2 launch carla_visual_navigation scenario_executor.launch.py scenario_dir:='/scenarios/illumination_experiment_town01_odometry_only' repetitions:=5
 ```
 
-Repeat the previous commands with other camera angles _(yaw2, yaw3, yaw4, ...)_ 
-and viewpoint changes _(roll, z&pitch)_ The results are saved to `/results/`.
+Repeat the previous commands for other camera positions _(zpitch2, zpitch3, zpitch4, ...)_ 
+and viewpoint changes _(roll, yaw)_ The results are saved to `/results/`.
+
+<details><summary><b>List of the sensor configurations</b></summary>
+
+<table>
+<tr style="vertical-align:top;border:none;"><td style="vertical-align:top;border:none;">
+
+| Filename              | Pitch | Z    |
+|-----------------------|-------|------|
+| objects_zpitch1.json  | 10.0  | 4.0  |
+| objects_zpitch2.json  | 22.5  | 6.0  |
+| objects_zpitch3.json  | 27.5  | 7.0  |
+| objects_zpitch4.json  | 32.5  | 8.0  |
+| objects_zpitch5.json  | 35.0  | 9.0  |
+| objects_zpitch6.json  | 37.5  | 10.0 |
+| objects_zpitch7.json  | 40.0  | 11.0 |
+| objects_zpitch8.json  | 40.0  | 12.0 |
+| objects_zpitch9.json  | 40.0  | 13.0 |
+| objects_zpitch10.json | 40.0  | 15.0 |
+| objects_zpitch11.json | 40.0  | 17.0 |
+| objects_zpitch12.json | 40.0  | 18.0 |
+</td><td style="vertical-align:top;border:none;">
+
+| Filename          | Yaw   |
+|-------------------|-------|
+| objects_yaw1.json | 90.0  |
+| objects_yaw2.json | 67.5  |
+| objects_yaw3.json | 45.0  |
+| objects_yaw4.json | 22.5  |
+| objects_yaw5.json | -22.5 |
+| objects_yaw6.json | -45.0 |
+| objects_yaw7.json | -67.5 |
+| objects_yaw8.json | -90.0 |
+
+</td></tr>
+</table>
+
+
+</details>
 
 ---
 
@@ -205,16 +256,16 @@ and viewpoint changes _(roll, z&pitch)_ The results are saved to `/results/`.
 cd /opt/carla_vloc_benchmark/src/carla_visual_navigation/scripts
 
 # Execute all scenarios which starts with "viewpoint_experiment_yaw"
-./run_viewpoint_experiments.sh -e viewpoint_experiment_yaw -a True -t Town01
+./run_viewpoint_experiments.sh -e viewpoint_experiment_zpitch -a True -t Town01
 ```
 This will open tmux session where scenario executor and scenario runner -commands are executed using
-defined parameters. Above command will run all the viewpoint experiments which starts with `viewpoint_experiment_yaw`
+defined parameters. Above command will run all the viewpoint experiments which starts with `viewpoint_experiment_zpitch`
 and corresponding autopilot experiments. Script will also restart the experiments from the previous 
 run if the execution stops for some reason. 
 
 The script uses following parameters:
-- `-e`: **Experiment name** (**Required**, String), can be used to run exact experiments like `viewpoint_experiment_yaw1` or all the 
-experiments belonging to the same category `viewpoint_experiment_yaw`.
+- `-e`: **Experiment name** (**Required**, String), can be used to run exact experiments like `viewpoint_experiment_zpitch1` or all the 
+experiments belonging to the same category `viewpoint_experiment_zpitch`.
 - `-t`: **Town name** (**Required**, String)
 - `-a`: **Autopilot** (Optional, Boolean), if corresponding autopilot experiments are executed after. _Default value: False_
 - `-o`: **Odometry** (Optional, Boolean), if odometry experiment is executed after. _Default value: False_
@@ -247,12 +298,14 @@ Produce aggregate metrics and plots from the results.
 
 ```sh
 cd /opt/carla_visual_navigation/src/carla_visual_navigation/scripts
-python analyze_viewpoint_yaw_scenario_logs2.py
+python analyze_scenario_logs.py
 ```
+
+</details>
 
 ---
 
-## Adding new visual localization methods
+<details><summary><b><font size="+2">Adding new visual localization methods</font></b></summary>
 
 The visual localization methods are integrated through the awesome 
 [hloc toolbox](https://github.com/cvg/Hierarchical-Localization), 
@@ -262,28 +315,15 @@ See hloc documentation on how to contribute new visual localization methods.
 After a method has been added to hloc, it can be used in the experiments by specifying the method 
 in the experiment parameters (`/scenarios/experiment_descriptions.yml`)
 
----
+</details>
 
-## Defining your own experiments
+---
+<details><summary><b><font size="+2">Defining your own experiments</font></b></summary>
 
 ### 1. Define experiment descriptions
 Experiments are defined in `/scenarios/experiment_descriptions.yml` using YAML. 
 Experiment descriptions should contain all the parameters and parameter combinations used in 
 scenarios. **Parameter naming should be the same as in the OpenSCENARIO template files.**
-
-Experiment names should be named with the following structure:
-- Main category - _Viewpoint_
-- experiment
-- Sub category - _yaw1 (optional - only if different scenarios should be grouped together)_
-- Town name - _Town01_
-- autopilot - _measuring visual localization recall_
-
-This naming structure would provide a following experiment and autopilot names: 
-`viewpoint_experiment_yaw1_town01` and `viewpoint_experiment_yaw1_town01_autopilot`
-
-This naming structure is used when aggregate metrics are produced using the command 
-`python analyze_viewpoint_yaw_scenario_logs2.py` where sub categories (e.g., all yaw changes) 
-are grouped together to produce combined metrics.
 
 Example experiment definition structure:
 ```sh
@@ -378,7 +418,7 @@ See [ASAM OpenSCENARIO User guide](https://releases.asam.net/OpenSCENARIO/1.0.0/
 
 ### 4. Generate scenario files
 Scenario files can be generated if experiments are defined in `scenarios/experiment_descriptions.yml`, 
-OpenSCENARIO template in `carla_vloc_benchmark/carla_visual_navigation/config` 
+OpenSCENARIO templates in `carla_vloc_benchmark/carla_visual_navigation/config` 
 and vehicle, controller, environment and route specification catalogs in 
 `carla_vloc_benchmark/carla_visual_navigation/config/catalogs` using following commands:
 
@@ -397,7 +437,9 @@ python template_scenario_creator.py
 from experiment descriptions and creates a scenario file for each parameter combination. 
 Populated scenario files and parameter file are stored in `scenarios/experiment_name` 
 with names `combination_000.xosc, combination_001.xosc, ...` and `parameters.yml`.
+</details>
 
+---
 
 
 

@@ -13,11 +13,6 @@ from copy import deepcopy
 
 
 
-# Define special key values for viewpoint experiments (angles and heights), used for plotting
-yaw_vals = [0, 90, 67.5, 45, 22.5, -22.5, -45, -67.5, -90]
-z_vals = [0, 2, 4, 5, 6, 7, 8, 9, 10, 11, 13, 15, 16]
-roll = [0, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55]
-
 def main():
    
 
@@ -48,7 +43,6 @@ def main():
     # ILLUMINATION, TOWN1
     experiment='illumination_experiment'
     town='town01'
-    plot_x_label='K-value'
     
     print(f'\nEXPERIMENT: {experiment} TOWN: {town}\n')
 
@@ -64,7 +58,7 @@ def main():
     odometry_failure_rate = odometry_aggregate_town01['combination_000.xosc']['scenario_results']['crashes_per_km']
     odometry_fragmentation = odometry_aggregate_town01['combination_000.xosc']['scenario_results']['crash_fragmentation']
     
-    # Process files and get results
+    # Process experiments and get results
     illumination_aggregate_town01, illumination_by_method_town01 = process_log_file(experiment_filepath,
                                                                                     save_dir=save_dir,
                                                                                     autopilot=False,
@@ -73,7 +67,7 @@ def main():
                                                                                     create_latex=True,
                                                                                     latex_accuracies=False,
                                                                                     latex_failurerates=True)
-
+    # process autopilot and get results
     illumination_aggregate_autopilot_town01, illumination_by_method_autopilot_town01 = process_log_file(autopilot_filepath,
                                                                                                         save_dir=save_dir,
                                                                                                         autopilot=False,
@@ -86,7 +80,18 @@ def main():
 
 
 
-    create_failurerate_recall_plots(illumination_by_method_autopilot_town01, illumination_by_method_town01, odometry_failure_rate, odometry_fragmentation, plot_savedir, town, exclude_legend=False, plot_label=plot_x_label)
+    # Plot results
+    plot_x_label = 'K-value'
+
+    create_failurerate_recall_plots(illumination_by_method_autopilot_town01,
+                                    illumination_by_method_town01,
+                                    odometry_failure_rate,
+                                    odometry_fragmentation,
+                                    plot_savedir,
+                                    town,
+                                    exclude_legend=False,
+                                    plot_label=plot_x_label)
+
     #plot_crash_locations(aggregate, plot_savedir)
     savepath=os.path.join(plot_savedir, 'delay_plot.png') 
     create_computation_delay_plots(illumination_by_method_autopilot_town01, savepath)
@@ -97,10 +102,10 @@ def main():
 
 
 
+
     # ILLUMINATION TOWN10
     experiment='illumination_experiment'
     town='town10'
-    plot_x_label='K-value'
 
     print(f'\nEXPERIMENT: {experiment} TOWN: {town}\n')
     
@@ -135,10 +140,17 @@ def main():
                                                                                                         latex_accuracies=True,
                                                                                                         latex_failurerates=False)
 
+    plot_x_label = 'K-value'
 
+    create_failurerate_recall_plots(illumination_by_method_autopilot_town10,
+                                    illumination_by_method_town10,
+                                    odometry_failure_rate,
+                                    odometry_fragmentation,
+                                    plot_savedir,
+                                    town,
+                                    exclude_legend=False,
+                                    plot_label=plot_x_label)
 
-
-    create_failurerate_recall_plots(illumination_by_method_autopilot_town10, illumination_by_method_town10, odometry_failure_rate, odometry_fragmentation, plot_savedir, town, exclude_legend=False, plot_label=plot_x_label)
     #plot_crash_locations(aggregate, plot_savedir)
     savepath=os.path.join(plot_savedir, 'delay_plot.png') 
     create_computation_delay_plots(illumination_by_method_autopilot_town10, savepath)
@@ -150,8 +162,6 @@ def main():
     # WEATHER TOWN10
     experiment='weather_experiment'
     town='town10'
-    plot_x_label="Fog distance"
-    comparison_x_label = 100 # X label for the comparison results => without weather conditions
 
     print(f'\nEXPERIMENT: {experiment} TOWN: {town}\n')
 
@@ -186,14 +196,28 @@ def main():
                                                                                               latex_failurerates=False)
 
 
+    # Add the comparison point from the illumination experiments where k = 0
+    kval = 0.0
+    comparison_x_label = 100  # X label for the comparison results
 
     for method in illumination_by_method_town10:
-        weather_by_method_town10[method][comparison_x_label] = illumination_by_method_town10[method][0.0]
+        weather_by_method_town10[method][comparison_x_label] = illumination_by_method_town10[method][kval]
     
     for method in illumination_by_method_autopilot_town10:
-        weather_by_method_autopilot_town10[method][comparison_x_label] = illumination_by_method_autopilot_town10[method][0.0]
+        weather_by_method_autopilot_town10[method][comparison_x_label] = illumination_by_method_autopilot_town10[method][kval]
 
-    create_failurerate_recall_plots(weather_by_method_autopilot_town10, weather_by_method_town10, odometry_failure_rate, odometry_fragmentation, plot_savedir, town, exclude_legend=False, plot_label=plot_x_label)
+    # Create plots
+    plot_x_label = "Fog distance"
+
+    create_failurerate_recall_plots(weather_by_method_autopilot_town10,
+                                    weather_by_method_town10,
+                                    odometry_failure_rate,
+                                    odometry_fragmentation,
+                                    plot_savedir,
+                                    town,
+                                    exclude_legend=False,
+                                    plot_label=plot_x_label)
+
     #plot_crash_locations(aggregate, plot_savedir)
     savepath=os.path.join(plot_savedir, 'delay_plot.png') 
     create_computation_delay_plots(weather_by_method_autopilot_town10, savepath)
@@ -211,16 +235,14 @@ def main():
     viewpoint_change = 'zpitch'
     experiment='viewpoint_experiment_zpitch'
     town='town01'
-    plot_x_title='Z-value'
-    x_labels = [2, 4, 5, 6, 7, 8, 9, 10, 11, 13, 15, 16]
-    comparison_x_label=0 # X label for the comparison results => original height and pitch
 
-    
+    # Get files from the results folder
     experiment_filepaths = [f for f in os.listdir('/results') if os.path.isfile(os.path.join('/results', f)) and viewpoint_change in f and 'autopilot' not in f]
     autopilot_filepaths = [f for f in os.listdir('/results') if os.path.isfile(os.path.join('/results', f)) and viewpoint_change in f and 'autopilot' in f]
 
     experiment_autopilot_pairs = []
 
+    # Find experiment and autopilot pairs and store into an array
     for experiment_filepath in experiment_filepaths:
         for autopilot_filepath in autopilot_filepaths:
             e = experiment_filepath.replace('_town01.json', '')
@@ -230,17 +252,16 @@ def main():
                 experiment_autopilot_pairs.append((experiment_filepath, autopilot_filepath))
                 break
 
+    # Sort the pairs in numerical order => zpitch1, zpitch2, ...
     experiment_autopilot_pairs.sort(key=lambda x: int(''.join(filter(str.isdigit, x[0].replace('_town01.json','')))))
-    
-    save_dir = os.path.join('/results', town, experiment)
-    plot_savedir = os.path.join(save_dir, 'plots')
-    Path(plot_savedir).mkdir(parents=True, exist_ok=True)
- 
+
+    # Define odometry results
     odometry_failure_rate = odometry_aggregate_town01['combination_000.xosc']['scenario_results']['crashes_per_km']
     odometry_fragmentation = odometry_aggregate_town01['combination_000.xosc']['scenario_results']['crash_fragmentation']
 
     experiment_results=[]
 
+    # Loop through experiment-autopilot pairs, produce results and store json and plots into the directory
     for experiment_filepath, autopilot_filepath in experiment_autopilot_pairs:
         
         print('\n', experiment_filepath, '\n')
@@ -251,6 +272,8 @@ def main():
         Path(plot_savedir).mkdir(parents=True, exist_ok=True)
         
         experiment_filepath = os.path.join('/results', experiment_filepath)
+
+        # Experiment results
         aggregate, by_method = process_log_file(experiment_filepath,
                                                 save_dir=save_dir,
                                                 autopilot=False,
@@ -261,6 +284,8 @@ def main():
                                                 latex_failurerates=True)
         
         autopilot_filepath = os.path.join('/results', autopilot_filepath)
+
+        # autopilot results
         aggregate_autopilot, by_method_autopilot = process_log_file(autopilot_filepath,
                                                                     save_dir=save_dir,
                                                                     autopilot=False,
@@ -270,24 +295,39 @@ def main():
                                                                     latex_accuracies=True,
                                                                     latex_failurerates=False)
 
+        # Store the results for the combined results later
         experiment_results.append((aggregate, by_method, aggregate_autopilot, by_method_autopilot))
 
-        create_failurerate_recall_plots(by_method_autopilot, by_method, odometry_failure_rate, odometry_fragmentation, plot_savedir, town, exclude_legend=False, plot_label=plot_x_title)
+
+        plot_x_title = 'Z-value'
+        create_failurerate_recall_plots(by_method_autopilot,
+                                        by_method,
+                                        odometry_failure_rate,
+                                        odometry_fragmentation,
+                                        plot_savedir,
+                                        town,
+                                        exclude_legend=False,
+                                        plot_label=plot_x_title)
+
         #plot_crash_locations(aggregate, plot_savedir)
         savepath=os.path.join(plot_savedir, 'delay_plot.png') 
         create_computation_delay_plots(by_method_autopilot, savepath)
 
 
+    # Define parameters
     experiment_files_grouped_by_method={}
-    
+    x_labels = [2, 4, 6, 7, 8, 9, 10, 11, 12, 13, 15, 17, 18]
+
+    # Combine results into a dictionary, where keys are x labels in the future plots
     for i, results in enumerate(experiment_results):
         experiment_scenarios = results[0] # Aggregate results
-        autopilot_scenarios = results[2] # Autopilot aggregate
+        autopilot_scenarios = results[2] # Autopilot aggregate results
 
         dict_key = x_labels[i]
         experiment_files_grouped_by_method[dict_key] = {'autopilot': autopilot_scenarios, 'experiment': experiment_scenarios}
     
-    # Add benchmark results (0 angle or 0 height), in this case it is illumination result
+    # Add benchmark results (0 angle and 0 height), in this case it is illumination result
+    comparison_x_label = 0  # X label for the comparison results => original height and pitch
     experiment_files_grouped_by_method[comparison_x_label] = {'autopilot': illumination_aggregate_autopilot_town01, 'experiment': illumination_aggregate_town01}
 
 
@@ -300,8 +340,6 @@ def main():
 
     print('\nCOMBINED Z & PITCH RESULTS\n')
 
-    # Define parameters for combined results
-    plot_x_title = f'z, k-value={kvalue_filename}'
     
     # Create a plot and results for each kvalue
     for kvalue in by_method.keys():
@@ -327,9 +365,17 @@ def main():
         # Create and save plots
         Path(os.path.join(save_dir, 'plots', f'kvalue_{kvalue_filename}')).mkdir(parents=True, exist_ok=True)
         plot_savedir=os.path.join(save_dir, 'plots', f'kvalue_{kvalue_filename}')
-        
-        
-        create_failurerate_recall_plots(by_method_autopilot_save, by_method_save, odometry_failure_rate, odometry_fragmentation, plot_savedir, town, exclude_legend=False, plot_label=plot_x_title)
+
+
+        plot_x_title = f'z, k-value={kvalue_filename}'
+        create_failurerate_recall_plots(by_method_autopilot_save,
+                                        by_method_save,
+                                        odometry_failure_rate,
+                                        odometry_fragmentation,
+                                        plot_savedir,
+                                        town,
+                                        exclude_legend=False,
+                                        plot_label=plot_x_title)
         savepath=os.path.join(plot_savedir, 'delay_plot.png')
         create_computation_delay_plots(by_method_autopilot_save, savepath)
 
@@ -347,15 +393,13 @@ def main():
     viewpoint_change = 'yaw'
     experiment='viewpoint_experiment_yaw'
     town='town01'
-    plot_x_title='Yaw change'
-    x_labels = [90, 67.5, 45, 22.5, -22.5, -45, -67.5, -90]
-    comparison_x_label=0 # X label for the comparison results => 0 degree change in yaw angle
 
+    # Get files from the results folder
     experiment_filepaths = [f for f in os.listdir('/results') if os.path.isfile(os.path.join('/results', f)) and viewpoint_change in f and 'autopilot' not in f]
     autopilot_filepaths = [f for f in os.listdir('/results') if os.path.isfile(os.path.join('/results', f)) and viewpoint_change in f and 'autopilot' in f]
     
     experiment_autopilot_pairs = []
-
+    # Find experiment and autopilot pairs and store into an array
     for experiment_filepath in experiment_filepaths:
         for autopilot_filepath in autopilot_filepaths:
             e = experiment_filepath.replace('_town01.json', '')
@@ -365,17 +409,16 @@ def main():
                 experiment_autopilot_pairs.append((experiment_filepath, autopilot_filepath))
                 break
 
+    # Sort the pairs in numerical order => zpitch1, zpitch2, ...
     experiment_autopilot_pairs.sort(key=lambda x: int(''.join(filter(str.isdigit, x[0].replace('_town01.json','')))))
 
-    save_dir = os.path.join('/results', town, experiment)
-    plot_savedir = os.path.join(save_dir, 'plots')
-    Path(plot_savedir).mkdir(parents=True, exist_ok=True)
- 
+    # Define odometry results
     odometry_failure_rate = odometry_aggregate_town01['combination_000.xosc']['scenario_results']['crashes_per_km']
     odometry_fragmentation = odometry_aggregate_town01['combination_000.xosc']['scenario_results']['crash_fragmentation']
 
     experiment_results=[]
 
+    # Loop through experiment-autopilot pairs, produce results and store json and plots into the directory
     for experiment_filepath, autopilot_filepath in experiment_autopilot_pairs:
         
         print('\n', experiment_filepath, '\n')
@@ -384,7 +427,8 @@ def main():
         save_dir = os.path.join('/results', town, experiment, experiment_filepath.replace('.json', ''))
         plot_savedir = os.path.join(save_dir, 'plots')
         Path(plot_savedir).mkdir(parents=True, exist_ok=True)
-        
+
+        # Experiment results
         experiment_filepath = os.path.join('/results', experiment_filepath)
         aggregate, by_method = process_log_file(experiment_filepath,
                                                 save_dir=save_dir,
@@ -394,7 +438,8 @@ def main():
                                                 create_latex=True,
                                                 latex_accuracies=False,
                                                 latex_failurerates=True)
-        
+
+        # Autopilot results
         autopilot_filepath = os.path.join('/results', autopilot_filepath)
         aggregate_autopilot, by_method_autopilot = process_log_file(autopilot_filepath,
                                                                     save_dir=save_dir,
@@ -405,16 +450,27 @@ def main():
                                                                     latex_accuracies=True,
                                                                     latex_failurerates=False)
 
+        # Store the results for the combined results later
         experiment_results.append((aggregate, by_method, aggregate_autopilot, by_method_autopilot))
 
-        create_failurerate_recall_plots(by_method_autopilot, by_method, odometry_failure_rate, odometry_fragmentation, plot_savedir, town, exclude_legend=False, plot_label=plot_x_title)
+        plot_x_title = 'Yaw change'
+        create_failurerate_recall_plots(by_method_autopilot,
+                                        by_method,
+                                        odometry_failure_rate,
+                                        odometry_fragmentation,
+                                        plot_savedir,
+                                        town,
+                                        exclude_legend=False,
+                                        plot_label=plot_x_title)
         #plot_crash_locations(aggregate, plot_savedir)
         savepath=os.path.join(plot_savedir, 'delay_plot.png') 
         create_computation_delay_plots(by_method_autopilot, savepath)
 
 
     experiment_files_grouped_by_method={}
-    
+    x_labels = [90, 67.5, 45, 22.5, -22.5, -45, -67.5, -90]
+
+    # Combine results into a dictionary, where keys are x labels in the future plots
     for i, results in enumerate(experiment_results):
         experiment_scenarios = results[0] # Aggregate results
         autopilot_scenarios = results[2] # Autopilot aggregate
@@ -423,16 +479,13 @@ def main():
         experiment_files_grouped_by_method[dict_key] = {'autopilot': autopilot_scenarios, 'experiment': experiment_scenarios}
     
     # Add benchmark results to 0 angle
+    comparison_x_label = 0  # X label for the comparison results => 0 degree change in yaw angle
     experiment_files_grouped_by_method[comparison_x_label] = {'autopilot': illumination_aggregate_autopilot_town01, 'experiment': illumination_aggregate_town01}
 
 
     # get grouped results
     by_method, by_method_autopilot = group_by_method_and_viewpoint(experiment_files_grouped_by_method)
-    
 
-    
-    # Define parameters for combined results
-    plot_x_title = f'yaw, k-value={kvalue_filename}'
 
 
     print('\nCOMBINED YAW RESULTS\n')
@@ -459,9 +512,17 @@ def main():
         # Create and save plots
         Path(os.path.join(save_dir, 'plots', f'kvalue_{kvalue_filename}')).mkdir(parents=True, exist_ok=True)
         plot_savedir=os.path.join(save_dir, 'plots', f'kvalue_{kvalue_filename}')
-        
-        
-        create_failurerate_recall_plots(by_method_autopilot_save, by_method_save, odometry_failure_rate, odometry_fragmentation, plot_savedir, town, exclude_legend=False, plot_label=plot_x_title)
+
+        plot_x_title = f'yaw, k-value={kvalue_filename}'
+        create_failurerate_recall_plots(by_method_autopilot_save,
+                                        by_method_save,
+                                        odometry_failure_rate,
+                                        odometry_fragmentation,
+                                        plot_savedir,
+                                        town,
+                                        exclude_legend=False,
+                                        plot_label=plot_x_title)
+
         savepath=os.path.join(plot_savedir, 'delay_plot.png')
         create_computation_delay_plots(by_method_autopilot_save, savepath)
 
