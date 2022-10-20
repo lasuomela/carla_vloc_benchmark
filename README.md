@@ -6,15 +6,25 @@
 
 # Carla Visual localization benchmark
 
-Benchmark visual localization methods for robot navigation.
-
 [Paper](https://arxiv.org/abs/2203.13048) |
-[Video](https://youtu.be/OGjrOt_N1xM)
+[Webpage](https://lasuomela.github.io/carla_vloc_benchmark/)
 
->A Simulation Benchmark for Vision-based Autonomous Navigation   
->Lauri Suomela, Jussi Kalliola, Atakan Dag, Harry Edelman, Joni-Kristian Kämäräinen  
->arXiv
+This is the official implementation of the paper "Benchmarking Visual Localization for Autonomous Navigation".
 
+The benchmark enables easy experimentation with different visual localization methods as part of a navigation stack. The platform enables investigating how various factors such as illumination, viewpoint, and weather changes affect visual localization and subsequent navigation performance. The benchmark is based on the Carla autonomous driving simulator and our ROS2 port of the Hloc visual localization toolbox.
+
+## Citing
+
+If you find the benchmark useful in your research, please cite our work as:
+```
+@inproceedings{
+    title     = {Benchmarking Visual Localization for Autonomous Navigation},
+    author    = {Suomela, Lauri and Kalliola, Jussi and Dag, Atakan and Edelman, Harry and Kämäräinen, Joni-Kristian},
+    booktitle = {Proceedings of the IEEE/CVF Winter Conference on Applications of Computer Vision (WACV)},
+    year      = {2023},
+    url = {https://arxiv.org/abs/2203.13048}
+}
+```
 
 ## System requirements
 
@@ -440,9 +450,6 @@ with names `combination_000.xosc, combination_001.xosc, ...` and `parameters.yml
 </details>
 
 ---
-
-
-
 
 
 
