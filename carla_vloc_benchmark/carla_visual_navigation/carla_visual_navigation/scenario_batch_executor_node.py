@@ -17,6 +17,8 @@ import carla
 import numpy as np
 import carla_common.transforms as trans
 
+from visual_localization_interfaces.msg import VisualLocalizerStatus
+
 class ScenarioBatchExecutor(Node):
 
     '''
@@ -42,6 +44,13 @@ class ScenarioBatchExecutor(Node):
             "/scenario_runner/status",
             self.scenario_finished_callback,
             10)
+
+        self.localizer_status_subscription = self.create_subscription(
+            VisualLocalizerStatus,
+            "/visual_localizer/status",
+            self.localizer_status_callback,
+            10)
+
 
         self.current_scenario = None
         self.last_execution_request_time = None 
@@ -88,6 +97,21 @@ class ScenarioBatchExecutor(Node):
         print('Finished init')
 
         self.scenario_finished_callback( CarlaScenarioRunnerStatus(status=0) )
+
+    def localizer_status_callback(self, localizer_status_msg):
+        '''
+        localizer_status:
+            uint8 STOPPED = 0
+            uint8 STARTING = 1
+            uint8 RUNNING = 2
+            uint8 SHUTTINGDOWN = 3
+            uint8 ERROR = 4
+        '''
+        localizer_status = localizer_status_msg.status
+        if localizer_status == 4:
+            print('Localizer node error: error acquiring sensor-to-body transform')
+            if self.scenario_timeout == 0.0:
+                self.keep_running = False
 
 
     def scenario_finished_callback(self, scenario_status_msg):

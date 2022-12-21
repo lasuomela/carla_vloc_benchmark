@@ -7,6 +7,8 @@
 [submodule "third_party/robot_localization"]
 	path = third_party/robot_localization/robot_localization
 	url = git@github.com:cra-ros-pkg/robot_localization.git
+        branch = foxy-devel
 [submodule "visual_robot_localization"]
 	path = visual_robot_localization
 	url = git@github.com:lasuomela/visual_robot_localization.git
+        branch = main

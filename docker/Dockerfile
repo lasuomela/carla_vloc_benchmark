@@ -2,6 +2,7 @@ ARG ROS_DISTRO
 ARG BASE_IMAGE
 FROM $BASE_IMAGE
 
+
 # Scenario runner and dependencies
 COPY ./third_party/scenario_runner /opt/third_party/scenario_runner
 WORKDIR /opt/third_party/scenario_runner

@@ -51,9 +51,4 @@ docker run \
     --mount "type=bind,src=$CWD/../scenarios/,dst=/scenarios" \
     --gpus 'all,"capabilities=graphics,utility,display,video,compute"' \
     "$DOCKER_IMAGE_NAME:$TAG" "$@" 
-xhost - local: 
-
-#--mount "type=bind,src=$CWD/../third_party/scenario_runner/,dst=/opt/third_party/scenario_runner" \
-#--mount "type=bind,src=$CWD/../third_party/robot_localization/,dst=/opt/third_party/robot_localization" \
-#--mount "type=bind,src=$CWD/../visual_robot_localization/,dst=/opt/visual_robot_localization/src/" \
-#--mount "type=bind,src=$CWD/../third_party/ros-bridge/,dst=/opt/carla-ros-bridge/src/" \
+xhost - local:
