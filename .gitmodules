@@ -1,14 +1,14 @@
 [submodule "third_party/ros-bridge"]
 	path = third_party/ros-bridge
-	url = git@github.com:carla-simulator/ros-bridge.git
+	url = https://github.com/carla-simulator/ros-bridge.git
 [submodule "third_party/scenario_runner"]
 	path = third_party/scenario_runner
-	url = git@github.com:carla-simulator/scenario_runner.git
+	url = https://github.com/carla-simulator/scenario_runner.git
 [submodule "third_party/robot_localization"]
 	path = third_party/robot_localization/robot_localization
-	url = git@github.com:cra-ros-pkg/robot_localization.git
+	url = https://github.com/cra-ros-pkg/robot_localization.git
         branch = foxy-devel
 [submodule "visual_robot_localization"]
 	path = visual_robot_localization
-	url = git@github.com:lasuomela/visual_robot_localization.git
+	url = https://github.com/lasuomela/visual_robot_localization.git
         branch = main
